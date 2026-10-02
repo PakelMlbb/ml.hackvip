@@ -990,28 +990,61 @@ function checkAutoLogin() {
     try {
         var savedKey = localStorage.getItem('mlhack_saved_key');
         var savedName = localStorage.getItem('mlhack_user_name');
-        if (savedKey && savedName && VALID_KEYS.includes(savedKey) && !containsBadWords(savedName)) {
-            verifiedKey = savedKey;
-            verifiedName = savedName;
-            setTimeout(function() {
-                document.getElementById('loginScreen').classList.remove('show');
-                document.getElementById('mainApp').classList.add('show');
-                var h = document.getElementById('headerAccount');
-                if (h) h.textContent = savedName.toUpperCase() + ' VERIFIED';
+        if (!savedKey || !savedName) return false;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'https://pakelmlbb.github.io/ml.hackvip/keys.json?t=' + Date.now(), true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState !== 4) return;
+            var valid = false;
+            try {
+                if (xhr.status === 200) {
+                    var db = JSON.parse(xhr.responseText);
+                    var entry = db[savedKey];
+                    if (entry && entry.status === 'active') {
+                        var today = new Date(); today.setHours(0,0,0,0);
+                        var exp = new Date(entry.expired); exp.setHours(23,59,59,999);
+                        if (exp >= today) valid = true;
+                    }
+                }
+            } catch(e) { valid = false; }
+
+            if (valid) {
+                verifiedKey = savedKey;
+                verifiedName = savedName;
                 setTimeout(function() {
-                    bootTerminal();
-                    addConsole('Auto-login: session restored', 'ok');
-                    addConsole('Welcome back: ' + savedName, 'ok');
-                    updateProfileSection();
-                    startUptime();
-                    startSysMonitor();
-                    toast('✓ Welcome back, ' + savedName + '!');
-                }, 400);
-            }, 800);
-            return true;
-        }
-    } catch(e) {}
-    return false;
+                    document.getElementById('loginScreen').classList.remove('show');
+                    document.getElementById('mainApp').classList.add('show');
+                    var h = document.getElementById('headerAccount');
+                    if (h) h.textContent = savedName.toUpperCase() + ' VERIFIED';
+                    setTimeout(function() {
+                        bootTerminal();
+                        addConsole('Auto-login: session restored', 'ok');
+                        addConsole('Welcome back: ' + savedName, 'ok');
+                        updateProfileSection();
+                        startUptime();
+                        startSysMonitor();
+                        toast('✓ Welcome back, ' + savedName + '!');
+                    }, 400);
+                }, 800);
+            } else {
+                try {
+                    localStorage.removeItem('mlhack_saved_key');
+                    localStorage.removeItem('mlhack_user_name');
+                } catch(e) {}
+                document.getElementById('loginScreen').classList.add('show');
+                setTimeout(function() {
+                    var ks = document.getElementById('keyStatus');
+                    if (ks) {
+                        ks.className = 'login-msg show err';
+                        ks.innerHTML = '⏰ <b>Session kamu sudah expired / di-ban.</b><br>Masuk ulang pake key baru.';
+                    }
+                }, 500);
+            }
+        };
+        xhr.send();
+        return true;
+    } catch(e) { return false; }
 }
 
 document.getElementById('changeAccountBtn').addEventListener('click', function() {
