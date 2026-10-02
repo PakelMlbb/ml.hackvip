@@ -1,0 +1,2938 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0A0E1A">
+<title>Pakel MlbbStore</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { width: 100%; min-height: 100vh; font-family: 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #0A0E1A; color: #F1F5F9; overflow-x: hidden; -webkit-font-smoothing: antialiased; user-select: none; }
+body { background: radial-gradient(circle at 20% 0%, rgba(139, 92, 246, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 100%, rgba(6, 182, 212, 0.12) 0%, transparent 50%), linear-gradient(180deg, #0A0E1A 0%, #0F1420 100%); background-attachment: fixed; padding-bottom: 80px; }
+::-webkit-scrollbar { width: 0; height: 0; }
+#splash { position: fixed; inset: 0; z-index: 9999; background: radial-gradient(circle at center, #1A1F2E 0%, #0A0E1A 100%); display: flex; align-items: center; justify-content: center; flex-direction: column; transition: opacity 0.6s ease, visibility 0.6s ease; }
+#splash.hide { opacity: 0; visibility: hidden; }
+.splash-logo { position: relative; width: 130px; height: 130px; display: flex; align-items: center; justify-content: center; margin-bottom: 28px; animation: splashPop 0.8s cubic-bezier(0.68,-0.55,0.27,1.55); }
+.splash-logo::before { content: ''; position: absolute; inset: -20px; border-radius: 50%; background: radial-gradient(circle, rgba(139,92,246,0.4) 0%, transparent 70%); animation: pulseGlow 2s infinite ease-in-out; }
+.splash-logo-icon { font-size: 90px; z-index: 2; filter: drop-shadow(0 0 30px rgba(139,92,246,0.8)); animation: floatY 3s infinite ease-in-out; }
+.splash-title { font-size: 30px; font-weight: 900; letter-spacing: 3px; background: linear-gradient(135deg,#8B5CF6,#06B6D4,#8B5CF6); background-size: 200% 200%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: gradientMove 3s infinite; text-align: center; margin-bottom: 10px; }
+.splash-sub { font-size: 11px; letter-spacing: 5px; color: #6B7280; margin-bottom: 40px; font-weight: 600; }
+.splash-loader { width: 50px; height: 50px; border: 3px solid rgba(139,92,246,0.2); border-top-color: #8B5CF6; border-right-color: #06B6D4; border-radius: 50%; animation: spin 0.9s linear infinite; margin-bottom: 22px; }
+.splash-status { font-family: 'Courier New', monospace; font-size: 12px; color: #8B5CF6; letter-spacing: 1px; animation: blink 1.5s infinite; text-align: center; }
+#hackerLoad { position: fixed; inset: 0; z-index: 9998; background: #000; display: none; flex-direction: column; overflow: hidden; }
+#hackerLoad.show { display: flex; }
+#matrixCanvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.35; }
+.hacker-content { position: relative; z-index: 2; padding: 40px 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; width: 100%; }
+.hacker-logo { font-size: 60px; margin-bottom: 20px; filter: drop-shadow(0 0 20px #06B6D4); animation: floatY 2s infinite ease-in-out; }
+.hacker-title { font-family: 'Courier New', monospace; font-size: 16px; font-weight: 900; color: #06B6D4; letter-spacing: 3px; margin-bottom: 30px; text-shadow: 0 0 15px rgba(6,182,212,0.8); animation: blink 1s infinite; }
+.hacker-terminal { font-family: 'Courier New', monospace; font-size: 11px; line-height: 1.9; color: #10B981; width: 100%; max-width: 380px; min-height: 220px; text-align: left; text-shadow: 0 0 6px rgba(16,185,129,0.6); }
+.hacker-line { opacity: 0; animation: hackerLineIn 0.3s forwards; }
+.hacker-line.ok { color: #10B981; }
+.hacker-line.warn { color: #FBBF24; }
+.hacker-line.hack { color: #EF4444; }
+.hacker-line.success { color: #06B6D4; font-weight: 900; }
+.hacker-progress { width: 100%; max-width: 380px; height: 8px; background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.4); border-radius: 4px; margin-top: 24px; overflow: hidden; }
+.hacker-progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #10B981, #06B6D4); box-shadow: 0 0 15px rgba(6,182,212,0.8); transition: width 0.3s ease; }
+.hacker-status { font-family: 'Courier New', monospace; font-size: 12px; color: #FBBF24; margin-top: 14px; letter-spacing: 1px; text-shadow: 0 0 10px rgba(251,191,36,0.6); text-align: center; }
+#offline { position: fixed; inset: 0; z-index: 99999; background: linear-gradient(135deg,#0A0E1A 0%,#1A0F1A 100%); display: none; align-items: center; justify-content: center; flex-direction: column; padding: 30px; text-align: center; }
+#offline.show { display: flex; }
+.offline-icon { width: 110px; height: 110px; margin-bottom: 26px; color: #EF4444; animation: pulseWarn 2s infinite; filter: drop-shadow(0 0 25px rgba(239,68,68,0.7)); }
+.offline-title { font-size: 24px; font-weight: 800; color: #FFF; margin-bottom: 14px; letter-spacing: 1px; text-shadow: 0 0 20px rgba(239,68,68,0.5); }
+.offline-text { font-size: 14px; color: #9CA3AF; line-height: 1.7; margin-bottom: 32px; max-width: 320px; }
+.offline-text b { color: #FBBF24; font-weight: 700; }
+.offline-buttons { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 30px; }
+.btn-offline { padding: 14px 26px; border: none; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; letter-spacing: 0.5px; transition: all 0.3s ease; min-width: 140px; }
+.btn-retry { background: linear-gradient(135deg,#8B5CF6,#06B6D4); color: #FFF; box-shadow: 0 4px 20px rgba(139,92,246,0.4); }
+.btn-settings { background: rgba(255,255,255,0.08); color: #FFF; border: 1px solid rgba(255,255,255,0.15); }
+.offline-status { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6B7280; }
+.status-dot { width: 9px; height: 9px; border-radius: 50%; background: #EF4444; animation: pulseStatus 1.5s infinite; }
+.menu-overlay { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); display: none; }
+.menu-overlay.show { display: block; animation: fadeIn 0.3s ease; }
+.menu-drawer { position: fixed; top: 0; right: -320px; width: 300px; max-width: 85vw; height: 100vh; background: linear-gradient(180deg, #1A1F2E 0%, #0F1420 100%); border-left: 1px solid rgba(139,92,246,0.3); z-index: 501; padding: 20px 18px; overflow-y: auto; transition: right 0.35s cubic-bezier(0.68,-0.55,0.27,1.55); box-shadow: -10px 0 40px rgba(0,0,0,0.7); }
+.menu-drawer.show { right: 0; }
+.menu-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid rgba(139,92,246,0.2); }
+.menu-head-title { font-size: 15px; font-weight: 900; color: #FFF; letter-spacing: 1px; }
+.menu-head-title span { background: linear-gradient(135deg,#8B5CF6,#06B6D4); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.menu-close { width: 32px; height: 32px; border-radius: 50%; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #EF4444; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.menu-item { display: flex; align-items: center; gap: 12px; padding: 14px 14px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(139,92,246,0.15); margin-bottom: 8px; cursor: pointer; transition: all 0.25s; position: relative; overflow: hidden; }
+.menu-item:active { transform: scale(0.97); background: rgba(139,92,246,0.15); border-color: rgba(139,92,246,0.5); }
+.menu-item-icon { font-size: 20px; width: 32px; text-align: center; }
+.menu-item-label { font-size: 13px; font-weight: 700; color: #FFF; flex: 1; }
+.menu-item-sub { font-size: 10px; color: #6B7280; display: block; margin-top: 2px; font-weight: 500; }
+.menu-section-title { font-size: 10px; font-weight: 800; color: #A78BFA; letter-spacing: 2px; margin: 16px 0 8px; padding-left: 4px; text-transform: uppercase; }
+.header { position: sticky; top: 0; z-index: 100; background: rgba(10,14,26,0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(139,92,246,0.2); padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; }
+.header::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, #8B5CF6, #06B6D4, transparent); animation: scanLine 3s linear infinite; }
+.header-brand { display: flex; align-items: center; gap: 10px; }
+.header-logo { width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg,#8B5CF6,#06B6D4); display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 0 20px rgba(139,92,246,0.5); animation: logoFloat 3s infinite ease-in-out; }
+.header-info h1 { font-size: 14px; font-weight: 900; letter-spacing: 1px; background: linear-gradient(135deg,#FFF,#8B5CF6); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.header-info p { font-size: 10px; color: #10B981; font-weight: 600; letter-spacing: 0.5px; display: flex; align-items: center; gap: 5px; margin-top: 2px; }
+.online-dot { width: 6px; height: 6px; border-radius: 50%; background: #10B981; animation: pulseStatus 1.5s infinite; }
+.header-menu { width: 42px; height: 42px; border-radius: 12px; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.3); display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; transition: all 0.3s; color: #A78BFA; position: relative; overflow: hidden; }
+.header-menu:active { background: rgba(139,92,246,0.3); transform: scale(0.95); }
+.container { padding: 16px; max-width: 500px; margin: 0 auto; }
+#liveTicker { position: fixed; top: 78px; left: 50%; transform: translateX(-50%); z-index: 150; width: calc(100% - 32px); max-width: 460px; pointer-events: none; opacity: 0; transition: all 0.5s ease; }
+#liveTicker.show { opacity: 1; animation: liveTickerIn 0.5s cubic-bezier(0.68,-0.55,0.27,1.55); }
+.live-ticker-box { background: linear-gradient(135deg, rgba(16,185,129,0.95), rgba(6,182,212,0.95)); border-radius: 14px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 30px rgba(16,185,129,0.4), 0 0 20px rgba(6,182,212,0.3); backdrop-filter: blur(10px); }
+.live-ticker-icon { font-size: 20px; animation: pulseStatus 1.5s infinite; }
+.live-ticker-text { flex: 1; font-size: 12px; font-weight: 700; color: #FFF; line-height: 1.4; }
+.live-ticker-text b { font-weight: 900; }
+.live-ticker-close { font-size: 16px; color: #FFF; opacity: 0.7; cursor: pointer; pointer-events: auto; padding: 4px; }
+#restockBanner { position: fixed; top: 140px; left: 50%; transform: translateX(-50%); z-index: 150; width: calc(100% - 32px); max-width: 460px; pointer-events: none; opacity: 0; transition: all 0.5s ease; }
+#restockBanner.show { opacity: 1; animation: liveTickerIn 0.5s cubic-bezier(0.68,-0.55,0.27,1.55); }
+.restock-banner-box { background: linear-gradient(135deg, rgba(251,191,36,0.95), rgba(245,158,11,0.95)); border-radius: 14px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 30px rgba(251,191,36,0.5), 0 0 20px rgba(245,158,11,0.4); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
+.restock-banner-icon { font-size: 22px; animation: pulseStatus 1.2s infinite; }
+.restock-banner-text { flex: 1; font-size: 12px; font-weight: 800; color: #1A1F2E; line-height: 1.4; }
+.restock-banner-text b { font-weight: 900; }
+.restock-banner-close { font-size: 16px; color: #1A1F2E; opacity: 0.7; cursor: pointer; pointer-events: auto; padding: 4px; font-weight: 900; }
+.search-box { padding: 0 0 12px; }
+.search-input { width: 100%; padding: 12px 16px; background: rgba(15,20,32,0.9); border: 1px solid rgba(139,92,246,0.3); border-radius: 12px; color: #FFF; font-size: 13px; outline: none; }
+.search-input::placeholder { color: #4B5563; }
+.search-input:focus { border-color: #8B5CF6; box-shadow: 0 0 15px rgba(139,92,246,0.3); }
+.flash-banner { background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(251,191,36,0.15)); border: 1px solid rgba(239,68,68,0.4); border-radius: 18px; padding: 18px; margin-bottom: 18px; position: relative; overflow: hidden; animation: borderGlow 2s infinite; }
+.flash-banner::before { content: ''; position: absolute; top: -50%; right: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(239,68,68,0.1) 0%, transparent 70%); animation: rotate 15s linear infinite; }
+.flash-content { position: relative; z-index: 2; }
+.flash-label { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg,#EF4444,#F59E0B); color: #FFF; font-size: 11px; font-weight: 900; padding: 5px 12px; border-radius: 999px; letter-spacing: 1px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(239,68,68,0.5); }
+.flash-title { font-size: 18px; font-weight: 900; color: #FFF; margin-bottom: 8px; letter-spacing: 0.5px; }
+.flash-timer { display: flex; gap: 8px; margin-bottom: 14px; }
+.timer-box { background: rgba(0,0,0,0.5); border: 1px solid rgba(239,68,68,0.4); border-radius: 8px; padding: 6px 10px; font-family: 'Courier New', monospace; font-size: 15px; font-weight: 900; color: #FBBF24; min-width: 38px; text-align: center; text-shadow: 0 0 10px rgba(251,191,36,0.6); }
+.timer-sep { color: #EF4444; font-size: 18px; font-weight: 900; display: flex; align-items: center; }
+.flash-btn { width: 100%; padding: 12px; border: none; border-radius: 12px; background: linear-gradient(135deg,#EF4444,#F59E0B); color: #FFF; font-size: 13px; font-weight: 900; letter-spacing: 1px; cursor: pointer; box-shadow: 0 6px 20px rgba(239,68,68,0.4); transition: all 0.3s; position: relative; overflow: hidden; }
+.flash-btn:active { transform: scale(0.97); }
+.section-title { font-size: 15px; font-weight: 800; color: #FFF; letter-spacing: 1px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.section-title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(139,92,246,0.5), transparent); }
+.filters { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 16px; scrollbar-width: none; }
+.filters::-webkit-scrollbar { display: none; }
+.chip { padding: 8px 16px; border-radius: 999px; background: rgba(255,255,255,0.05); border: 1px solid rgba(139,92,246,0.2); color: #9CA3AF; font-size: 12px; font-weight: 700; white-space: nowrap; cursor: pointer; transition: all 0.3s; flex-shrink: 0; position: relative; overflow: hidden; }
+.chip.active { background: linear-gradient(135deg,#8B5CF6,#06B6D4); color: #FFF; border-color: transparent; box-shadow: 0 4px 15px rgba(139,92,246,0.4); }
+.chip:active { transform: scale(0.95); }
+.paket-list { display: flex; flex-direction: column; gap: 14px; }
+.paket-card { background: linear-gradient(135deg, rgba(26,31,46,0.9), rgba(15,20,32,0.9)); border: 1px solid rgba(139,92,246,0.2); border-radius: 18px; padding: 18px; position: relative; overflow: hidden; transition: all 0.3s ease; }
+.paket-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: linear-gradient(180deg,#8B5CF6,#06B6D4); box-shadow: 0 0 15px rgba(139,92,246,0.8); }
+.paket-card.hot { border-color: rgba(239,68,68,0.5); background: linear-gradient(135deg, rgba(40,15,25,0.95), rgba(15,20,32,0.9)); }
+.paket-card.hot::before { background: linear-gradient(180deg,#EF4444,#F59E0B); box-shadow: 0 0 15px rgba(239,68,68,0.8); }
+.paket-card.out { opacity: 0.5; filter: grayscale(0.7); }
+.paket-card.restock-new { animation: restockGlow 3s ease-in-out; }
+.paket-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 10px; }
+.paket-name { font-size: 15px; font-weight: 900; color: #FFF; line-height: 1.3; flex: 1; letter-spacing: 0.3px; }
+.paket-badge { font-size: 10px; font-weight: 900; padding: 4px 10px; border-radius: 999px; letter-spacing: 0.5px; white-space: nowrap; flex-shrink: 0; }
+.badge-hot { background: linear-gradient(135deg,#EF4444,#F59E0B); color: #FFF; animation: shake 2s infinite; }
+.badge-ok { background: rgba(16,185,129,0.2); color: #10B981; border: 1px solid rgba(16,185,129,0.4); }
+.badge-out { background: rgba(107,114,128,0.3); color: #9CA3AF; }
+.badge-restock { background: linear-gradient(135deg,#FBBF24,#F59E0B); color: #1A1F2E; animation: pulseStatus 1.2s infinite; }
+.paket-price { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+.price-main { font-size: 20px; font-weight: 900; background: linear-gradient(135deg,#FBBF24,#F59E0B); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.price-strike { font-size: 12px; color: #6B7280; text-decoration: line-through; }
+.price-poin { font-size: 11px; color: #06B6D4; background: rgba(6,182,212,0.1); padding: 3px 8px; border-radius: 6px; font-weight: 700; border: 1px solid rgba(6,182,212,0.3); }
+.paket-desc { font-size: 11.5px; color: #9CA3AF; line-height: 1.55; margin-bottom: 14px; }
+.paket-actions { display: flex; gap: 8px; }
+.btn-order { flex: 1; padding: 11px; border: none; border-radius: 11px; background: linear-gradient(135deg,#8B5CF6,#06B6D4); color: #FFF; font-size: 12px; font-weight: 900; letter-spacing: 0.5px; cursor: pointer; box-shadow: 0 4px 15px rgba(139,92,246,0.4); transition: all 0.3s; position: relative; overflow: hidden; }
+.btn-order:active { transform: scale(0.96); }
+.btn-order:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn-ask { padding: 11px 14px; border: 1px solid rgba(139,92,246,0.3); border-radius: 11px; background: rgba(139,92,246,0.1); color: #A78BFA; font-size: 14px; cursor: pointer; transition: all 0.3s; }
+.btn-ask:active { transform: scale(0.96); }
+.quick-menu { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+.quick-item { background: linear-gradient(135deg, rgba(26,31,46,0.9), rgba(15,20,32,0.9)); border: 1px solid rgba(139,92,246,0.15); border-radius: 14px; padding: 14px 8px; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; transition: all 0.3s; position: relative; overflow: hidden; }
+.quick-item:active { transform: scale(0.95); border-color: rgba(139,92,246,0.5); }
+.quick-icon { font-size: 22px; filter: drop-shadow(0 0 8px rgba(139,92,246,0.6)); }
+.quick-label { font-size: 9.5px; color: #9CA3AF; font-weight: 700; text-align: center; letter-spacing: 0.3px; }
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; background: rgba(10,14,26,0.98); backdrop-filter: blur(20px); border-top: 1px solid rgba(139,92,246,0.2); display: flex; padding: 8px 6px 10px; box-shadow: 0 -4px 30px rgba(0,0,0,0.5); }
+.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 8px 4px; cursor: pointer; border-radius: 10px; transition: all 0.3s; position: relative; overflow: hidden; }
+.nav-item.active { background: rgba(139,92,246,0.15); }
+.nav-icon { font-size: 19px; transition: transform 0.3s; }
+.nav-item.active .nav-icon { transform: scale(1.15); }
+.nav-label { font-size: 9.5px; font-weight: 700; color: #6B7280; letter-spacing: 0.3px; }
+.nav-item.active .nav-label { color: #A78BFA; }
+.page { display: none; animation: fadeIn 0.35s ease; }
+.page.active { display: block; }
+.modal-overlay { position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); display: none; align-items: flex-end; justify-content: center; animation: fadeIn 0.3s ease; }
+.modal-overlay.show { display: flex; }
+.modal-sheet { width: 100%; max-width: 500px; background: linear-gradient(180deg,#1A1F2E 0%,#0F1420 100%); border-radius: 24px 24px 0 0; padding: 24px 20px 30px; border-top: 2px solid rgba(139,92,246,0.5); animation: slideUp 0.4s cubic-bezier(0.68,-0.55,0.27,1.55); max-height: 85vh; overflow-y: auto; position: relative; }
+.modal-sheet::before { content: ''; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 40px; height: 4px; background: rgba(139,92,246,0.5); border-radius: 999px; }
+.modal-close { position: absolute; top: 16px; right: 16px; width: 34px; height: 34px; border-radius: 50%; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #EF4444; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 5; }
+.modal-title { font-size: 20px; font-weight: 900; color: #FFF; margin: 16px 0 14px; padding-right: 40px; }
+.modal-info { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+.info-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid rgba(139,92,246,0.15); }
+.info-label { font-size: 12px; color: #9CA3AF; font-weight: 600; }
+.info-value { font-size: 13px; color: #FFF; font-weight: 800; }
+.info-value.gold { background: linear-gradient(135deg,#FBBF24,#F59E0B); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; font-size: 16px; }
+.modal-desc { font-size: 12.5px; color: #B0B7C3; line-height: 1.7; padding: 14px; background: rgba(139,92,246,0.05); border-left: 3px solid #8B5CF6; border-radius: 10px; margin-bottom: 18px; }
+.modal-actions { display: flex; gap: 10px; flex-direction: column; }
+.btn-modal-primary { padding: 15px; border: none; border-radius: 13px; background: linear-gradient(135deg,#8B5CF6,#06B6D4); color: #FFF; font-size: 14px; font-weight: 900; cursor: pointer; box-shadow: 0 6px 25px rgba(139,92,246,0.4); transition: all 0.3s; position: relative; overflow: hidden; }
+.btn-modal-primary:active { transform: scale(0.98); }
+.btn-modal-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-modal-secondary { padding: 14px; border: 1px solid rgba(139,92,246,0.4); border-radius: 13px; background: rgba(139,92,246,0.1); color: #A78BFA; font-size: 13px; font-weight: 800; cursor: pointer; transition: all 0.3s; position: relative; overflow: hidden; }
+.btn-modal-secondary:active { transform: scale(0.98); }
+.btn-modal-poin { padding: 15px; border: none; border-radius: 13px; background: linear-gradient(135deg,#FBBF24,#F59E0B); color: #FFF; font-size: 14px; font-weight: 900; cursor: pointer; box-shadow: 0 6px 25px rgba(251,191,36,0.4); transition: all 0.3s; position: relative; overflow: hidden; }
+.btn-modal-poin:active { transform: scale(0.98); }
+.btn-modal-poin:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-copy { padding: 6px 10px; border: 1px solid rgba(6,182,212,0.4); border-radius: 8px; background: rgba(6,182,212,0.1); color: #06B6D4; font-size: 11px; font-weight: 700; cursor: pointer; margin-left: 6px; }
+.btn-copy:active { transform: scale(0.95); }
+.btn-wa { background: linear-gradient(135deg,#25D366,#128C7E) !important; color: #FFF !important; }
+.btn-upload { background: linear-gradient(135deg,#F59E0B,#EF4444) !important; color: #FFF !important; }
+.qris-img { width: 100%; max-width: 220px; border-radius: 12px; border: 2px solid rgba(139,92,246,0.4); display: block; margin: 12px auto; }
+.form-group { margin-bottom: 16px; }
+.form-label { font-size: 12px; font-weight: 800; color: #A78BFA; letter-spacing: 0.5px; margin-bottom: 8px; display: block; }
+.form-input { width: 100%; padding: 14px 16px; background: rgba(15,20,32,0.9); border: 1px solid rgba(139,92,246,0.3); border-radius: 12px; color: #FFF; font-size: 14px; font-family: 'Courier New', monospace; letter-spacing: 1px; outline: none; transition: all 0.3s; }
+.form-input:focus { border-color: #8B5CF6; box-shadow: 0 0 20px rgba(139,92,246,0.3); }
+.form-input::placeholder { color: #4B5563; letter-spacing: 0; font-family: 'Segoe UI', sans-serif; }
+.btn-submit { width: 100%; padding: 15px; border: none; border-radius: 13px; background: linear-gradient(135deg,#8B5CF6,#06B6D4); color: #FFF; font-size: 14px; font-weight: 900; letter-spacing: 1px; cursor: pointer; box-shadow: 0 6px 25px rgba(139,92,246,0.4); margin-top: 4px; transition: all 0.3s; position: relative; overflow: hidden; }
+.btn-submit:active { transform: scale(0.97); }
+.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+.testi-card { background: linear-gradient(135deg, rgba(26,31,46,0.9), rgba(15,20,32,0.9)); border: 1px solid rgba(139,92,246,0.2); border-radius: 14px; padding: 14px; margin-bottom: 10px; }
+.testi-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.testi-name { font-size: 13px; font-weight: 800; color: #FFF; }
+.testi-time { font-size: 10px; color: #6B7280; }
+.testi-text { font-size: 12px; color: #9CA3AF; line-height: 1.5; }
+.testi-badge { display: inline-block; font-size: 10px; font-weight: 800; color: #10B981; background: rgba(16,185,129,0.15); padding: 2px 8px; border-radius: 6px; margin-top: 6px; }
+.faq-item { background: rgba(26,31,46,0.9); border: 1px solid rgba(139,92,246,0.2); border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
+.faq-q { padding: 14px; font-size: 13px; font-weight: 800; color: #FFF; cursor: pointer; display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden; }
+.faq-a { padding: 0 14px 14px; font-size: 12px; color: #9CA3AF; line-height: 1.6; display: none; }
+.faq-item.open .faq-a { display: block; }
+.faq-item.open .faq-q span { transform: rotate(180deg); }
+.faq-q span { transition: transform 0.3s; }
+.step-list { padding-left: 0; list-style: none; }
+.step-list li { padding: 10px 12px 10px 40px; position: relative; font-size: 12.5px; color: #B0B7C3; line-height: 1.5; background: rgba(139,92,246,0.05); border-radius: 10px; margin-bottom: 8px; }
+.step-list li::before { content: attr(data-num); position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg,#8B5CF6,#06B6D4); color: #FFF; font-size: 11px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
+#toast-container { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 9997; display: flex; flex-direction: column; gap: 10px; width: calc(100% - 40px); max-width: 420px; pointer-events: none; }
+.toast { padding: 14px 18px; border-radius: 14px; background: rgba(26,31,46,0.98); border: 1px solid rgba(139,92,246,0.4); color: #FFF; font-size: 13px; font-weight: 700; box-shadow: 0 8px 30px rgba(0,0,0,0.5); animation: toastIn 0.4s cubic-bezier(0.68,-0.55,0.27,1.55); pointer-events: auto; letter-spacing: 0.3px; }
+.toast.success { border-color: rgba(16,185,129,0.6); background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(26,31,46,0.98)); }
+.toast.error { border-color: rgba(239,68,68,0.6); background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(26,31,46,0.98)); }
+.toast.warning { border-color: rgba(251,191,36,0.6); background: linear-gradient(135deg, rgba(251,191,36,0.15), rgba(26,31,46,0.98)); }
+.toast.restock { border-color: rgba(251,191,36,0.8); background: linear-gradient(135deg, rgba(251,191,36,0.25), rgba(26,31,46,0.98)); animation: toastIn 0.4s cubic-bezier(0.68,-0.55,0.27,1.55), pulseStatus 1.2s infinite 0.5s; }
+.toast.hide { animation: toastOut 0.3s ease forwards; }
+.modal-input { position: fixed; inset: 0; z-index: 400; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; padding: 20px; }
+.modal-input.show { display: flex; }
+.modal-input-box { width: 100%; max-width: 380px; background: linear-gradient(180deg,#1A1F2E 0%,#0F1420 100%); border-radius: 20px; padding: 24px 20px; border: 2px solid rgba(139,92,246,0.5); animation: slideUp 0.3s ease; }
+.modal-input-title { font-size: 18px; font-weight: 900; color: #FFF; margin-bottom: 10px; }
+.modal-input-desc { font-size: 12.5px; color: #9CA3AF; line-height: 1.6; margin-bottom: 18px; }
+.modal-input-actions { display: flex; gap: 10px; margin-top: 16px; }
+.spin-wheel-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px 0; }
+.spin-wheel { width: 240px; height: 240px; border-radius: 50%; background: conic-gradient(#8B5CF6 0deg 45deg, #06B6D4 45deg 90deg, #EF4444 90deg 135deg, #FBBF24 135deg 180deg, #10B981 180deg 225deg, #8B5CF6 225deg 270deg, #06B6D4 270deg 315deg, #EF4444 315deg 360deg); position: relative; box-shadow: 0 0 40px rgba(139,92,246,0.6), inset 0 0 40px rgba(0,0,0,0.5); transition: transform 4s cubic-bezier(0.17,0.67,0.12,0.99); }
+.spin-wheel::after { content: '🎰'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 50px; filter: drop-shadow(0 0 15px #FFF); }
+.spin-pointer { width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #FBBF24; margin-bottom: -12px; z-index: 2; filter: drop-shadow(0 0 10px rgba(251,191,36,0.8)); }
+.spin-btn { margin-top: 24px; padding: 14px 40px; border: none; border-radius: 14px; background: linear-gradient(135deg,#8B5CF6,#06B6D4); color: #FFF; font-size: 15px; font-weight: 900; letter-spacing: 1px; cursor: pointer; box-shadow: 0 6px 25px rgba(139,92,246,0.5); transition: all 0.3s; position: relative; overflow: hidden; }
+.spin-btn:active { transform: scale(0.96); }
+.spin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.lb-row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid rgba(139,92,246,0.15); margin-bottom: 8px; }
+.lb-rank { min-width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px; background: rgba(139,92,246,0.2); color: #A78BFA; }
+.lb-rank.gold { background: linear-gradient(135deg,#FBBF24,#F59E0B); color: #FFF; }
+.lb-rank.silver { background: linear-gradient(135deg,#CBD5E1,#94A3B8); color: #1A1F2E; }
+.lb-rank.bronze { background: linear-gradient(135deg,#F59E0B,#B45309); color: #FFF; }
+.lb-info { flex: 1; }
+.lb-name { font-size: 13px; font-weight: 800; color: #FFF; margin-bottom: 2px; }
+.lb-stats { font-size: 10.5px; color: #9CA3AF; }
+.lb-value { font-size: 12px; font-weight: 900; color: #FBBF24; }
+.riwayat-row { display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid rgba(139,92,246,0.15); margin-bottom: 8px; }
+.riwayat-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.riwayat-paket { font-size: 12.5px; font-weight: 800; color: #FFF; flex: 1; }
+.riwayat-status { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; white-space: nowrap; }
+.riwayat-status.berhasil { background: rgba(16,185,129,0.2); color: #10B981; }
+.riwayat-status.pending { background: rgba(251,191,36,0.2); color: #FBBF24; }
+.riwayat-status.ditolak { background: rgba(239,68,68,0.2); color: #EF4444; }
+.riwayat-status.expired { background: rgba(107,114,128,0.3); color: #9CA3AF; }
+.riwayat-meta { font-size: 10.5px; color: #6B7280; font-family: 'Courier New', monospace; }
+.skeleton-card { background: linear-gradient(90deg, rgba(26,31,46,0.7) 25%, rgba(40,45,60,0.7) 50%, rgba(26,31,46,0.7) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border: 1px solid rgba(139,92,246,0.15); border-radius: 18px; padding: 18px; }
+.skeleton-line { height: 14px; background: rgba(255,255,255,0.05); border-radius: 6px; margin-bottom: 10px; }
+.skeleton-line.short { width: 40%; }
+.skeleton-line.med { width: 70%; }
+.skeleton-line.price { height: 24px; width: 50%; }
+#confettiCanvas { position: fixed; inset: 0; z-index: 9998; pointer-events: none; display: none; }
+#confettiCanvas.show { display: block; }
+.ripple { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.35); transform: scale(0); animation: rippleAnim 0.6s ease-out; pointer-events: none; overflow: hidden; }
+@keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
+@keyframes restockGlow { 0% { box-shadow: 0 0 0 rgba(251,191,36,0); } 50% { box-shadow: 0 0 30px rgba(251,191,36,0.8); } 100% { box-shadow: 0 0 0 rgba(251,191,36,0); } }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+@keyframes pulseGlow { 0%, 100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.15); opacity: 1; } }
+@keyframes pulseWarn { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.85; } }
+@keyframes pulseStatus { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+@keyframes floatY { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes logoFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes gradientMove { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+@keyframes scanLine { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+@keyframes rotate { to { transform: rotate(360deg); } }
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-2px); } 75% { transform: translateX(2px); } }
+@keyframes borderGlow { 0%, 100% { box-shadow: 0 0 20px rgba(239,68,68,0.3); } 50% { box-shadow: 0 0 35px rgba(239,68,68,0.6); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes splashPop { 0% { transform: scale(0.3); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+.splashPop-fix { animation: splashPop 0.6s ease-out forwards !important; }
+@keyframes toastIn { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes toastOut { to { transform: translateY(-30px); opacity: 0; } }
+@keyframes hackerLineIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes liveTickerIn { from { transform: translate(-50%, -20px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+</style>
+</head><body>
+<div id="splash">
+    <div class="splash-logo"><div class="splash-logo-icon">🎮</div></div>
+    <div class="splash-title">PAKEL MLBBSTORE</div>
+    <div class="splash-sub">OFFICIAL PREMIUM STORE</div>
+    <div class="splash-loader"></div>
+    <div class="splash-status" id="splashStatus">🛡️ Establishing secure connection...</div>
+</div>
+<div id="hackerLoad">
+    <canvas id="matrixCanvas"></canvas>
+    <div class="hacker-content">
+        <div class="hacker-logo">🛡️</div>
+        <div class="hacker-title">PAKEL VIP ACCESS</div>
+        <div class="hacker-terminal" id="hackerTerminal"></div>
+        <div class="hacker-progress"><div class="hacker-progress-bar" id="hackerBar"></div></div>
+        <div class="hacker-status" id="hackerStatus">Initializing...</div>
+    </div>
+</div>
+<div id="offline">
+    <svg class="offline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l22 22M16.72 11.06A10.94 10.94 0 0 1 19 12.55M5 12.55a10.94 10.94 0 0 1 5.17-2.39M10.71 5.05A16 16 0 0 1 22.58 9M1.42 9a15.91 15.91 0 0 1 4.7-2.88M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg>
+    <div class="offline-title">⚠️ KONEKSI TERPUTUS</div>
+    <div class="offline-text">Aktifkan <b>WiFi</b> atau <b>Data Seluler</b><br>untuk mengakses <b>Pakel MlbbStore</b></div>
+    <div class="offline-buttons">
+        <button class="btn-offline btn-retry" onclick="location.reload()">🔄 COBA LAGI</button>
+        <button class="btn-offline btn-settings" onclick="openNetworkSettings()">⚙️ SETTINGS</button>
+    </div>
+    <div class="offline-status"><span class="status-dot"></span><span>Menunggu koneksi...</span></div>
+</div>
+<canvas id="confettiCanvas"></canvas>
+<div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+<div class="menu-drawer" id="menuDrawer">
+    <div class="menu-head">
+        <div class="menu-head-title">🎮 <span>MENU UTAMA</span></div>
+        <div class="menu-close" onclick="closeMenu()">✕</div>
+    </div>
+    <div class="menu-section-title">📋 Halaman</div>
+    <div class="menu-item" onclick="goPage('home');closeMenu()"><div class="menu-item-icon">🏠</div><div class="menu-item-label">Home</div></div>
+    <div class="menu-item" onclick="goPage('katalog');closeMenu()"><div class="menu-item-icon">💎</div><div class="menu-item-label">Katalog VIP</div></div>
+    <div class="menu-item" onclick="goPage('promo');closeMenu()"><div class="menu-item-icon">🎁</div><div class="menu-item-label">Promo & Voucher</div></div>
+    <div class="menu-item" onclick="goPage('testimoni');loadTestimoni();closeMenu()"><div class="menu-item-icon">🌟</div><div class="menu-item-label">Testimoni Live</div></div>
+    <div class="menu-item" onclick="goPage('faq');closeMenu()"><div class="menu-item-icon">💡</div><div class="menu-item-label">FAQ</div></div>
+    <div class="menu-item" onclick="goPage('cara-order');closeMenu()"><div class="menu-item-icon">📖</div><div class="menu-item-label">Cara Order</div></div>
+   <div class="menu-section-title">🏆 Kompetisi</div>
+<div class="menu-item" onclick="goPage('leaderboard');loadLeaderboard();closeMenu()"><div class="menu-item-icon">🏆</div><div class="menu-item-label">Leaderboard<span class="menu-item-sub">Top buyer</span></div></div>
+<div class="menu-item" onclick="goPage('lucky');closeMenu()"><div class="menu-item-icon">🎰</div><div class="menu-item-label">Lucky Draw<span class="menu-item-sub">Spin gratis harian</span></div></div>
+<div class="menu-item" onclick="goPage('referral');closeMenu()"><div class="menu-item-icon">🎯</div><div class="menu-item-label">Referral<span class="menu-item-sub">Ajak teman, dapat poin</span></div></div>
+<div class="menu-item" onclick="goPage('riwayat-list');closeMenu()"><div class="menu-item-icon">📋</div><div class="menu-item-label">Riwayat Lengkap<span class="menu-item-sub">Semua transaksi</span></div></div>
+     <div class="menu-section-title">🛠️ Tools</div>
+    <div class="menu-item" onclick="goPage('voucher');closeMenu()"><div class="menu-item-icon">🎫</div><div class="menu-item-label">Redeem Voucher</div></div>
+    <div class="menu-item" onclick="goPage('poin');closeMenu()"><div class="menu-item-icon">🪙</div><div class="menu-item-label">Cek Poin</div></div>
+    <div class="menu-item" onclick="goPage('riwayat');closeMenu()"><div class="menu-item-icon">📦</div><div class="menu-item-label">Cek Resi / Riwayat</div></div>
+    <div class="menu-item" onclick="goPage('akun');closeMenu()"><div class="menu-item-icon">👤</div><div class="menu-item-label">Profil Akun</div></div>
+    <div class="menu-section-title">📞 Kontak & Sosial</div>
+    <div class="menu-item" onclick="openTelegram('Pakel_Mlbb_Store_bot');closeMenu()"><div class="menu-item-icon">🤖</div><div class="menu-item-label">Bot Order<span class="menu-item-sub">@Pakel_Mlbb_Store_bot</span></div></div>
+    <div class="menu-item" onclick="openTelegram('PakelMlbbOfficial');closeMenu()"><div class="menu-item-icon">💬</div><div class="menu-item-label">Admin Official<span class="menu-item-sub">@PakelMlbbOfficial</span></div></div>
+    <div class="menu-item" onclick="openTelegram('PakelMlbb');closeMenu()"><div class="menu-item-icon">👥</div><div class="menu-item-label">Grup Resmi<span class="menu-item-sub">@PakelMlbb</span></div></div>
+    <div class="menu-item" onclick="safeOpenUrl('https://t.me/PakelMlbb/368');closeMenu()"><div class="menu-item-icon">🌟</div><div class="menu-item-label">Channel Testi<span class="menu-item-sub">Lihat bukti order</span></div></div>
+    <div class="menu-section-title">ℹ️ Info</div>
+    <div class="menu-item" onclick="goPage('profil');closeMenu()"><div class="menu-item-icon">🏪</div><div class="menu-item-label">Profil Toko</div></div>
+</div>
+<div id="liveTicker">
+    <div class="live-ticker-box">
+        <div class="live-ticker-icon">🔥</div>
+        <div class="live-ticker-text" id="liveTickerText">Loading...</div>
+        <div class="live-ticker-close" onclick="document.getElementById('liveTicker').classList.remove('show')">✕</div>
+    </div>
+</div>
+<div id="restockBanner">
+    <div class="restock-banner-box">
+        <div class="restock-banner-icon">🔥</div>
+        <div class="restock-banner-text" id="restockBannerText">Restock!</div>
+        <div class="restock-banner-close" onclick="document.getElementById('restockBanner').classList.remove('show')">✕</div>
+    </div>
+</div>
+<div class="header">
+    <div class="header-brand">
+        <div class="header-logo">🎮</div>
+        <div class="header-info">
+            <h1>PAKEL MLBBSTORE</h1>
+            <p><span class="online-dot"></span> ONLINE • SECURE</p>
+        </div>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center;">
+    <div class="header-menu" id="soundToggleBtn" onclick="toggleSound()" style="width:42px; height:42px; border-radius:12px; background:rgba(139,92,246,0.1); border:1px solid rgba(139,92,246,0.3); display:flex; align-items:center; justify-content:center; font-size:18px; cursor:pointer; color:#A78BFA;">🔊</div>
+    <div class="header-menu" onclick="openMenu()">☰</div>
+</div>
+</div>
+<div class="container">
+    <div id="page-home" class="page active">
+        <div class="flash-banner" id="flashBanner">
+            <div class="flash-content">
+                <div class="flash-label">⚡ FLASH SALE</div>
+                <div class="flash-title" id="flashTitle">Diskon Semua Paket!</div>
+                <div class="flash-timer">
+                    <div class="timer-box" id="tJam">00</div>
+                    <div class="timer-sep">:</div>
+                    <div class="timer-box" id="tMenit">00</div>
+                    <div class="timer-sep">:</div>
+                    <div class="timer-box" id="tDetik">00</div>
+                </div>
+                <button class="flash-btn" onclick="goPage('katalog')">🛒 ORDER SEKARANG</button>
+            </div>
+        </div>
+        <div class="section-title">⚡ MENU CEPAT</div>
+        <div class="quick-menu">
+            <div class="quick-item" onclick="goPage('voucher')"><div class="quick-icon">🎫</div><div class="quick-label">VOUCHER</div></div>
+            <div class="quick-item" onclick="goPage('poin')"><div class="quick-icon">🪙</div><div class="quick-label">CEK POIN</div></div>
+            <div class="quick-item" onclick="goPage('riwayat')"><div class="quick-icon">📦</div><div class="quick-label">RIWAYAT</div></div>
+            <div class="quick-item" onclick="openMenu()"><div class="quick-icon">💬</div><div class="quick-label">MENU</div></div>
+        </div>
+        <div class="section-title">🔥 PAKET TERLARIS</div>
+        <div class="paket-list" id="homePaketList"></div>
+    </div>
+    <div id="page-katalog" class="page">
+        <div class="section-title">💎 SEMUA PAKET</div>
+        <div class="search-box"><input type="text" class="search-input" id="searchPaket" placeholder="🔍 Cari paket..."></div>
+        <div class="filters" id="filterChips">
+            <div class="chip active" data-filter="all">🔥 Semua</div>
+            <div class="chip" data-filter="sultan">👑 Sultan</div>
+            <div class="chip" data-filter="pro">💎 Pro</div>
+            <div class="chip" data-filter="safe">🛡️ Safe</div>
+            <div class="chip" data-filter="murah">💰 Murah</div>
+        </div>
+        <div class="paket-list" id="katalogPaketList"></div>
+    </div>
+    <div id="page-promo" class="page">
+        <div class="section-title">🎁 PROMO AKTIF</div>
+        <div class="flash-banner" id="flashBanner2">
+            <div class="flash-content">
+                <div class="flash-label">⚡ FLASH SALE AKTIF</div>
+                <div class="flash-title" id="flashTitle2">Diskon Semua Paket!</div>
+                <div class="flash-timer">
+                    <div class="timer-box" id="tJam2">00</div>
+                    <div class="timer-sep">:</div>
+                    <div class="timer-box" id="tMenit2">00</div>
+                    <div class="timer-sep">:</div>
+                    <div class="timer-box" id="tDetik2">00</div>
+                </div>
+            </div>
+        </div>
+        <div class="section-title" style="margin-top:20px;">🎫 VOUCHER AKTIF</div>
+        <div class="paket-list" id="voucherAktifList">
+            <div class="paket-card" style="cursor:default;"><div class="paket-desc" style="margin-top:0; text-align:center;">⏳ Loading voucher...</div></div>
+        </div>
+        <div class="section-title" style="margin-top:20px;">🏅 DISKON MEMBER</div>
+        <div class="paket-card" style="cursor:default;"><div class="paket-head"><div class="paket-name">🥉 Bronze — 0%</div></div><div class="paket-desc">0-4 transaksi sukses</div></div>
+        <div class="paket-card" style="cursor:default;"><div class="paket-head"><div class="paket-name">🥈 Silver — 5%</div></div><div class="paket-desc">5-14 transaksi sukses</div></div>
+        <div class="paket-card" style="cursor:default;"><div class="paket-head"><div class="paket-name">🥇 Gold — 10%</div></div><div class="paket-desc">15-29 transaksi sukses</div></div>
+        <div class="paket-card" style="cursor:default;"><div class="paket-head"><div class="paket-name">💎 Platinum — 15%</div></div><div class="paket-desc">30+ transaksi sukses</div></div>
+    </div>
+    <div id="page-voucher" class="page">
+        <div class="section-title">🎫 REDEEM VOUCHER</div>
+        <div class="paket-card" style="cursor:default;">
+            <div class="paket-desc" style="margin-top:0; margin-bottom:16px;">Masukkan kode voucher yang kamu punya. Voucher otomatis aktif di akunmu saat checkout!</div>
+            <div class="form-group"><label class="form-label">🆔 CHAT ID TELEGRAM</label><input type="text" class="form-input" id="voucherChatId" placeholder="Contoh: 8772023108" maxlength="20" inputmode="numeric"></div>
+<div id="voucherChatStatus" style="margin-top:6px;"></div>
+            <div class="form-group"><label class="form-label">🎫 KODE VOUCHER</label><input type="text" class="form-input" id="inputVoucher" placeholder="Contoh: PROMO10" maxlength="30" style="text-transform:uppercase;"></div>
+            <button class="btn-submit" id="btnRedeemVoucher" onclick="redeemVoucher()">🎫 REDEEM VOUCHER</button>
+        </div>
+        <div class="section-title" style="margin-top:20px;">📌 CARA PAKAI</div>
+        <div class="paket-card" style="cursor:default;">
+            <div class="paket-desc" style="margin-top:0;">1. Masukkan Chat ID Telegram kamu<br>2. Ketik kode voucher<br>3. Klik "REDEEM VOUCHER"<br>4. Voucher otomatis aktif di akunmu<br>5. Checkout paket → diskon otomatis kepakai</div>
+        </div>
+    </div>
+    <div id="page-poin" class="page">
+        <div class="section-title">🪙 CEK POIN LOYALITAS</div>
+        <div class="paket-card" style="cursor:default;">
+            <div class="paket-desc" style="margin-top:0; margin-bottom:16px;">Masukkan <b>Chat ID</b> kamu untuk cek saldo poin & tier.</div>
+            <div class="form-group"><label class="form-label">🆔 CHAT ID TELEGRAM</label><input type="text" class="form-input" id="inputChatId" placeholder="Contoh: 8772023108" maxlength="20" inputmode="numeric"></div>
+<div id="poinChatStatus" style="margin-top:6px;"></div>
+            <button class="btn-submit" id="btnCekPoin" onclick="cekPoin()">🪙 CEK POIN SEKARANG</button>
+        </div>
+        <div id="poinResult" style="display:none; margin-top:20px;">
+            <div class="section-title">📊 HASIL</div>
+            <div class="paket-card" style="cursor:default;">
+                <div class="modal-info">
+                    <div class="info-row"><div class="info-label">🪙 Saldo Poin</div><div class="info-value gold" id="resultPoin">0</div></div>
+                    <div class="info-row"><div class="info-label">🏅 Tier</div><div class="info-value" id="resultTier">Bronze</div></div>
+                    <div class="info-row"><div class="info-label">📦 Total Order</div><div class="info-value" id="resultOrder">0</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="page-riwayat" class="page">
+        <div class="section-title">📦 CEK RIWAYAT PESANAN</div>
+        <div class="paket-card" style="cursor:default;">
+            <div class="paket-desc" style="margin-top:0; margin-bottom:16px;">Masukkan nomor resi kamu untuk lihat status pesanan.</div>
+            <div class="form-group"><label class="form-label">🔑 NOMOR RESI</label><input type="text" class="form-input" id="inputResi" placeholder="PKL-MLBB-12345" maxlength="30" style="text-transform:uppercase;"></div>
+            <button class="btn-submit" id="btnCekResi" onclick="cekRiwayat()">📦 CEK STATUS</button>
+        </div>
+        <div id="riwayatResult" style="display:none; margin-top:20px;">
+            <div class="section-title">📊 HASIL</div>
+            <div class="paket-card" style="cursor:default;"><div class="modal-info" id="riwayatInfo"></div></div>
+        </div>
+        <div class="section-title" style="margin-top:20px;">💡 TIPS</div>
+        <div class="paket-card" style="cursor:default;">
+            <div class="paket-desc" style="margin-top:0;">Resi bisa dilihat di halaman invoice atau di <b>Riwayat</b> dalam bot Telegram. Chat admin kalau lupa resi!</div>
+            <div class="paket-actions" style="margin-top:12px;"><button class="btn-order" onclick="openTelegram('PakelMlbbOfficial')">💬 CHAT ADMIN</button></div>
+        </div>
+    </div>
+    <div id="page-testimoni" class="page">
+        <div class="section-title">🌟 TESTIMONI REAL-TIME</div>
+        <div id="testiList"></div>
+    </div>
+    <div id="page-faq" class="page">
+        <div class="section-title">💡 FAQ / PERTANYAAN UMUM</div>
+        <div id="faqList"></div>
+    </div>
+    <div id="page-cara-order" class="page">
+        <div class="section-title">❓ CARA ORDER</div>
+        <div class="paket-card" style="cursor:default;">
+            <ul class="step-list">
+                <li data-num="1">Pilih paket dari katalog</li>
+                <li data-num="2">Klik tombol <b>ORDER SEKARANG</b></li>
+                <li data-num="3">Masukkan <b>Chat ID Telegram</b> kamu</li>
+                <li data-num="4">Pilih metode: Transfer DANA/GoPay, QRIS, atau Poin</li>
+                <li data-num="5">Bayar sesuai nominal</li>
+                <li data-num="6">Kirim screenshot bukti transfer ke bot</li>
+                <li data-num="7">Tunggu ACC admin (max 5-10 menit)</li>
+                <li data-num="8">Script VIP siap dipakai! ✅</li>
+            </ul>
+            <button class="btn-submit" onclick="openTelegram('Pakel_Mlbb_Store_bot')" style="margin-top:12px;">💬 ORDER VIA BOT</button>
+        </div>
+    </div>
+    <div id="page-akun" class="page">
+        <div class="section-title">👤 PROFIL AKUN SAYA</div>
+        <div class="paket-card" style="cursor:default;">
+            <div class="paket-desc" style="margin-top:0; margin-bottom:16px;">Masukkan <b>Chat ID</b> buat liat poin, tier, & statistik akunmu.</div>
+            <div class="form-group"><label class="form-label">🆔 CHAT ID TELEGRAM</label><input type="text" class="form-input" id="akunChatId" placeholder="Contoh: 8772023108" maxlength="20" inputmode="numeric"></div>
+<div id="akunChatStatus" style="margin-top:6px;"></div>
+            <button class="btn-submit" id="btnLoadAkun" onclick="loadAkun()">👤 LIHAT PROFIL</button>
+        </div>
+        <div id="akunResult" style="display:none; margin-top:20px;">
+            <div class="section-title">📊 HASIL</div>
+            <div class="paket-card" style="cursor:default;"><div class="modal-info" id="akunInfo"></div></div>
+        </div>
+    </div>
+    <div id="page-leaderboard" class="page">
+    <div class="section-title">🏆 LEADERBOARD TOP BUYER</div>
+    <div class="paket-card" style="cursor:default;">
+        <div class="paket-desc" style="margin-top:0; margin-bottom:16px;">Top 10 pembeli paling aktif. Masukkan Chat ID kamu buat liat posisi lu!</div>
+        <div class="form-group"><label class="form-label">🆔 CHAT ID TELEGRAM (OPSIONAL)</label><input type="text" class="form-input" id="lbChatId" placeholder="Contoh: 8772023108" maxlength="20" inputmode="numeric"></div>
+<div id="lbChatStatus" style="margin-top:6px;"></div>
+        <button class="btn-submit" id="btnLoadLeaderboard" onclick="loadLeaderboard()">🏆 TAMPILKAN LEADERBOARD</button>
+    </div>
+    <div id="leaderboardResult" style="margin-top:20px;">
+        <div class="paket-card" style="cursor:default;"><div class="paket-desc" style="margin-top:0; text-align:center;">⏳ Tekan tombol di atas buat load leaderboard</div></div>
+    </div>
+</div>
+<div id="page-lucky" class="page">
+    <div class="section-title">🎰 LUCKY DRAW HARIAN</div>
+    <div class="paket-card" style="cursor:default;">
+        <div class="paket-desc" style="margin-top:0; margin-bottom:16px;">Spin gratis 1x sehari! Bisa dapet poin, diskon, atau <b>Paket Semi-Safe GRATIS</b>!</div>
+        <div class="form-group"><label class="form-label">🆔 CHAT ID TELEGRAM</label><input type="text" class="form-input" id="luckyChatId" placeholder="Contoh: 8772023108" maxlength="20" inputmode="numeric"></div>
+<div id="luckyChatStatus" style="margin-top:6px;"></div>
+        <button class="btn-submit" id="btnCheckSpin" onclick="checkLuckyStatus()">🎯 CEK KESEMPATAN SPIN</button>
+    </div>
+    <div id="luckyResult" style="margin-top:20px;"></div>
+</div>
+<div id="page-referral" class="page">
+    <div class="section-title">🎯 REFERRAL — AJAK TEMAN DAPAT POIN</div>
+    <div class="paket-card" style="cursor:default;">
+        <div class="paket-desc" style="margin-top:0; margin-bottom:16px;">Ajak teman pakai link referral lu. Tiap teman belanja sukses → lu dapet bonus poin gacha (2-5 poin)!</div>
+        <div class="form-group"><label class="form-label">🆔 CHAT ID TELEGRAM</label><input type="text" class="form-input" id="refChatId" placeholder="Contoh: 8772023108" maxlength="20" inputmode="numeric"></div>
+<div id="refChatStatus" style="margin-top:6px;"></div>
+        <button class="btn-submit" id="btnLoadReferral" onclick="loadReferral()">🎯 LIHAT REFERRAL SAYA</button>
+    </div>
+    <div id="referralResult" style="margin-top:20px;"></div>
+</div>
+<div id="page-riwayat-list" class="page">
+    <div class="section-title">📦 RIWAYAT PESANAN SAYA</div>
+    <div class="paket-card" style="cursor:default;">
+        <div class="paket-desc" style="margin-top:0; margin-bottom:16px;">Masukkan Chat ID untuk lihat semua riwayat pesanan (max 15 terakhir).</div>
+        <div class="form-group"><label class="form-label">🆔 CHAT ID TELEGRAM</label><input type="text" class="form-input" id="riwayatChatId" placeholder="Contoh: 8772023108" maxlength="20" inputmode="numeric"></div>
+<div id="riwayatChatStatus" style="margin-top:6px;"></div>
+        <button class="btn-submit" id="btnLoadRiwayat" onclick="loadRiwayatList()">📦 LIHAT RIWAYAT</button>
+    </div>
+    <div id="riwayatListResult" style="margin-top:20px;"></div>
+</div>
+        <div id="page-profil" class="page">
+    <div class="section-title">👤 PROFIL TOKO</div>
+        <div class="paket-card" style="cursor:default; text-align:center;">
+            <div class="header-logo" style="margin:0 auto 16px; width:80px; height:80px; font-size:42px;">🎮</div>
+            <div class="paket-name" style="text-align:center; font-size:20px; margin-bottom:6px;">Pakel MlbbStore</div>
+            <div style="font-size:11px; color:#A78BFA; letter-spacing:2px; font-weight:700; margin-bottom:16px;">⚡ OFFICIAL PREMIUM STORE ⚡</div>
+            <div class="paket-desc" style="text-align:center;">Pusat layanan script Mobile Legends premium terpercaya, anti-detect kelas atas, server lag panel & drone view paling stabil se-Indonesia.</div>
+        </div>
+        <div class="section-title" style="margin-top:20px;">📞 HUBUNGI KAMI</div>
+        <div class="paket-list">
+            <div class="paket-card" style="cursor:pointer;" onclick="openTelegram('Pakel_Mlbb_Store_bot')"><div class="paket-head"><div class="paket-name">🤖 BOT ORDER RESMI</div><div class="paket-badge badge-hot">ORDER</div></div><div class="paket-desc" style="margin-bottom:0;">@Pakel_Mlbb_Store_bot — Order 24/7 via bot</div></div>
+            <div class="paket-card" style="cursor:pointer;" onclick="openTelegram('PakelMlbbOfficial')"><div class="paket-head"><div class="paket-name">💬 ADMIN OFFICIAL</div><div class="paket-badge badge-ok">ADMIN</div></div><div class="paket-desc" style="margin-bottom:0;">@PakelMlbbOfficial — Chat admin langsung</div></div>
+            <div class="paket-card" style="cursor:pointer;" onclick="openTelegram('PakelMlbb')"><div class="paket-head"><div class="paket-name">👥 GRUP RESMI</div><div class="paket-badge badge-ok">GRUP</div></div><div class="paket-desc" style="margin-bottom:0;">@PakelMlbb — Grup diskusi & update</div></div>
+            <div class="paket-card" style="cursor:pointer;" onclick="safeOpenUrl('https://t.me/PakelMlbb/368')"><div class="paket-head"><div class="paket-name">🌟 CHANNEL TESTI</div><div class="paket-badge badge-hot">TESTI</div></div><div class="paket-desc" style="margin-bottom:0;">Lihat bukti order & testimoni real-time</div></div>
+        </div>
+        <div class="section-title" style="margin-top:20px;">💳 METODE PEMBAYARAN</div>
+        <div class="paket-card" style="cursor:default;">
+            <div class="modal-info">
+                <div class="info-row"><div class="info-label">💳 DANA / GoPay</div><div class="info-value">085188371150</div></div>
+                <div class="info-row"><div class="info-label">📱 QRIS</div><div class="info-value">Semua E-Wallet</div></div>
+                <div class="info-row"><div class="info-label">🪙 Poin Loyalitas</div><div class="info-value">Tukar Paket</div></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-overlay" id="modalPaket" onclick="closeModal(event)">
+    <div class="modal-sheet" onclick="event.stopPropagation()">
+        <div class="modal-close" onclick="closeModal()">✕</div>
+        <div class="modal-title" id="modalName">-</div>
+        <div class="modal-info">
+            <div class="info-row"><div class="info-label">💵 Harga</div><div class="info-value gold" id="modalPrice">-</div></div>
+            <div class="info-row"><div class="info-label">🪙 Atau Tukar Poin</div><div class="info-value" id="modalPoin">-</div></div>
+            <div class="info-row"><div class="info-label">📦 Stok</div><div class="info-value" id="modalStok">-</div></div>
+        </div>
+        <div class="modal-desc" id="modalDesc">-</div>
+        <div class="modal-actions">
+            <button class="btn-modal-primary" id="btnOrderModal">🛒 ORDER SEKARANG</button>
+            <button class="btn-modal-poin" id="btnOrderPoinModal" style="display:none;">🪙 TUKAR POIN</button>
+            <button class="btn-modal-secondary" onclick="openTelegram('PakelMlbbOfficial')">💬 TANYA ADMIN</button>
+        </div>
+    </div>
+</div>
+<div class="modal-input" id="modalInput">
+    <div class="modal-input-box">
+        <div class="modal-input-title" id="modalInputTitle">Masukkan Data</div>
+        <div class="modal-input-desc" id="modalInputDesc">-</div>
+        <input type="text" class="form-input" id="modalInputField" placeholder="..." inputmode="numeric" style="margin-bottom:8px;">
+        <div id="modalInputStatus" style="margin-top:6px; margin-bottom:8px;"></div>
+        <div class="modal-input-actions">
+            <button class="btn-modal-primary" id="modalInputOk" style="flex:1;">✅ LANJUT</button>
+            <button class="btn-modal-secondary" id="modalInputCancel" style="flex:0 0 auto; padding: 14px 20px;">Batal</button>
+        </div>
+    </div>
+</div>
+<!-- MODAL WELCOME -->
+<div class="modal-overlay" id="modalWelcome">
+    <div class="modal-sheet" onclick="event.stopPropagation()">
+        <div style="text-align:center;padding:20px 0;">
+            <div style="font-size:70px;margin-bottom:12px;animation:splashPop 0.7s ease-out forwards;">🎮</div>
+            <div class="modal-title" style="text-align:center;font-size:20px;margin-bottom:6px;">SELAMAT DATANG!</div>
+            <div style="font-size:12px;color:#A78BFA;letter-spacing:2px;font-weight:800;">DI PAKEL MLBBSTORE</div>
+        </div>
+        <div class="modal-desc" style="text-align:center;">
+            <b>👋 Halo,</b> <span id="welcomeName">Pembeli</span>!<br><br>
+            Terima kasih udah download APK <b>PAKEL MLBBSTORE</b>.<br><br>
+            Fitur lengkap:
+            <br>🛒 Order paket VIP MLBB
+            <br>🎫 Redeem voucher & promo
+            <br>🏆 Leaderboard top buyer
+            <br>🎰 Lucky draw harian
+            <br>🎯 Referral bonus poin
+            <br>🪙 Loyalty points & tier
+            <br><br>
+            <b>⚠️ Baca tutor dulu</b> biar gak bingung!
+        </div>
+        <div class="modal-actions">
+            <button class="btn-modal-primary" onclick="closeWelcome()">
+                🚀 MULAI SEKARANG
+            </button>
+            <button class="btn-modal-secondary" onclick="goPage('cara-order');closeWelcome()">
+                📖 LIHAT CARA ORDER
+            </button>
+            <button class="btn-modal-secondary" onclick="openTelegram('PakelMlbb');closeWelcome()">
+                📢 JOIN CHANNEL
+            </button>
+        </div>
+        <div style="text-align:center;margin-top:16px;font-size:10px;color:#6B7280;">
+            Versi 5.0.0 PRO • t.me/PakelMlbb
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DISCLAIMER — APK AMAN -->
+<div class="modal-overlay" id="modalDisclaimer">
+    <div class="modal-sheet" onclick="event.stopPropagation()">
+        <div style="text-align:center;padding:20px 0;">
+            <div style="font-size:70px;margin-bottom:12px;animation:pulseGlow 2s infinite;">🛡️</div>
+            <div class="modal-title" style="text-align:center;font-size:18px;margin-bottom:6px;color:#10B981;">APK 100% AMAN</div>
+            <div style="font-size:11px;color:#A78BFA;letter-spacing:2px;font-weight:800;">BEBAS VIRUS & MALWARE</div>
+        </div>
+        <div class="modal-desc" style="text-align:center; font-size:12.5px;">
+            <b>📢 PERHATIAN:</b><br><br>
+            Kalau pas install muncul peringatan <b style="color:#FBBF24;">"Sumber tidak dikenal"</b> atau <b style="color:#FBBF24;">"APK berbahaya"</b> — <b style="color:#10B981;">ITU NORMAL!</b><br><br>
+            Itu sistem Android yang gak kenal APK dari luar Play Store. Bukan berarti virus!<br><br>
+            <b>✅ APK PAKEL MLBBSTORE:</b>
+            <br>• 100% BEBAS VIRUS
+            <br>• BEBAS MALWARE
+            <br>• TIDAK MENCURI DATA
+            <br>• TIDAK MENGIRIM SMS/PULSA
+            <br>• AMAN DIPAKAI
+            <br><br>
+            <b>📱 Cara install:</b><br>
+            1. Tap <b>"Tetap Install"</b> / <b>"Install Anyway"</b><br>
+            2. Kalau disuruh izin → aktifkan <b>"Izinkan dari sumber ini"</b><br>
+            3. Tunggu selesai → buka APK
+        </div>
+        <div class="modal-actions">
+            <button class="btn-modal-primary" onclick="closeDisclaimer()">✅ MENGERTI, LANJUT</button>
+            <button class="btn-modal-secondary" onclick="openTelegram('PakelMlbbOfficial')">💬 TANYA ADMIN</button>
+        </div>
+    </div>
+</div>
+
+<div id="toast-container"></div>
+<div class="bottom-nav">
+    <div class="nav-item active" data-page="home" onclick="goPage('home')"><div class="nav-icon">🏠</div><div class="nav-label">HOME</div></div>
+    <div class="nav-item" data-page="katalog" onclick="goPage('katalog')"><div class="nav-icon">💎</div><div class="nav-label">KATALOG</div></div>
+    <div class="nav-item" data-page="promo" onclick="goPage('promo')"><div class="nav-icon">🎁</div><div class="nav-label">PROMO</div></div>
+    <div class="nav-item" data-page="profil" onclick="goPage('profil')"><div class="nav-icon">👤</div><div class="nav-label">PROFIL</div></div>
+</div><script>
+/* GLOBAL ERROR CATCHER */
+window.onerror = function(msg, url, line, col, err) { console.error('[GLOBAL ERROR]', msg, 'at line', line); return true; };
+window.addEventListener('unhandledrejection', function(e) { console.error('[UNHANDLED]', e.reason); e.preventDefault(); });
+
+/* ===== SOUND SYSTEM ===== */
+let _audioCtx = null;
+let _soundEnabled = true;
+
+function initAudio() {
+    if (_audioCtx) return;
+    try { _audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    catch(e) { _soundEnabled = false; }
+}
+
+function playTone(freq, duration, type, volume) {
+    if (!_soundEnabled) return;
+    initAudio();
+    if (!_audioCtx) return;
+    try {
+        if (_audioCtx.state === 'suspended') _audioCtx.resume();
+        const osc = _audioCtx.createOscillator();
+        const gain = _audioCtx.createGain();
+        osc.type = type || 'sine';
+        osc.frequency.setValueAtTime(freq, _audioCtx.currentTime);
+        gain.gain.setValueAtTime(volume || 0.15, _audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, _audioCtx.currentTime + duration);
+        osc.connect(gain); gain.connect(_audioCtx.destination);
+        osc.start(_audioCtx.currentTime); osc.stop(_audioCtx.currentTime + duration);
+    } catch(e) {}
+}
+
+function soundClick() { playTone(880, 0.06, 'square', 0.08); setTimeout(() => playTone(1200, 0.04, 'square', 0.05), 30); }
+function soundSuccess() { playTone(523, 0.1, 'sine', 0.12); setTimeout(() => playTone(659, 0.1, 'sine', 0.12), 100); setTimeout(() => playTone(784, 0.15, 'sine', 0.12), 200); }
+function soundError() { playTone(400, 0.1, 'sawtooth', 0.1); setTimeout(() => playTone(300, 0.15, 'sawtooth', 0.1), 100); }
+function soundWarning() { playTone(600, 0.08, 'square', 0.1); setTimeout(() => playTone(600, 0.08, 'square', 0.1), 150); }
+function soundRestock() { playTone(784, 0.1, 'sine', 0.15); setTimeout(() => playTone(988, 0.1, 'sine', 0.15), 100); setTimeout(() => playTone(1318, 0.15, 'sine', 0.15), 200); }
+
+function soundHacker() {
+    if (!_soundEnabled) return;
+    let i = 0;
+    const interval = setInterval(() => {
+        if (i >= 8) { clearInterval(interval); return; }
+        playTone(400 + (i * 80), 0.05, 'square', 0.06);
+        i++;
+    }, 220);
+}
+
+function soundSpin() {
+    let i = 0;
+    const interval = setInterval(() => {
+        if (i >= 20) { clearInterval(interval); return; }
+        playTone(500 + (i * 30), 0.03, 'triangle', 0.05);
+        i++;
+    }, 100);
+}
+
+function toggleSound() {
+    _soundEnabled = !_soundEnabled;
+    try { localStorage.setItem('pakel_sound', _soundEnabled ? '1' : '0'); } catch(e) {}
+    showToast(_soundEnabled ? '🔊 Sound AKTIF' : '🔇 Sound MATI', 'info', 2000);
+    if (_soundEnabled) soundClick();
+    updateSoundButton();
+}
+
+function updateSoundButton() {
+    const btn = document.getElementById('soundToggleBtn');
+    if (btn) btn.textContent = _soundEnabled ? '🔊' : '🔇';
+}
+
+try {
+    const saved = localStorage.getItem('pakel_sound');
+    if (saved === '0') _soundEnabled = false;
+} catch(e) {}
+
+/* KONFIGURASI */
+const API_URL = 'https://web-production-3223c2.up.railway.app';
+const BOT_USERNAME = 'Pakel_Mlbb_Store_bot';
+const ADMIN_USERNAME = 'PakelMlbbOfficial';
+const FETCH_TIMEOUT_MS = 8000;
+const MAX_RETRY = 2;
+
+/* SAFE HELPERS */
+async function safeFetch(url, options) {
+    options = options || {};
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    options.signal = controller.signal;
+    try { const r = await fetch(url, options); clearTimeout(timeoutId); return r; }
+    catch(e) { clearTimeout(timeoutId); throw e; }
+}
+
+async function safeJson(response) {
+    try {
+        const ct = response.headers.get('content-type') || '';
+        if (!ct.includes('application/json')) {
+            const text = await response.text();
+            try { return JSON.parse(text); } catch(e) {
+                return { status: 'ERROR', message: 'Endpoint belum tersedia' };
+            }
+        }
+        return await response.json();
+    } catch(e) { return { status: 'ERROR', message: 'Response invalid' }; }
+}
+
+function safeGetStorage(k) { try { return localStorage.getItem(k); } catch(e) { return null; } }
+function safeSetStorage(k, v) { try { localStorage.setItem(k, v); return true; } catch(e) { return false; } }
+
+function safeOpenUrl(url) {
+    try { const w = window.open(url, '_blank'); if (!w) window.location.href = url; }
+    catch(e) { try { window.location.href = url; } catch(e2) { showToast('⚠️ Gagal buka: ' + url, 'warning', 5000); } }
+}
+
+const _debounceMap = {};
+function debounce(key, fn, delayMs) {
+    delayMs = delayMs || 800;
+    if (_debounceMap[key]) return false;
+    _debounceMap[key] = true;
+    try { fn(); } finally { setTimeout(() => { _debounceMap[key] = false; }, delayMs); }
+    return true;
+}
+
+function setBtnLoading(id, isLoading, txt) {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+    if (isLoading) { btn.disabled = true; btn._orig = btn.textContent; btn.textContent = '⏳ Loading...'; }
+    else { btn.disabled = false; btn.textContent = txt || btn._orig || '✅ Kirim'; }
+}
+
+function escapeHtml(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+function isValidTelegramId(id) {
+    if (!id) return false;
+    const s = String(id).trim();
+    if (!/^\d+$/.test(s)) return false;
+    if (s.length < 8 || s.length > 15) return false;
+    if (/^(\d)\1+$/.test(s)) return false;
+    if (s === '12345678' || s === '123456789' || s === '1234567890') return false;
+    if (/^(\d)\1{7,}$/.test(s)) return false;
+    if (/^0123456789/.test(s)) return false;
+    const unique = new Set(s.split('')).size;
+    if (unique < 4) return false;
+    return true;
+}
+
+function formatRupiah(n) { try { return 'Rp ' + Number(n).toLocaleString('id-ID'); } catch(e) { return 'Rp ' + n; } }
+
+/* HAPTIC FEEDBACK */
+function haptic(ms) {
+    try { if (navigator.vibrate) navigator.vibrate(ms || 30); } catch(e) {}
+}
+
+/* RIPPLE EFFECT */
+function addRipple(e) {
+    try {
+        const t = e.currentTarget;
+        if (!t) return;
+        const r = t.getBoundingClientRect();
+        const size = Math.max(r.width, r.height);
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple';
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = (e.clientX - r.left - size / 2) + 'px';
+        ripple.style.top = (e.clientY - r.top - size / 2) + 'px';
+        t.appendChild(ripple);
+        setTimeout(() => { try { ripple.remove(); } catch(e) {} }, 700);
+    } catch(e) {}
+}
+
+/* MENU */
+function openMenu() {
+    const d = document.getElementById('menuDrawer');
+    const o = document.getElementById('menuOverlay');
+    if (d) d.classList.add('show');
+    if (o) o.classList.add('show');
+}
+function closeMenu() {
+    const d = document.getElementById('menuDrawer');
+    const o = document.getElementById('menuOverlay');
+    if (d) d.classList.remove('show');
+    if (o) o.classList.remove('show');
+}
+
+/* MODAL KONFIRMASI CUSTOM */
+function showConfirmModal(opts) {
+    return new Promise(resolve => {
+        opts = opts || {};
+        const title = opts.title || 'Konfirmasi';
+        const desc = opts.desc || 'Yakin?';
+        const okText = opts.okText || '✅ YA';
+        const cancelText = opts.cancelText || '❌ TIDAK';
+        const okColor = opts.okColor || 'purple';
+        const okBg = okColor === 'red'
+            ? 'linear-gradient(135deg,#EF4444,#F59E0B)'
+            : 'linear-gradient(135deg,#8B5CF6,#06B6D4)';
+        const existing = document.getElementById('pakelConfirmModal');
+        if (existing) existing.remove();
+        const modal = document.createElement('div');
+        modal.id = 'pakelConfirmModal';
+        modal.className = 'modal-overlay show';
+        modal.style.zIndex = '99999';
+        modal.innerHTML = `
+            <div class="modal-sheet" style="max-width:420px; margin:auto; border-radius:20px;" onclick="event.stopPropagation()">
+                <div style="text-align:center; padding:24px 12px 8px;">
+                    <div style="font-size:56px; margin-bottom:14px; animation: splashPop 0.5s;">⚠️</div>
+                    <div class="modal-title" style="text-align:center; font-size:18px; margin:0 0 14px;">${escapeHtml(title)}</div>
+                </div>
+                <div class="modal-desc" style="text-align:left; font-size:13px; line-height:1.6;">${desc}</div>
+                <div class="modal-actions" style="margin-top:18px;">
+                    <button class="btn-modal-primary" id="pakelConfirmOk" style="background:${okBg};">${escapeHtml(okText)}</button>
+                    <button class="btn-modal-secondary" id="pakelConfirmCancel">${escapeHtml(cancelText)}</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        const cleanup = () => { try { modal.remove(); } catch(e) {} };
+        const okBtn = modal.querySelector('#pakelConfirmOk');
+        const cancelBtn = modal.querySelector('#pakelConfirmCancel');
+        if (okBtn) okBtn.onclick = () => { cleanup(); resolve(true); };
+        if (cancelBtn) cancelBtn.onclick = () => { cleanup(); resolve(false); };
+        modal.addEventListener('click', (e) => { if (e.target === modal) { cleanup(); resolve(false); } });
+    });
+}
+
+/* MODAL INPUT */
+let _modalResolve = null;
+function showInputModal(title, desc, placeholder, mode) {
+    return new Promise(resolve => {
+        _modalResolve = resolve;
+        const m = document.getElementById('modalInput');
+        document.getElementById('modalInputTitle').textContent = title;
+        document.getElementById('modalInputDesc').textContent = desc;
+        const f = document.getElementById('modalInputField');
+        f.value = ''; f.placeholder = placeholder || ''; f.setAttribute('inputmode', mode || 'text');
+        m.classList.add('show');
+        setTimeout(() => f.focus(), 300);
+    });
+}
+function closeInputModal(v) {
+    const m = document.getElementById('modalInput');
+    if (m) m.classList.remove('show');
+    if (_modalResolve) { _modalResolve(v); _modalResolve = null; }
+}
+document.addEventListener('DOMContentLoaded', () => {
+    const okBtn = document.getElementById('modalInputOk');
+    const cancelBtn = document.getElementById('modalInputCancel');
+    const field = document.getElementById('modalInputField');
+    if (okBtn) okBtn.onclick = () => closeInputModal(field.value.trim());
+    if (cancelBtn) cancelBtn.onclick = () => closeInputModal(null);
+    if (field) field.addEventListener('keydown', (e) => { if (e.key === 'Enter') closeInputModal(field.value.trim()); });
+});
+
+/* DATA PAKET FALLBACK */
+const PAKET_FALLBACK = [
+    { kode:'buy_sultan', nama:'Sultan One Hit 100% (30 Hari)', harga:150000, harga_str:'Rp 150.000', poin:55, stok:8, kategori:'sultan', desc:'Damage tembus batas, instant kill musuh dalam sekali hit.' },
+    { kode:'buy_pro', nama:'VIP Pro One Hit 80% (30 Hari)', harga:100000, harga_str:'Rp 100.000', poin:40, stok:45, kategori:'pro', desc:'Damage sakit, semua skin kebuka, pandangan luas!' },
+    { kode:'buy_permanent', nama:'Permanent Legend (Lifetime)', harga:250000, harga_str:'Rp 250.000', poin:90, stok:12, kategori:'sultan', desc:'Sekali bayar, nikmati update script seumur hidup.' },
+    { kode:'buy_natural', nama:'Natural Balance (30 Hari)', harga:120000, harga_str:'Rp 120.000', poin:45, stok:35, kategori:'safe', desc:'Dirancang untuk pemain yang mengutamakan keamanan.' },
+    { kode:'buy_lifetimesafe', nama:'Lifetime Safe Permanent', harga:200000, harga_str:'Rp 200.000', poin:75, stok:20, kategori:'safe', desc:'Solusi hemat jangka panjang tanpa biaya bulanan.' },
+    { kode:'buy_light', nama:'Light VIP + Drone (30 Hari)', harga:95000, harga_str:'Rp 95.000', poin:35, stok:60, kategori:'murah', desc:'Pilihan ekonomis untuk pemakaian bulanan.' },
+    { kode:'buy_semisafe', nama:'Semi-Safe 14 Hari', harga:75000, harga_str:'Rp 75.000', poin:25, stok:75, kategori:'murah', desc:'Paket harian yang sangat terjangkau.' },
+    { kode:'buy_semiprivate', nama:'Semi-Private 14 Hari', harga:75000, harga_str:'Rp 75.000', poin:25, stok:70, kategori:'murah', desc:'Performanya stabil, anti patah-patah.' }
+];
+const KATEGORI_MAP = { 'buy_sultan':'sultan','buy_pro':'pro','buy_permanent':'sultan','buy_natural':'safe','buy_lifetimesafe':'safe','buy_light':'murah','buy_semisafe':'murah','buy_semiprivate':'murah' };
+
+let PAKET_DATA = PAKET_FALLBACK.slice();
+let FLASH_SALE_DISKON = 0;
+let FLASH_SALE_END = 0;
+let currentFilter = 'all';
+let API_ONLINE = false;
+let _lastRestockKey = '';
+let _lastStokMap = {};
+
+window.addEventListener('load', () => {
+    try {
+        const isResuming = sessionStorage.getItem('pakel_session_active') === '1';
+        if (isResuming) {
+            try { document.getElementById('splash').classList.add('hide'); } catch(e) {}
+            setTimeout(async () => {
+                try { await fetchPaketFromAPI(); } catch(e) {}
+                initApp();
+                checkWelcome();
+            }, 100);
+        } else {
+            sessionStorage.setItem('pakel_session_active', '1');
+            setTimeout(() => checkConnectionOnStart(), 1200);
+        }
+    } catch(e) {
+        setTimeout(() => checkConnectionOnStart(), 1200);
+    }
+});
+
+async function checkConnectionOnStart() {
+    const statusEl = document.getElementById('splashStatus');
+    if (statusEl) statusEl.textContent = '🔍 Checking network...';
+    const online = await testConnection();
+    if (online) {
+        if (statusEl) statusEl.textContent = '✅ Connection secure!';
+        try { await fetchPaketFromAPI(); } catch(e) {}
+        setTimeout(() => {
+            document.getElementById('splash').classList.add('hide');
+            playHackerLoading(() => { initApp(); checkWelcome(); });
+        }, 500);
+    } else {
+        if (statusEl) statusEl.textContent = '❌ No connection!';
+        setTimeout(() => {
+            document.getElementById('splash').classList.add('hide');
+            document.getElementById('offline').classList.add('show');
+        }, 600);
+    }
+}
+
+async function testConnection() {
+    if (!navigator.onLine) return false;
+    try {
+        const c = new AbortController();
+        const t = setTimeout(() => c.abort(), 3000);
+        await fetch(API_URL + '/', { method:'GET', mode:'no-cors', cache:'no-cache', signal:c.signal });
+        clearTimeout(t);
+        return true;
+    } catch(e) { return false; }
+}
+
+async function fetchPaketFromAPI() {
+    try {
+        const r = await safeFetch(API_URL + '/api/paket', { method:'GET' });
+        const j = await safeJson(r);
+        if (j && j.status === 'OK' && Array.isArray(j.paket) && j.paket.length > 0) {
+            const newData = j.paket.map(p => ({
+                kode: p.kode, nama: p.nama || 'Paket',
+                harga: Number(p.harga) || 0,
+                harga_str: p.harga_str || 'Rp 0',
+                harga_final: Number(p.harga_final) || Number(p.harga) || 0,
+                harga_final_str: p.harga_final_str || p.harga_str,
+                poin: Number(p.poin) || 0,
+                stok: Number(p.stok) || 0,
+                kategori: p.kategori || KATEGORI_MAP[p.kode] || 'all',
+                desc: p.deskripsi || ''
+            }));
+            // Auto-register kategori custom paket
+            newData.forEach(p => { if (p.kode && p.kategori) KATEGORI_MAP[p.kode] = p.kategori; });
+            // Deteksi restock dari stok yang naik
+            detectRestockFromData(newData);
+            PAKET_DATA = newData;
+            FLASH_SALE_DISKON = Number(j.flashsale_diskon) || 0;
+            if (Number(j.flashsale_sisa) > 0) FLASH_SALE_END = Date.now() + (Number(j.flashsale_sisa) * 1000);
+            else FLASH_SALE_END = 0;
+            API_ONLINE = true;
+        }
+    } catch(e) {
+        FLASH_SALE_DISKON = 0; FLASH_SALE_END = 0; API_ONLINE = false;
+    }
+}
+
+function detectRestockFromData(newData) {
+    try {
+        const newStokMap = {};
+        newData.forEach(p => { newStokMap[p.kode] = p.stok; });
+        const hasOld = Object.keys(_lastStokMap).length > 0;
+        if (hasOld) {
+            newData.forEach(p => {
+                const oldStok = _lastStokMap[p.kode];
+                if (oldStok != null && p.stok > oldStok && p.stok > 0) {
+                    showRestockNotif(p.nama, oldStok, p.stok);
+                }
+            });
+        }
+        _lastStokMap = newStokMap;
+    } catch(e) {}
+}
+
+async function fetchRestockFromAPI() {
+    try {
+        const r = await safeFetch(API_URL + '/api/restock-log?limit=3');
+        const j = await safeJson(r);
+        if (j && j.status === 'OK' && Array.isArray(j.restock) && j.restock.length > 0) {
+            const latest = j.restock[0];
+            const key = latest.timestamp + '|' + latest.kode + '|' + latest.stok_baru;
+            if (key !== _lastRestockKey && latest.stok_baru > latest.stok_lama) {
+                // Skip kalo baru aja dari detectRestock
+                if (_lastRestockKey !== '') {
+                    showRestockNotif(latest.nama, latest.stok_lama, latest.stok_baru);
+                }
+                _lastRestockKey = key;
+            }
+        }
+    } catch(e) {}
+}
+
+function showRestockNotif(namaPaket, stokLama, stokBaru) {
+    try {
+        // Banner
+        const banner = document.getElementById('restockBanner');
+        const textEl = document.getElementById('restockBannerText');
+        if (banner && textEl) {
+            textEl.innerHTML = `🔥 <b>RESTOCK!</b> ${escapeHtml(namaPaket)} — stok jadi <b>${stokBaru}</b>`;
+            banner.classList.add('show');
+            if (window._restockBannerTimeout) clearTimeout(window._restockBannerTimeout);
+            window._restockBannerTimeout = setTimeout(() => banner.classList.remove('show'), 8000);
+        }
+        // Toast
+        showToast(`🔥 <b>RESTOCK!</b><br>${escapeHtml(namaPaket)} — stok jadi <b>${stokBaru}</b>`, 'restock', 8000);
+        // Sound
+        soundRestock();
+        // Haptic
+        haptic(50);
+        // Highlight paket card
+        highlightRestockCard(namaPaket);
+    } catch(e) {}
+}
+
+function highlightRestockCard(namaPaket) {
+    try {
+        document.querySelectorAll('.paket-card').forEach(card => {
+            if (card.textContent.includes(namaPaket)) {
+                card.classList.add('restock-new');
+                setTimeout(() => card.classList.remove('restock-new'), 3500);
+            }
+        });
+    } catch(e) {}
+}
+
+function initApp() {
+    try {
+        renderHomePaket();
+        renderKatalogPaket();
+        setupFilters();
+        checkWelcome();
+        startFlashTimer();
+        setupConnectionMonitor();
+        loadVoucherAktif();
+        loadTestimoni();
+        loadFAQ();
+        setupSearch();
+        setupRipple();
+        // Auto-refresh paket tiap 60 detik
+        setInterval(async () => {
+            try {
+                if (document.hidden) return;
+                if (!API_ONLINE) return;
+                await fetchPaketFromAPI();
+                renderHomePaket();
+                renderKatalogPaket();
+            } catch(e) {}
+        }, 60000);
+        // Auto-refresh promo + restock tiap 30 detik
+        setInterval(async () => {
+            try {
+                if (document.hidden) return;
+                if (!API_ONLINE) return;
+                await autoRefreshPromos();
+                await fetchRestockFromAPI();
+            } catch(e) {}
+        }, 30000);
+        // Initial restock fetch
+        setTimeout(() => { fetchRestockFromAPI(); }, 5000);
+    } catch(e) { console.error('initApp error:', e); }
+}
+
+function setupRipple() {
+    try {
+        setTimeout(() => {
+            document.addEventListener('click', (e) => {
+                const t = e.target.closest('button, .menu-item, .quick-item, .nav-item, .chip, .paket-card, .faq-q, .btn-order, .btn-modal-primary, .btn-modal-secondary, .btn-modal-poin, .btn-submit, .flash-btn, .spin-btn, .header-menu');
+                if (!t) return;
+                // Skip spin button — udah ada sound sendiri
+                if (t.id === 'btnSpinNow') return;
+                // Efek ripple
+                addRipple({ currentTarget: t, clientX: e.clientX, clientY: e.clientY });
+                // Sound klik
+                soundClick();
+                // Haptic
+                haptic(20);
+            });
+        }, 500);
+    } catch(e) {}
+}
+
+function getDeviceInfo() {
+    const ua = navigator.userAgent || '';
+    let device = 'Unknown Device';
+    if (/SM-|Samsung/i.test(ua)) device = 'Samsung Galaxy';
+    else if (/Redmi|POCO|Xiaomi|Mi /i.test(ua)) device = 'Xiaomi / Redmi';
+    else if (/OPPO|CPH\d/i.test(ua)) device = 'OPPO';
+    else if (/vivo|V\d{4}/i.test(ua)) device = 'Vivo';
+    else if (/realme|RMX/i.test(ua)) device = 'Realme';
+    else if (/iPhone|iPad/i.test(ua)) device = 'Apple iPhone';
+    else if (/Huawei|Honor/i.test(ua)) device = 'Huawei / Honor';
+    else if (/Infinix/i.test(ua)) device = 'Infinix';
+    else if (/Tecno/i.test(ua)) device = 'Tecno';
+    else if (/Android/i.test(ua)) device = 'Android Device';
+    const androidMatch = ua.match(/Android\s([\d.]+)/);
+    const androidVer = androidMatch ? androidMatch[1] : '?';
+    let browser = 'Browser';
+    if (/Chrome\/\d/i.test(ua) && !/Edg/i.test(ua)) browser = 'Chrome';
+    else if (/Firefox/i.test(ua)) browser = 'Firefox';
+    else if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) browser = 'Safari';
+    else if (/Edg/i.test(ua)) browser = 'Edge';
+    const scr = `${window.screen.width}x${window.screen.height}`;
+    let conn = 'Unknown';
+    if (navigator.connection && navigator.connection.effectiveType) conn = navigator.connection.effectiveType.toUpperCase();
+    return { device, androidVer, browser, scr, conn };
+}
+
+const HACKER_STEPS = [
+    { text: "[SYSTEM] Initializing Pakel VIP Access...", cls: "", delay: 500 },
+    { text: "[SCAN] Detecting device fingerprint...", cls: "", delay: 600 },
+    { text: "  → DEVICE: __DEVICE__", cls: "ok", delay: 500 },
+    { text: "  → ANDROID: v__ANDROID__", cls: "ok", delay: 400 },
+    { text: "  → BROWSER: __BROWSER__", cls: "ok", delay: 400 },
+    { text: "  → SCREEN: __SCR__", cls: "ok", delay: 400 },
+    { text: "  → NETWORK: __CONN__", cls: "ok", delay: 400 },
+    { text: "[LOAD] Loading Moonton server config...", cls: "", delay: 600 },
+    { text: "  → Server: ID-GLOBAL-02", cls: "ok", delay: 500 },
+    { text: "[BYPASS] Bypassing anti-cheat v2.4...", cls: "warn", delay: 700 },
+    { text: "  → Anti-cheat signature: DETECTED", cls: "hack", delay: 500 },
+    { text: "  → Scanning ports... 21, 22, 80, 443", cls: "warn", delay: 500 },
+    { text: "  → Exploiting vulnerability...", cls: "hack", delay: 500 },
+    { text: "  → BYPASS SUCCESSFUL ✅", cls: "ok", delay: 500 },
+    { text: "[INJECT] Injecting VIP Script...", cls: "", delay: 600 },
+    { text: "  → Damage module: LOADED", cls: "ok", delay: 400 },
+    { text: "  → Drone View X10: LOADED", cls: "ok", delay: 400 },
+    { text: "  → Server Lag Panel: LOADED", cls: "ok", delay: 400 },
+    { text: "[VERIFY] Verifying anti-ban shield...", cls: "", delay: 600 },
+    { text: "  → Shield level: MAXIMUM 🛡️", cls: "ok", delay: 500 },
+    { text: "[ACCESS] Granting VIP access...", cls: "success", delay: 700 },
+    { text: "✅ ACCESS GRANTED — WELCOME VIP!", cls: "success", delay: 700 }
+];
+
+function playHackerLoading(callback) {
+    const screen = document.getElementById('hackerLoad');
+    const terminal = document.getElementById('hackerTerminal');
+    const bar = document.getElementById('hackerBar');
+    const status = document.getElementById('hackerStatus');
+    if (!screen || !terminal) { if (callback) callback(); return; }
+    screen.classList.add('show');
+    terminal.innerHTML = '';
+    bar.style.width = '0%';
+    soundHacker();
+    const dev = getDeviceInfo();
+    const steps = HACKER_STEPS.map(s => ({
+        ...s,
+        text: s.text.replace('__DEVICE__', dev.device).replace('__ANDROID__', dev.androidVer).replace('__BROWSER__', dev.browser).replace('__SCR__', dev.scr).replace('__CONN__', dev.conn)
+    }));
+    status.textContent = '00s | 0% — Establishing secure tunnel...';
+    startMatrixRain();
+    const timerStart = Date.now();
+    const timerInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - timerStart) / 1000);
+        if (status.textContent) {
+            const parts = status.textContent.split('|');
+            if (parts.length >= 2) status.textContent = `${String(elapsed).padStart(2, '0')}s |${parts.slice(1).join('|')}`;
+        }
+    }, 1000);
+    let i = 0;
+    const total = steps.length;
+    let cum = 0;
+    steps.forEach(step => {
+        cum += step.delay;
+        setTimeout(() => {
+            try {
+                const line = document.createElement('div');
+                line.className = 'hacker-line ' + step.cls;
+                line.textContent = step.text;
+                terminal.appendChild(line);
+                terminal.scrollTop = terminal.scrollHeight;
+                const progress = Math.round(((i + 1) / total) * 100);
+                bar.style.width = progress + '%';
+                const elapsed = Math.floor((Date.now() - timerStart) / 1000);
+                status.textContent = `${String(elapsed).padStart(2, '0')}s | ${progress}% — ${step.text.replace(/\[.*?\]\s*/, '').substring(0, 30)}`;
+                i++;
+            } catch(e) {}
+        }, cum);
+    });
+    setTimeout(() => {
+        try {
+            clearInterval(timerInterval);
+            screen.classList.remove('show');
+            stopMatrixRain();
+            soundSuccess();
+            if (callback) callback();
+        } catch(e) { if (callback) callback(); }
+    }, cum + 1000);
+}
+
+let _matrixInterval = null;
+function startMatrixRain() {
+    const canvas = document.getElementById('matrixCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const chars = 'アカサタナハマヤラワ0123456789ABCDEF><{}[]/\\$#@!%&*';
+    const fontSize = 14;
+    const columns = Math.floor(canvas.width / fontSize);
+    const drops = new Array(columns).fill(1);
+    function draw() {
+        try {
+            ctx.fillStyle = 'rgba(0,0,0,0.06)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#10B981';
+            ctx.font = fontSize + 'px monospace';
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        } catch(e) {}
+    }
+    draw();
+    _matrixInterval = setInterval(draw, 50);
+}
+function stopMatrixRain() { if (_matrixInterval) { clearInterval(_matrixInterval); _matrixInterval = null; } }
+
+function getStokBadge(stok, isRestockNew) {
+    if (stok <= 0) return '<div class="paket-badge badge-out">❌ HABIS</div>';
+    if (isRestockNew) return '<div class="paket-badge badge-restock">🔥 RESTOCK!</div>';
+    if (stok < 20) return '<div class="paket-badge badge-hot">🔥 SISA ' + stok + '</div>';
+    return '<div class="paket-badge badge-ok">📦 STOK ' + stok + '</div>';
+}
+
+function getHargaFinal(p) {
+    if (p.harga_final != null && p.harga_final > 0) return p.harga_final;
+    if (FLASH_SALE_DISKON > 0) return Math.round(p.harga * (100 - FLASH_SALE_DISKON) / 100);
+    return p.harga;
+}
+
+function renderPaketCard(p) {
+    const hf = getHargaFinal(p);
+    const isHot = p.stok < 20 && p.stok > 0;
+    const isOut = p.stok <= 0;
+    const flash = FLASH_SALE_DISKON > 0;
+    return `
+        <div class="paket-card ${isHot?'hot':''} ${isOut?'out':''}" onclick="openDetail('${escapeHtml(p.kode)}')">
+            <div class="paket-head">
+                <div class="paket-name">👑 ${escapeHtml(p.nama)}</div>
+                ${getStokBadge(p.stok, false)}
+            </div>
+            <div class="paket-price">
+                <div class="price-main">${formatRupiah(hf)}</div>
+                ${flash ? `<div class="price-strike">${escapeHtml(p.harga_str)}</div>` : ''}
+                <div class="price-poin">🪙 ${p.poin} Poin</div>
+            </div>
+            <div class="paket-desc">${escapeHtml(p.desc)}</div>
+            <div class="paket-actions">
+                <button class="btn-order" onclick="event.stopPropagation(); orderPaket('${escapeHtml(p.kode)}')">🛒 ORDER SEKARANG</button>
+                <button class="btn-ask" onclick="event.stopPropagation(); openTelegram('${ADMIN_USERNAME}')">💬</button>
+            </div>
+        </div>
+    `;
+}
+
+function renderHomePaket() {
+    const top = PAKET_DATA.slice(0, 4);
+    const el = document.getElementById('homePaketList');
+    if (el) el.innerHTML = top.map(renderPaketCard).join('');
+}
+
+function renderKatalogPaket() {
+    const filtered = currentFilter === 'all' ? PAKET_DATA : PAKET_DATA.filter(p => p.kategori === currentFilter);
+    const el = document.getElementById('katalogPaketList');
+    if (!el) return;
+    if (filtered.length === 0) { el.innerHTML = '<div class="paket-card" style="text-align:center; cursor:default;">❌ Paket tidak ditemukan</div>'; return; }
+    el.innerHTML = filtered.map(renderPaketCard).join('');
+}
+
+function setupFilters() {
+    document.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            currentFilter = chip.dataset.filter;
+            renderKatalogPaket();
+        });
+    });
+}
+
+function setupSearch() {
+    const input = document.getElementById('searchPaket');
+    if (!input) return;
+    input.addEventListener('input', (e) => {
+        const q = e.target.value.toLowerCase();
+        const el = document.getElementById('katalogPaketList');
+        if (!el) return;
+        const filtered = PAKET_DATA.filter(p => p.nama.toLowerCase().includes(q));
+        if (filtered.length === 0) el.innerHTML = '<div class="paket-card" style="text-align:center; cursor:default;">❌ Paket tidak ditemukan</div>';
+        else el.innerHTML = filtered.map(renderPaketCard).join('');
+    });
+}
+
+function goPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById('page-' + page);
+    if (target) target.classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    const nav = document.querySelector('.nav-item[data-page="' + page + '"]');
+    if (nav) nav.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ==================== OPEN DETAIL + CEK SALDO POIN ==================== */
+async function openDetail(kode) {
+    const p = PAKET_DATA.find(x => x.kode === kode);
+    if (!p) return;
+    const hf = getHargaFinal(p);
+    document.getElementById('modalName').textContent = p.nama;
+    document.getElementById('modalPrice').textContent = formatRupiah(hf) + (FLASH_SALE_DISKON > 0 ? ' (Flash Sale ' + FLASH_SALE_DISKON + '%)' : '');
+    document.getElementById('modalPoin').textContent = p.poin + ' Poin';
+    document.getElementById('modalStok').textContent = p.stok + ' unit';
+    document.getElementById('modalDesc').innerHTML = escapeHtml(p.desc);
+
+    const btn = document.getElementById('btnOrderModal');
+    if (p.stok <= 0) {
+        btn.textContent = '❌ STOK HABIS';
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+    } else {
+        btn.textContent = '🛒 ORDER SEKARANG';
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.onclick = () => orderPaket(p.kode);
+    }
+
+    // Cek saldo poin
+    const btnPoin = document.getElementById('btnOrderPoinModal');
+    if (btnPoin) {
+        btnPoin.style.display = 'none';
+        btnPoin.disabled = true;
+        const chatId = safeGetStorage('chat_id');
+        if (chatId && isValidTelegramId(chatId) && p.stok > 0) {
+            btnPoin.style.display = 'block';
+            btnPoin.textContent = '🪙 CEK SALDO POIN...';
+            btnPoin.style.opacity = '0.6';
+            try {
+                const r = await safeFetch(API_URL + '/api/cek-poin?chat_id=' + encodeURIComponent(chatId));
+                const j = await safeJson(r);
+                if (j && j.status === 'OK' && j.data) {
+                    const saldo = Number(j.data.points) || 0;
+                    if (saldo >= p.poin) {
+                        btnPoin.textContent = '🪙 TUKAR ' + p.poin + ' POIN (Saldo: ' + saldo + ')';
+                        btnPoin.style.opacity = '1';
+                        btnPoin.disabled = false;
+                        btnPoin.onclick = () => orderPaketPoin(p.kode);
+                    } else {
+                        btnPoin.textContent = '🪙 POIN KURANG (' + saldo + '/' + p.poin + ')';
+                        btnPoin.style.opacity = '0.4';
+                    }
+                } else {
+                    btnPoin.style.display = 'none';
+                }
+            } catch(e) {
+                btnPoin.style.display = 'none';
+            }
+        } else if (p.stok > 0) {
+            btnPoin.style.display = 'block';
+            btnPoin.textContent = '🪙 TUKAR POIN (Masukkan Chat ID dulu)';
+            btnPoin.style.opacity = '0.5';
+            btnPoin.onclick = () => {
+                document.getElementById('modalPaket').classList.remove('show');
+                orderPaketPoin(p.kode);
+            };
+        }
+    }
+
+    document.getElementById('modalPaket').classList.add('show');
+}
+
+function closeModal(e) {
+    if (e && e.target && e.target.id !== 'modalPaket') return;
+    document.getElementById('modalPaket').classList.remove('show');
+}
+
+/* ==================== ORDER PAKET (TRANSFER) ==================== */
+async function orderPaket(kode) {
+    if (!debounce('order_' + kode, () => _orderInternal(kode), 1500)) return;
+}
+
+async function _orderInternal(kode) {
+    const p = PAKET_DATA.find(x => x.kode === kode);
+    if (!p) { showToast('❌ Paket tidak ditemukan', 'error'); return; }
+    if (p.stok <= 0) { showToast('❌ Stok habis!', 'error'); return; }
+
+    let chatId = safeGetStorage('chat_id');
+    if (!chatId || !isValidTelegramId(chatId)) {
+        chatId = await showInputModal('🆔 Masukkan Chat ID Telegram', 'Chat ID dipakai buat nyimpen order & poin.', 'Contoh: 8772023108', 'numeric');
+        if (chatId === null) return;
+        if (!isValidTelegramId(chatId)) { showToast('❌ Chat ID tidak valid!', 'error', 5000); return; }
+        chatId = String(chatId).trim();
+        safeSetStorage('chat_id', chatId);
+    }
+
+    // Cek pending
+    let hasPending = false, pendingData = null;
+    try {
+        const rPending = await safeFetch(API_URL + '/api/cek-pending?chat_id=' + encodeURIComponent(chatId));
+        const jPending = await safeJson(rPending);
+        if (jPending && jPending.status === 'OK' && jPending.count > 0) {
+            hasPending = true;
+            pendingData = jPending.pending[0];
+        }
+    } catch(e) {}
+    if (!hasPending) {
+        try {
+            const localPending = safeGetStorage('pending_order_' + chatId);
+            if (localPending) {
+                const lp = JSON.parse(localPending);
+                const umur = Date.now() - (lp.ts || 0);
+                if (umur < 15 * 60 * 1000) {
+                    hasPending = true;
+                    pendingData = { resi: lp.resi, paket: lp.paket, harga: lp.harga };
+                } else localStorage.removeItem('pending_order_' + chatId);
+            }
+        } catch(e) {}
+    }
+    if (hasPending && pendingData) {
+        document.getElementById('modalPaket').classList.remove('show');
+        showPendingWarningModal(pendingData);
+        return;
+    }
+
+    showToast('⏳ Memproses order...', 'info');
+    for (let attempt = 1; attempt <= MAX_RETRY; attempt++) {
+        try {
+            const response = await safeFetch(API_URL + '/api/order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: chatId, paket_kode: kode, payment_method: 'TRANSFER' })
+            });
+            const result = await safeJson(response);
+            if (result && result.status === 'OK') {
+                document.getElementById('modalPaket').classList.remove('show');
+                showInvoice(result);
+                return;
+            } else {
+                showToast('❌ ' + (result && result.message ? result.message : 'Order gagal'), 'error');
+                return;
+            }
+        } catch(err) {
+            if (attempt < MAX_RETRY) { await new Promise(r => setTimeout(r, 1000)); continue; }
+            showToast('⚠️ API offline, redirect ke bot...', 'warning', 3000);
+            setTimeout(() => { safeOpenUrl('https://t.me/' + BOT_USERNAME + '?start=order_' + kode); }, 1000);
+        }
+    }
+}
+
+/* ==================== ORDER PAKET PAKAI POIN ==================== */
+async function orderPaketPoin(kode) {
+    if (!debounce('orderpoin_' + kode, () => _orderPoinInternal(kode), 1500)) return;
+}
+
+async function _orderPoinInternal(kode) {
+    const p = PAKET_DATA.find(x => x.kode === kode);
+    if (!p) { showToast('❌ Paket tidak ditemukan', 'error'); return; }
+    if (p.stok <= 0) { showToast('❌ Stok habis!', 'error'); return; }
+
+    let chatId = safeGetStorage('chat_id');
+    if (!chatId || !isValidTelegramId(chatId)) {
+        chatId = await showInputModal('🆔 Masukkan Chat ID Telegram', 'Chat ID dipakai buat cek saldo poin.', 'Contoh: 8772023108', 'numeric');
+        if (chatId === null) return;
+        if (!isValidTelegramId(chatId)) { showToast('❌ Chat ID tidak valid!', 'error', 5000); return; }
+        chatId = String(chatId).trim();
+        safeSetStorage('chat_id', chatId);
+    }
+
+    showToast('🔍 Cek saldo poin...', 'info', 2000);
+    let saldoPoin = 0;
+    try {
+        const rCek = await safeFetch(API_URL + '/api/cek-poin?chat_id=' + encodeURIComponent(chatId));
+        const jCek = await safeJson(rCek);
+        if (jCek && jCek.status === 'OK' && jCek.data) saldoPoin = Number(jCek.data.points) || 0;
+    } catch(e) {}
+
+    if (saldoPoin < p.poin) {
+        showToast('❌ Poin kamu kurang! Butuh <b>' + p.poin + ' poin</b>, saldo <b>' + saldoPoin + ' poin</b>.', 'error', 6000);
+        return;
+    }
+
+    const konfirmasi = await showConfirmModal({
+        title: '🪙 Tukar Paket Pakai Poin?',
+        desc: 'Kamu akan menukar <b>' + p.poin + ' poin</b> dengan paket:<br><br><b>' + escapeHtml(p.nama) + '</b><br><br>Saldo: <b>' + saldoPoin + ' poin</b><br>Sisa: <b>' + (saldoPoin - p.poin) + ' poin</b><br><br>Poin otomatis terpotong.',
+        okText: '✅ YA, TUKAR SEKARANG',
+        cancelText: '❌ BATAL',
+        okColor: 'purple'
+    });
+    if (!konfirmasi) return;
+
+    try {
+        const rPending = await safeFetch(API_URL + '/api/cek-pending?chat_id=' + encodeURIComponent(chatId));
+        const jPending = await safeJson(rPending);
+        if (jPending && jPending.status === 'OK' && jPending.count > 0) {
+            document.getElementById('modalPaket').classList.remove('show');
+            showPendingWarningModal(jPending.pending[0]);
+            return;
+        }
+    } catch(e) {}
+
+    showToast('⏳ Memproses tukar poin...', 'info');
+    try {
+        const response = await safeFetch(API_URL + '/api/order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, paket_kode: kode, payment_method: 'POIN' })
+        });
+        const result = await safeJson(response);
+        if (result && result.status === 'OK') {
+            document.getElementById('modalPaket').classList.remove('show');
+            showSuccessModalPoin(result);
+        } else {
+            showToast('❌ ' + (result && result.message ? result.message : 'Tukar poin gagal'), 'error', 6000);
+        }
+    } catch(e) {
+        showToast('⚠️ Koneksi error saat tukar poin!', 'error');
+    }
+}
+
+/* ==================== INVOICE (TRANSFER) ==================== */
+function showInvoice(data) {
+    const expiredAt = Date.now() + (15 * 60 * 1000);
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay show';
+    modal.innerHTML = `
+        <div class="modal-sheet">
+            <div class="modal-close" onclick="confirmCloseInvoice(this)">✕</div>
+            <div class="modal-title">✅ Order Berhasil!</div>
+            <div class="modal-info">
+                <div class="info-row"><div class="info-label">📦 Paket</div><div class="info-value">${escapeHtml(data.paket)}</div></div>
+                <div class="info-row"><div class="info-label">🔑 Resi</div><div class="info-value">${escapeHtml(data.resi)} <button class="btn-copy" onclick="copyText('${escapeHtml(data.resi)}', 'Resi')">📋</button></div></div>
+                <div class="info-row"><div class="info-label">💰 Total</div><div class="info-value gold">${escapeHtml(data.harga_final_str)}</div></div>
+            </div>
+            <div id="invoiceTimer" style="text-align:center; padding:14px; background:linear-gradient(135deg, rgba(239,68,68,0.15), rgba(251,191,36,0.15)); border:1px solid rgba(239,68,68,0.5); border-radius:14px; margin-bottom:16px; animation:borderGlow 1.5s infinite;">
+                <div style="font-size:11px; color:#FBBF24; letter-spacing:2px; font-weight:800; margin-bottom:6px;">⏰ SISA WAKTU PEMBAYARAN</div>
+                <div style="font-family:'Courier New', monospace; font-size:28px; font-weight:900; color:#EF4444; letter-spacing:2px; text-shadow:0 0 15px rgba(239,68,68,0.6);" id="timerDisplay">15:00</div>
+                <div style="font-size:10px; color:#9CA3AF; margin-top:4px;">Bayar sebelum waktu habis</div>
+            </div>
+            <div class="modal-desc">
+                <b>💳 PEMBAYARAN</b><br><br>
+                <b>1) QRIS (Scan):</b>
+                <img class="qris-img" src="https://i.ibb.co.com/JRXZvJkR/IMG-20260927-110643-128.jpg" alt="QRIS">
+                <b>2) Transfer DANA/GoPay:</b><br>
+                <code>085188371150</code>
+                <button class="btn-copy" onclick="copyText('085188371150', 'Nomor DANA')">📋 Copy</button>
+                <br>A/N: PakelMlbb<br><br>
+                <b>3) Kirim bukti ke bot:</b><br>
+                @${BOT_USERNAME}
+            </div>
+            <div class="modal-actions">
+                <input type="file" accept="image/*" id="proofInput_${escapeHtml(data.resi)}" style="display:none;" onchange="uploadBukti(this, '${escapeHtml(data.resi)}')">
+                <button class="btn-modal-primary btn-upload" onclick="document.getElementById('proofInput_${escapeHtml(data.resi)}').click()">📸 UPLOAD BUKTI TRANSFER</button>
+                <button class="btn-modal-secondary btn-wa" onclick="copyWhatsAppTemplate('${escapeHtml(data.resi)}')">📋 COPY TEMPLATE WA</button>
+                <button class="btn-modal-secondary" onclick="startOrderPolling('${escapeHtml(data.resi)}')">🔄 CEK STATUS PESANAN</button>
+                <button class="btn-modal-secondary" style="background:rgba(239,68,68,0.15); color:#EF4444; border-color:rgba(239,68,68,0.4);" onclick="cancelOrder('${escapeHtml(data.resi)}')">❌ BATALKAN PESANAN</button>
+                <button class="btn-modal-secondary" onclick="safeOpenUrl('https://t.me/${BOT_USERNAME}')">💬 Kirim Bukti ke Bot</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    const timerEl = modal.querySelector('#timerDisplay');
+    const timerBox = modal.querySelector('#invoiceTimer');
+    function updateTimer() {
+        const sisa = expiredAt - Date.now();
+        if (sisa <= 0) {
+            timerEl.textContent = '00:00';
+            timerBox.style.background = 'rgba(107,114,128,0.3)';
+            timerBox.style.animation = 'none';
+            clearInterval(modal._timerInterval);
+            setTimeout(() => { if (modal.parentNode) modal.remove(); showToast('⏰ Order expired.', 'error', 4000); }, 2000);
+            return;
+        }
+        const totalDetik = Math.floor(sisa / 1000);
+        const m = String(Math.floor(totalDetik / 60)).padStart(2, '0');
+        const s = String(totalDetik % 60).padStart(2, '0');
+        timerEl.textContent = m + ':' + s;
+        if (sisa <= 60000) { timerEl.style.color = '#EF4444'; timerEl.style.animation = 'blink 0.8s infinite'; }
+        else if (sisa <= 300000) { timerEl.style.color = '#FBBF24'; }
+    }
+    updateTimer();
+    modal._timerInterval = setInterval(updateTimer, 1000);
+    window._lastOrderData = data;
+    try {
+        const cid = safeGetStorage('chat_id');
+        if (cid) safeSetStorage('pending_order_' + cid, JSON.stringify({ resi: data.resi, paket: data.paket, harga: data.harga_final_str, ts: Date.now() }));
+    } catch(e) {}
+    soundSuccess();
+    haptic(80);
+}
+
+function closeInvoice(btn) {
+    const modal = btn.closest('.modal-overlay');
+    if (modal) {
+        if (modal._timerInterval) clearInterval(modal._timerInterval);
+        modal.remove();
+    }
+}
+
+async function confirmCloseInvoice(btn) {
+    const modal = btn.closest('.modal-overlay');
+    if (!modal) return;
+    const resi = window._lastOrderData && window._lastOrderData.resi ? window._lastOrderData.resi : '-';
+    const konfirmasi = await showConfirmModal({
+        title: '⚠️ Keluar dari Halaman Ini?',
+        desc: `Pesanan masih <b>PENDING</b>.<br><br><b>Resi:</b> ${escapeHtml(resi)}<br><br>Mau batalkan pesanan?`,
+        okText: '🚫 YA, BATALKAN',
+        cancelText: '⬅️ TIDAK, LANJUT BAYAR',
+        okColor: 'red'
+    });
+    if (konfirmasi) {
+        closeInvoice(btn);
+        setTimeout(() => cancelOrder(resi), 100);
+    }
+}
+
+/* ==================== SUCCESS MODAL PAKAI POIN ==================== */
+function showSuccessModalPoin(order) {
+    window._lastOrderData = order;
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay show';
+    modal.innerHTML = `
+        <div class="modal-sheet">
+            <div class="modal-close" onclick="this.closest('.modal-overlay').remove()">✕</div>
+            <div style="text-align:center; padding:20px 0;">
+                <div style="font-size:80px; margin-bottom:15px; animation: splashPop 0.6s ease-out forwards;">🎉</div>
+                <div class="modal-title" style="text-align:center;">PENUKARAN BERHASIL!</div>
+                <div style="color:#FBBF24; font-weight:800; font-size:14px; margin-bottom:20px; letter-spacing:1px;">🪙 PEMBAYARAN: POIN</div>
+            </div>
+            <div class="modal-info">
+                <div class="info-row"><div class="info-label">🔑 Resi</div><div class="info-value">${escapeHtml(order.resi)}</div></div>
+                <div class="info-row"><div class="info-label">📦 Paket</div><div class="info-value">${escapeHtml(order.paket)}</div></div>
+                <div class="info-row"><div class="info-label">🪙 Poin Terpakai</div><div class="info-value gold">${escapeHtml(order.harga_final_str)}</div></div>
+                ${order.saldo_poin_sisa != null ? `<div class="info-row"><div class="info-label">💰 Sisa Poin</div><div class="info-value">${order.saldo_poin_sisa}</div></div>` : ''}
+            </div>
+            <div class="modal-desc">
+                <b>📱 LANGKAH SELANJUTNYA:</b><br><br>
+                1. Klik <b>COPY TEMPLATE WA</b><br>
+                2. Buka WhatsApp → chat <b>085188371150</b><br>
+                3. Paste template → kirim<br>
+                4. Admin kirim script
+            </div>
+            <div class="modal-actions">
+                <button class="btn-modal-primary btn-wa" onclick="copyWhatsAppTemplate('${escapeHtml(order.resi)}')">📋 COPY TEMPLATE WA</button>
+                <button class="btn-modal-secondary" onclick="safeOpenUrl('https://wa.me/6285188371150')">💬 BUKA WHATSAPP</button>
+                <button class="btn-modal-secondary" onclick="this.closest('.modal-overlay').remove()">Tutup</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    soundSuccess();
+    haptic(80);
+    launchConfetti();
+}
+
+/* ==================== PENDING WARNING ==================== */
+function showPendingWarningModal(orderPending) {
+    window._lastPendingOrder = orderPending;
+    const existing = document.getElementById('pendingWarnModal');
+    if (existing) existing.remove();
+    const modal = document.createElement('div');
+    modal.id = 'pendingWarnModal';
+    modal.className = 'modal-overlay show';
+    modal.innerHTML = `
+        <div class="modal-sheet" onclick="event.stopPropagation()">
+            <div class="modal-close" onclick="handleClosePendingModal()">✕</div>
+            <div style="text-align:center; padding:16px 0;">
+                <div style="font-size:64px; margin-bottom:12px;">⚠️</div>
+                <div class="modal-title" style="text-align:center; font-size:18px;">MASIH PUNYA PESANAN PENDING</div>
+            </div>
+            <div class="modal-info">
+                <div class="info-row"><div class="info-label">🔑 Resi</div><div class="info-value">${escapeHtml(orderPending.resi)}</div></div>
+                <div class="info-row"><div class="info-label">📦 Paket</div><div class="info-value">${escapeHtml(orderPending.paket)}</div></div>
+                <div class="info-row"><div class="info-label">💰 Harga</div><div class="info-value gold">${escapeHtml(orderPending.harga)}</div></div>
+            </div>
+            <div class="modal-desc">
+                <b>⚠️ Selesaikan dulu pesanan ini!</b><br><br>
+                Gak bisa order paket baru sebelum pesanan sebelumnya <b>dibayar</b> atau <b>dibatalkan</b>.<br><br>
+                Klik <b>❌ BATALKAN PESANAN</b> kalau mau ganti paket.
+            </div>
+            <div class="modal-actions">
+                <button class="btn-modal-primary" style="background:linear-gradient(135deg,#EF4444,#F59E0B);" onclick="cancelOrder('${escapeHtml(orderPending.resi)}')">❌ BATALKAN PESANAN</button>
+                <button class="btn-modal-secondary" onclick="document.getElementById('pendingWarnModal').remove()">Tutup</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+async function handleClosePendingModal() {
+    const op = window._lastPendingOrder;
+    const resi = op && op.resi ? op.resi : '-';
+    const konfirmasi = await showConfirmModal({
+        title: '⚠️ Keluar dari Peringatan?',
+        desc: `Masih punya pesanan <b>PENDING</b>.<br><br><b>Resi:</b> ${escapeHtml(resi)}<br><br>Mau batalkan pesanan ini?`,
+        okText: '🚫 YA, BATALKAN',
+        cancelText: '⬅️ TIDAK, TUTUP',
+        okColor: 'red'
+    });
+    if (konfirmasi) cancelOrder(resi);
+    else { const el = document.getElementById('pendingWarnModal'); if (el) el.remove(); }
+}
+
+/* ==================== CANCEL ORDER ==================== */
+async function cancelOrder(resi) {
+    const chatId = safeGetStorage('chat_id');
+    if (!chatId) { showToast('❌ Chat ID tidak ditemukan', 'error'); return; }
+    const konfirmasi = await showConfirmModal({
+        title: '⚠️ Batalkan Pesanan?',
+        desc: `Yakin mau batalkan?<br><br><b>Resi:</b> ${escapeHtml(resi)}<br><br>Setelah dibatalkan, bisa order paket baru.`,
+        okText: '✅ YA, BATALKAN',
+        cancelText: '❌ TIDAK, LANJUT BAYAR',
+        okColor: 'red'
+    });
+    if (!konfirmasi) return;
+    showToast('⏳ Membatalkan pesanan...', 'info');
+    try {
+        const r = await safeFetch(API_URL + '/api/cancel-order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, resi: resi })
+        });
+        const j = await safeJson(r);
+        if (j && j.status === 'OK') {
+            showToast('✅ Pesanan dibatalkan!', 'success', 5000);
+            try { localStorage.removeItem('pending_order_' + chatId); } catch(e) {}
+            if (typeof _pollIntervals !== 'undefined') {
+                Object.keys(_pollIntervals).forEach(k => { clearInterval(_pollIntervals[k]); delete _pollIntervals[k]; });
+            }
+            document.querySelectorAll('.modal-overlay.show').forEach(m => {
+                if (m.id === 'modalPaket') return;
+                if (m.id === 'pakelConfirmModal') return;
+                try { m.remove(); } catch(e) {}
+            });
+            setTimeout(() => goPage('home'), 500);
+        } else {
+            const pesan = j && j.message ? j.message : 'Gagal batalkan pesanan';
+            if (pesan.includes('sudah diproses') || pesan.includes('sudah di-ACC') || pesan.includes('DITOLAK') || pesan.includes('EXPIRED')) {
+                showToast('ℹ️ Pesanan sudah selesai diproses. Order paket baru aja.', 'info', 5000);
+                try { localStorage.removeItem('pending_order_' + chatId); } catch(e) {}
+                document.querySelectorAll('.modal-overlay.show').forEach(m => {
+                    if (m.id === 'modalPaket') return;
+                    if (m.id === 'pakelConfirmModal') return;
+                    try { m.remove(); } catch(e) {}
+                });
+                setTimeout(() => goPage('home'), 500);
+            } else {
+                showToast('❌ ' + pesan, 'error', 5000);
+            }
+        }
+    } catch(e) { showToast('⚠️ Koneksi error', 'error'); }
+}
+
+/* ==================== UPLOAD BUKTI ==================== */
+async function uploadBukti(input, resi) {
+    if (!input.files || !input.files[0]) return;
+    const file = input.files[0];
+    if (file.size > 5 * 1024 * 1024) { showToast('❌ File terlalu besar (max 5 MB)', 'error'); return; }
+    const chatId = safeGetStorage('chat_id');
+    if (!chatId) { showToast('❌ Chat ID tidak ditemukan', 'error'); return; }
+    const formData = new FormData();
+    formData.append('foto', file);
+    formData.append('chat_id', chatId);
+    formData.append('resi', resi);
+    formData.append('nama_user', 'User APK');
+    showToast('⏳ Mengupload bukti...', 'info', 3000);
+    try {
+        const r = await safeFetch(API_URL + '/api/upload-bukti', { method: 'POST', body: formData });
+        const j = await safeJson(r);
+        if (j && j.status === 'OK') {
+            showToast('✅ Bukti terkirim! Menunggu ACC.', 'success', 6000);
+            startOrderPolling(resi);
+        } else showToast('❌ ' + (j && j.message ? j.message : 'Gagal upload'), 'error', 5000);
+    } catch(e) { showToast('⚠️ Koneksi error saat upload!', 'error'); }
+    try { input.value = ''; } catch(e) {}
+}
+
+/* ==================== ORDER POLLING ==================== */
+let _pollIntervals = {};
+async function startOrderPolling(resi) {
+    if (_pollIntervals[resi]) { showToast('🔄 Status sudah dipantau...', 'info', 2000); return; }
+    showToast('🔄 Memantau status pesanan...', 'info', 4000);
+    _pollIntervals[resi] = setInterval(async () => {
+        try {
+            const r = await safeFetch(API_URL + '/api/cek-resi?resi=' + encodeURIComponent(resi));
+            const j = await safeJson(r);
+            if (j && j.order) {
+                const st = j.order.status;
+                if (st === 'BERHASIL') {
+                    clearInterval(_pollIntervals[resi]); delete _pollIntervals[resi];
+                    showToast('🎉 PESANAN DITERIMA! Copy template WA.', 'success', 15000);
+                    showSuccessModal(j.order);
+                } else if (st === 'DITOLAK') {
+                    clearInterval(_pollIntervals[resi]); delete _pollIntervals[resi];
+                    showToast('❌ Pesanan ditolak.', 'error', 8000);
+                    try { const cid = safeGetStorage('chat_id'); if (cid) localStorage.removeItem('pending_order_' + cid); } catch(e) {}
+                    document.querySelectorAll('.modal-overlay.show').forEach(m => {
+                        if (m.id === 'modalPaket') return;
+                        if (m.id === 'pakelConfirmModal') return;
+                        try { m.remove(); } catch(e) {}
+                    });
+                    setTimeout(() => goPage('home'), 500);
+                } else if (st === 'CANCELLED') {
+                    clearInterval(_pollIntervals[resi]); delete _pollIntervals[resi];
+                } else if (st === 'EXPIRED') {
+                    clearInterval(_pollIntervals[resi]); delete _pollIntervals[resi];
+                    showToast('⏰ Pesanan expired.', 'error', 8000);
+                    try { const cid = safeGetStorage('chat_id'); if (cid) localStorage.removeItem('pending_order_' + cid); } catch(e) {}
+                    document.querySelectorAll('.modal-overlay.show').forEach(m => {
+                        if (m.id === 'modalPaket') return;
+                        if (m.id === 'pakelConfirmModal') return;
+                        try { m.remove(); } catch(e) {}
+                    });
+                    setTimeout(() => goPage('home'), 500);
+                }
+            }
+        } catch(e) {}
+    }, 5000);
+    setTimeout(() => {
+        if (_pollIntervals[resi]) { clearInterval(_pollIntervals[resi]); delete _pollIntervals[resi]; }
+    }, 20 * 60 * 1000);
+}
+
+/* ==================== SUCCESS MODAL (TRANSFER) ==================== */
+function showSuccessModal(order) {
+    window._lastOrderData = order;
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay show';
+    modal.innerHTML = `
+        <div class="modal-sheet">
+            <div class="modal-close" onclick="this.closest('.modal-overlay').remove()">✕</div>
+            <div style="text-align:center; padding:20px 0;">
+                <div style="font-size:80px; margin-bottom:15px; animation: splashPop 0.6s ease-out forwards;">🎉</div>
+                <div class="modal-title" style="text-align:center;">PESANAN DITERIMA!</div>
+                <div style="color:#10B981; font-weight:800; font-size:14px; margin-bottom:20px; letter-spacing:1px;">✅ STATUS: <b>BERHASIL</b></div>
+            </div>
+            <div class="modal-info">
+                <div class="info-row"><div class="info-label">🔑 Resi</div><div class="info-value">${escapeHtml(order.resi)}</div></div>
+                <div class="info-row"><div class="info-label">📦 Paket</div><div class="info-value">${escapeHtml(order.paket)}</div></div>
+                <div class="info-row"><div class="info-label">💰 Harga</div><div class="info-value gold">${escapeHtml(order.harga)}</div></div>
+            </div>
+            <div class="modal-desc">
+                <b>📱 LANGKAH SELANJUTNYA:</b><br><br>
+                1. Klik <b>COPY TEMPLATE WA</b><br>
+                2. Buka WhatsApp → chat <b>085188371150</b><br>
+                3. Paste template → kirim<br>
+                4. Admin kirim script
+            </div>
+            <div class="modal-actions">
+                <button class="btn-modal-primary btn-wa" onclick="copyWhatsAppTemplate('${escapeHtml(order.resi)}')">📋 COPY TEMPLATE WA</button>
+                <button class="btn-modal-secondary" onclick="safeOpenUrl('https://wa.me/6285188371150')">💬 BUKA WHATSAPP</button>
+                <button class="btn-modal-secondary" onclick="this.closest('.modal-overlay').remove()">Tutup</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    launchConfetti();
+    soundSuccess();
+}
+
+/* ==================== COPY TEMPLATE WA ==================== */
+async function copyWhatsAppTemplate(resi) {
+    try {
+        let orderData = window._lastOrderData;
+        if (!orderData || orderData.resi !== resi) {
+            const r = await safeFetch(API_URL + '/api/cek-resi?resi=' + encodeURIComponent(resi));
+            const j = await safeJson(r);
+            if (j && j.order) orderData = j.order;
+            else { showToast('❌ Data order tidak ditemukan', 'error'); return; }
+        }
+        const waktu = (orderData.waktu) ? orderData.waktu : `${orderData.hari || ''}, ${orderData.tanggal || ''} ${orderData.jam || ''}`.trim();
+        const template = `🔥 KONFIRMASI KLAIM SCRIPT VIP 🔥\n📦 Paket: ${orderData.paket || '-'}\n💵 Harga: ${orderData.harga || '-'}\n🔑 No Resi: ${orderData.resi || '-'}\n⏱️ Waktu Order: ${waktu || '-'}\nStatus: Lunas & Sudah di-ACC Bot.\nMohon kirimkan link/file script-nya ya Kak. Terima kasih! 🙏`;
+        copyText(template, 'Template WA');
+        setTimeout(() => { showToast('💬 Buka WhatsApp → chat <b>085188371150</b> → paste template', 'info', 7000); }, 1200);
+    } catch(e) { showToast('❌ Gagal ambil data order', 'error'); }
+}
+
+function copyText(text, label) {
+    try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => showToast('✅ ' + (label || 'Teks') + ' dicopy!', 'success')).catch(() => fallbackCopy(text, label));
+        } else fallbackCopy(text, label);
+    } catch(e) { fallbackCopy(text, label); }
+}
+
+function fallbackCopy(text, label) {
+    try {
+        const ta = document.createElement('textarea');
+        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showToast('✅ ' + (label || 'Teks') + ' dicopy!', 'success');
+    } catch(e) { showToast('⚠️ Gagal copy', 'warning'); }
+}
+
+/* ==================== LOAD VOUCHER AKTIF ==================== */
+async function loadVoucherAktif() {
+    const el = document.getElementById('voucherAktifList');
+    if (!el) return;
+    try {
+        const r = await safeFetch(API_URL + '/api/vouchers');
+        const j = await safeJson(r);
+        if (j && j.status === 'OK' && Array.isArray(j.vouchers) && j.vouchers.length > 0) {
+            el.innerHTML = j.vouchers.map(v => `
+                <div class="paket-card" style="cursor:default;">
+                    <div class="paket-head">
+                        <div class="paket-name">🎫 Kode: <span style="color:#06B6D4;">${escapeHtml(v.kode)}</span></div>
+                        <div class="paket-badge badge-ok">AKTIF</div>
+                    </div>
+                    <div class="paket-desc">Diskon ${Number(v.diskon)}% semua paket. Sisa: ${v.sisa} kuota.</div>
+                    <div class="paket-actions"><button class="btn-order" onclick="goPage('voucher')">🎫 REDEEM SEKARANG</button></div>
+                </div>
+            `).join('');
+        } else {
+            el.innerHTML = '<div class="paket-card" style="cursor:default;"><div class="paket-desc" style="margin-top:0; text-align:center;">📭 Belum ada voucher aktif</div></div>';
+        }
+    } catch(e) {
+        el.innerHTML = '<div class="paket-card" style="cursor:default;"><div class="paket-desc" style="margin-top:0; text-align:center;">📭 Belum ada voucher aktif</div></div>';
+    }
+}
+
+async function redeemVoucher() {
+    const inputKode = document.getElementById('inputVoucher');
+    const inputChatId = document.getElementById('voucherChatId');
+    const kode = (inputKode.value || '').trim().toUpperCase();
+    const chatId = (inputChatId.value || '').trim();
+    if (!isValidTelegramId(chatId)) { showToast('❌ Chat ID tidak valid!', 'error', 5000); return; }
+    if (!kode || kode.length < 3) { showToast('❌ Kode voucher tidak valid!', 'error'); return; }
+    setBtnLoading('btnRedeemVoucher', true);
+    showToast('⏳ Memproses voucher...', 'info');
+    try {
+        const r = await safeFetch(API_URL + '/api/redeem-voucher', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, kode: kode })
+        });
+        const j = await safeJson(r);
+        if (j && j.status === 'OK') {
+            showToast('✅ Voucher ' + escapeHtml(kode) + ' berhasil! Diskon ' + Number(j.diskon) + '%', 'success', 4000);
+            inputKode.value = '';
+            safeSetStorage('chat_id', chatId);
+        } else showToast('❌ ' + (j && j.message ? j.message : 'Voucher gagal'), 'error');
+    } catch (err) { showToast('⚠️ Koneksi error!', 'error'); }
+    finally { setBtnLoading('btnRedeemVoucher', false, '🎫 REDEEM VOUCHER'); }
+}
+
+/* ==================== CEK POIN ==================== */
+async function cekPoin() {
+    const input = document.getElementById('inputChatId');
+    const chatId = (input.value || '').trim();
+    if (!isValidTelegramId(chatId)) { showToast('❌ Chat ID tidak valid!', 'error', 5000); return; }
+    setBtnLoading('btnCekPoin', true);
+    showToast('⏳ Memproses...', 'info');
+    try {
+        const r = await safeFetch(API_URL + '/api/cek-poin?chat_id=' + encodeURIComponent(chatId));
+        const j = await safeJson(r);
+        if (j && j.status === 'OK' && j.data) {
+            document.getElementById('resultPoin').textContent = j.data.points != null ? j.data.points : 0;
+            document.getElementById('resultTier').textContent = j.data.tier || 'Bronze';
+            document.getElementById('resultOrder').textContent = j.data.total_order != null ? j.data.total_order : 0;
+            document.getElementById('poinResult').style.display = 'block';
+            showToast('✅ Data ditemukan!', 'success');
+            setTimeout(() => document.getElementById('poinResult').scrollIntoView({ behavior:'smooth' }), 300);
+        } else showToast('❌ ' + (j && j.message ? j.message : 'Data tidak ditemukan'), 'error');
+    } catch (err) { showToast('⚠️ API offline!', 'error'); }
+    finally { setBtnLoading('btnCekPoin', false, '🪙 CEK POIN SEKARANG'); }
+}
+
+/* ==================== CEK RIWAYAT ==================== */
+async function cekRiwayat() {
+    const input = document.getElementById('inputResi');
+    const resi = (input.value || '').trim().toUpperCase();
+    if (!resi || resi.length < 5) { showToast('❌ Resi tidak valid!', 'error'); return; }
+    setBtnLoading('btnCekResi', true);
+    try {
+        const r = await safeFetch(API_URL + '/api/cek-resi?resi=' + encodeURIComponent(resi));
+        const j = await safeJson(r);
+        if (j && j.status === 'OK' && j.order) {
+            const o = j.order;
+            document.getElementById('riwayatInfo').innerHTML = `
+                <div class="info-row"><div class="info-label">🔑 Resi</div><div class="info-value">${escapeHtml(o.resi)}</div></div>
+                <div class="info-row"><div class="info-label">📦 Paket</div><div class="info-value">${escapeHtml(o.paket)}</div></div>
+                <div class="info-row"><div class="info-label">💵 Harga</div><div class="info-value">${escapeHtml(o.harga)}</div></div>
+                <div class="info-row"><div class="info-label">📊 Status</div><div class="info-value">${escapeHtml(o.status)}</div></div>
+                <div class="info-row"><div class="info-label">📅 Tanggal</div><div class="info-value">${escapeHtml((o.hari||'') + ', ' + (o.tanggal||''))}</div></div>
+                <div class="info-row"><div class="info-label">💳 Metode</div><div class="info-value">${escapeHtml(o.metode || 'TRANSFER')}</div></div>
+            `;
+            document.getElementById('riwayatResult').style.display = 'block';
+            showToast('✅ Data ditemukan!', 'success');
+        } else showToast('❌ ' + (j && j.message ? j.message : 'Resi tidak ditemukan'), 'error');
+    } catch (err) { showToast('⚠️ API offline!', 'error'); }
+    finally { setBtnLoading('btnCekResi', false, '📦 CEK STATUS'); }
+}
+
+/* ==================== LOAD AKUN ==================== */
+async function loadAkun() {
+    const input = document.getElementById('akunChatId');
+    const chatId = (input.value || '').trim();
+    if (!isValidTelegramId(chatId)) { showToast('❌ Chat ID tidak valid!', 'error', 5000); return; }
+    setBtnLoading('btnLoadAkun', true);
+    try {
+        const r = await safeFetch(API_URL + '/api/cek-poin?chat_id=' + encodeURIComponent(chatId));
+        const j = await safeJson(r);
+        if (j && j.status === 'OK' && j.data) {
+            document.getElementById('akunInfo').innerHTML = `
+                <div class="info-row"><div class="info-label">🆔 Chat ID</div><div class="info-value">${escapeHtml(chatId)}</div></div>
+                <div class="info-row"><div class="info-label">🪙 Saldo Poin</div><div class="info-value gold">${j.data.points || 0}</div></div>
+                <div class="info-row"><div class="info-label">🏅 Tier</div><div class="info-value">${escapeHtml(j.data.tier || 'Bronze')}</div></div>
+                <div class="info-row"><div class="info-label">📦 Total Order</div><div class="info-value">${j.data.total_order || 0}</div></div>
+                <div class="info-row"><div class="info-label">🎁 Diskon Tier</div><div class="info-value">${j.data.diskon || 0}%</div></div>
+            `;
+            document.getElementById('akunResult').style.display = 'block';
+            safeSetStorage('chat_id', chatId);
+            showToast('✅ Data ditemukan!', 'success');
+        } else showToast('❌ ' + (j && j.message ? j.message : 'Data tidak ditemukan'), 'error');
+    } catch(e) { showToast('⚠️ API offline!', 'error'); }
+    finally { setBtnLoading('btnLoadAkun', false, '👤 LIHAT PROFIL'); }
+}
+
+/* ==================== TESTIMONI ==================== */
+const TESTI_NAMES = [
+    "@R_Zky***", "@Alvinn_***", "@Dimas_99***", "@RezaPrat_***", "@Bayu_Official***", "@Farel_X***", "@Yoga_Mlg***", "@DickyGez_***",
+    "@SuryaPratama***", "@RamaWicak***", "@Gilang_ID***", "@BagasKusn***", "@Arif_Wd***", "@DaniPratama***", "@Hendra_99***", "@Rian_Xyz***",
+    "@Aldi_07***", "@Bintang_ID***", "@CandraPras***", "@DikaPrast_***", "@Fajar_01***", "@GalihGmr***", "@IqbalID***", "@JokoPrasetyo***",
+    "@KevinWdj***", "@LukmanHkm***", "@MaulanaID***", "@NaufalXyz***", "@Pratama99***", "@RafliSultan***", "@SatriaGaming***", "@TegarGanz***",
+    "@VianID***", "@WahyuPrat***", "@YudaDev***", "@ZakiMlf***", "@Amirul_My***", "@Haikal_Iskandar***", "@Farhan_Zul***", "@Aiman_Badri***",
+    "@Aqil_Danial***", "@Syahmi_Zain***", "@Luqman_Hakim***", "@Zulhelmi_My***", "@Alex_Walker***", "@Liam_Smith***", "@Noah_Miller***", "@Oliver_Davis***",
+    "@Sultan_Mlbb***", "@Anjay_Mabar***", "@Gacor_Gaming***", "@TopGlobal_1***", "@Zul_Ganz***", "@Rizky_Store***", "@Ibnu_Hkm***", "@Pandu_ID***",
+    "@Fikri_Xp***", "@Aditya_Prat***", "@Eko_Cyber***", "@Bayu_Sena***", "@angga_99***", "@febri_nj***", "@putra_ml***", "@rendi_sultan***"
+];
+const TESTI_PAKET = [
+    ["Sultan One Hit 100% (30 Hari)", "Rp 150.000", "55 Poin"],
+    ["VIP Pro One Hit 80% (30 Hari)", "Rp 100.000", "40 Poin"],
+    ["Permanent Legend (Lifetime)", "Rp 250.000", "90 Poin"],
+    ["Natural Balance (30 Hari)", "Rp 120.000", "45 Poin"],
+    ["Lifetime Safe Permanent", "Rp 200.000", "75 Poin"],
+    ["Light VIP + Drone (30 Hari)", "Rp 95.000", "35 Poin"],
+    ["Semi-Safe 14 Hari", "Rp 75.000", "25 Poin"],
+    ["Semi-Private 14 Hari", "Rp 75.000", "25 Poin"]
+];
+let _testiCache = null;
+function getRandomTesti(count) {
+    const arr = [];
+    for (let i = 0; i < count; i++) {
+        const nama = TESTI_NAMES[Math.floor(Math.random() * TESTI_NAMES.length)];
+        const pkt = TESTI_PAKET[Math.floor(Math.random() * TESTI_PAKET.length)];
+        const menitLalu = Math.floor(Math.random() * 44) + 1;
+        const isPoin = Math.random() < 0.3;
+        arr.push({ nama, paket: pkt[0], harga: isPoin ? pkt[2] : pkt[1], poin: pkt[2], menitLalu, timestamp: Date.now() - (menitLalu * 60 * 1000), isPoin });
+    }
+    return arr;
+}
+function formatWaktuRelatif(ts) {
+    const detik = Math.floor((Date.now() - ts) / 1000);
+    if (detik < 5) return 'baru saja';
+    if (detik < 60) return detik + ' detik lalu';
+    const menit = Math.floor(detik / 60);
+    if (menit < 60) return menit + ' menit lalu';
+    const jam = Math.floor(menit / 60);
+    if (jam < 24) return jam + ' jam lalu';
+    return Math.floor(jam / 24) + ' hari lalu';
+}
+function renderTesti() {
+    const el = document.getElementById('testiList');
+    if (!el) return;
+    if (!_testiCache) _testiCache = getRandomTesti(12);
+    let html = '';
+    _testiCache.forEach(t => {
+        html += `
+            <div class="testi-card">
+                <div class="testi-head">
+                    <div class="testi-name">✅ ${t.nama}</div>
+                    <div class="testi-time" data-ts="${t.timestamp}">${formatWaktuRelatif(t.timestamp)}</div>
+                </div>
+                <div class="testi-text">Beli <b>${t.paket}</b> — ${t.harga}</div>
+                <div class="testi-badge">🔒 ${t.isPoin ? 'REDEEMED VIA LOYALTY POINTS' : 'LUNAS & SCRIPT TERKIRIM'}</div>
+            </div>
+        `;
+    });
+    el.innerHTML = html;
+}
+function loadTestimoni() {
+    _testiCache = getRandomTesti(12);
+    renderTesti();
+    if (window._testiInterval) clearInterval(window._testiInterval);
+    window._testiInterval = setInterval(() => {
+        if (!_testiCache) return;
+        document.querySelectorAll('#testiList .testi-time').forEach(el => {
+            const ts = Number(el.dataset.ts);
+            if (ts) el.textContent = formatWaktuRelatif(ts);
+        });
+    }, 5000);
+    if (window._testiPushInterval) clearInterval(window._testiPushInterval);
+    window._testiPushInterval = setInterval(() => {
+        if (!_testiCache) return;
+        const newTesti = getRandomTesti(1)[0];
+        newTesti.timestamp = Date.now();
+        _testiCache.unshift(newTesti);
+        if (_testiCache.length > 15) _testiCache.pop();
+        renderTesti();
+    }, 20000);
+}
+
+/* ==================== FAQ ==================== */
+const FAQ_DATA = [
+    ['🛡️ Aman gak scriptnya?', 'Aman 100%. Pake enkripsi high-tier anti-detect paling stabil se-Indonesia!'],
+    ['💳 Bisa bayar pake apa aja?', 'DANA, GoPay, QRIS (semua e-wallet), atau tukar Poin Loyalitas.'],
+    ['⚡ Berapa lama prosesnya?', 'Max 5-10 menit setelah bukti transfer dikirim ke bot.'],
+    ['🎁 Ada bonus apa?', 'Setiap pembelian dapet bonus Server Lag Panel + Drone View X10 gratis!'],
+    ['🪙 Gimana dapet poin?', 'Tiap transaksi sukses dapet poin. Bisa ditukar paket gratis!'],
+    ['💰 Bisa refund gak?', 'Refund hanya kalau script tidak berfungsi atau kesalahan dari toko.'],
+    ['🎫 Voucher cara pakenya?', 'Redeem di APK → masuk ke akunmu → otomatis kepakai saat checkout.'],
+    ['👑 Tier member gimana?', 'Bronze (0-4x), Silver (5-14x) diskon 5%, Gold (15-29x) diskon 10%, Platinum (30+) diskon 15%.']
+];
+function loadFAQ() {
+    const el = document.getElementById('faqList');
+    if (!el) return;
+    el.innerHTML = FAQ_DATA.map(([q, a]) => `
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+            <div class="faq-q">${q} <span>▼</span></div>
+            <div class="faq-a">${a}</div>
+        </div>
+    `).join('');
+}
+
+/* ==================== WELCOME POPUP ==================== */
+function showWelcomeModal() {
+    const m = document.getElementById('modalWelcome');
+    if (!m) return;
+    const nameEl = document.getElementById('welcomeName');
+    if (nameEl) {
+        const savedName = safeGetStorage('user_name') || 'Pembeli';
+        nameEl.textContent = savedName;
+    }
+    m.classList.add('show');
+    soundSuccess();
+}
+function closeWelcome() {
+    const m = document.getElementById('modalWelcome');
+    if (m) m.classList.remove('show');
+    soundClick();
+    try { safeSetStorage('pakel_welcome_shown', '1'); } catch(e) {}
+}
+function checkWelcome() {
+    try {
+        const shown = safeGetStorage('pakel_welcome_shown');
+        if (!shown) setTimeout(() => showWelcomeModal(), 800);
+    } catch(e) { setTimeout(() => showWelcomeModal(), 800); }
+}
+
+/* ==================== DISCLAIMER ==================== */
+function showDisclaimer() {
+    const m = document.getElementById('modalDisclaimer');
+    if (!m) return;
+    m.classList.add('show');
+    soundSuccess();
+}
+function closeDisclaimer() {
+    const m = document.getElementById('modalDisclaimer');
+    if (m) m.classList.remove('show');
+    soundClick();
+    try { localStorage.setItem('pakel_disclaimer_shown', '1'); } catch(e) {}
+}
+function checkDisclaimer() {
+    try {
+        const shown = localStorage.getItem('pakel_disclaimer_shown');
+        if (!shown) setTimeout(showDisclaimer, 1500);
+    } catch(e) { setTimeout(showDisclaimer, 1500); }
+}
+window.addEventListener('load', function() {
+    setTimeout(function() {
+        const welcomeShown = (function() { try { return localStorage.getItem('pakel_welcome_shown'); } catch(e) { return null; } })();
+        if (welcomeShown) checkDisclaimer();
+    }, 2000);
+});
+
+/* ==================== VERIFY TELEGRAM ID ==================== */
+const _verifyCache = {};
+async function verifyTelegramId(chatId) {
+    chatId = String(chatId || '').trim();
+    if (!isValidTelegramId(chatId)) return { ok: false, reason: 'Format tidak valid' };
+    if (_verifyCache[chatId] && (Date.now() - _verifyCache[chatId].ts < 300000)) return _verifyCache[chatId].data;
+    try {
+        const r = await safeFetch(API_URL + '/api/cek-user?chat_id=' + encodeURIComponent(chatId));
+        const j = await safeJson(r);
+        if (j && j.status === 'OK' && j.user) {
+            const data = { ok: true, nama: j.user.nama || 'User', username: j.user.username || '', found: true };
+            _verifyCache[chatId] = { data, ts: Date.now() };
+            return data;
+        } else if (j && j.status === 'NOT_FOUND') {
+            const data = { ok: false, reason: 'Chat ID tidak terdaftar di Telegram', found: false };
+            _verifyCache[chatId] = { data, ts: Date.now() };
+            return data;
+        }
+    } catch(e) { return { ok: true, nama: null, unknown: true }; }
+    return { ok: true, nama: null, unknown: true };
+}
+function renderIdStatus(containerId, status) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    if (!status) { el.innerHTML = ''; return; }
+    if (status.ok && status.nama) {
+        el.innerHTML = `<div style="font-size:11px; color:#10B981; font-weight:700;">✅ Terverifikasi: <b>${escapeHtml(status.nama)}</b>${status.username ? ' (@' + escapeHtml(status.username) + ')' : ''}</div>`;
+    } else if (status.ok && status.unknown) {
+        el.innerHTML = `<div style="font-size:11px; color:#9CA3AF;">ℹ️ Verifikasi nama tidak tersedia</div>`;
+    } else if (!status.ok) {
+        el.innerHTML = `<div style="font-size:11px; color:#EF4444; font-weight:700;">❌ ${escapeHtml(status.reason || 'Chat ID tidak valid')}</div>`;
+    }
+}
+function autoVerifyInput(inputId, statusId, debounceMs) {
+    debounceMs = debounceMs || 800;
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    let _t = null;
+    input.addEventListener('input', () => {
+        clearTimeout(_t);
+        const v = (input.value || '').trim();
+        if (!v || v.length < 6) { renderIdStatus(statusId, null); return; }
+        _t = setTimeout(async () => {
+            if (!isValidTelegramId(v)) { renderIdStatus(statusId, { ok: false, reason: 'Format tidak valid' }); return; }
+            renderIdStatus(statusId, { ok: true, unknown: true });
+            const status = await verifyTelegramId(v);
+            renderIdStatus(statusId, status);
+            if (status.ok) safeSetStorage('chat_id', v);
+        }, debounceMs);
+    });
+}
+
+/* ==================== SETTINGS WIFI — 5 LAYER FALLBACK ==================== */
+function openNetworkSettings() {
+    const ua = navigator.userAgent || '';
+    const isAndroid = /Android/i.test(ua);
+    const isIOS = /iPhone|iPad|iPod/i.test(ua);
+    const isWindows = /Windows/i.test(ua);
+    const isMac = /Macintosh|Mac OS X/i.test(ua);
+    let opened = false;
+
+    // Coba NATIVE BRIDGE dulu (kalau APK lo support)
+    try {
+        if (window.AndroidBridge) {
+            if (typeof window.AndroidBridge.openWifiSettings === 'function') {
+                window.AndroidBridge.openWifiSettings();
+                opened = true;
+                console.log('[SETTINGS] Native bridge: openWifiSettings()');
+            } else if (typeof window.AndroidBridge.openSettings === 'function') {
+                window.AndroidBridge.openSettings();
+                opened = true;
+            }
+        }
+    } catch(e) {}
+
+    if (!opened && isAndroid) {
+        // 5 LAYER INTENT untuk Android
+        const methods = [
+            // Layer 1: WiFi Settings (paling spesifik)
+            'intent:#Intent;action=android.settings.WIFI_SETTINGS;end',
+            // Layer 2: Wireless Settings
+            'intent:#Intent;action=android.settings.WIRELESS_SETTINGS;end',
+            // Layer 3: WifiSettings component
+            'intent:#Intent;component=com.android.settings/.wifi.WifiSettings;end',
+            // Layer 4: General Settings
+            'intent:#Intent;action=android.settings.SETTINGS;end',
+            // Layer 5: Settings via scheme
+            'intent://settings/#Intent;scheme=android-app;end'
+        ];
+        for (const m of methods) {
+            try {
+                const a = document.createElement('a');
+                a.href = m;
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => { try { document.body.removeChild(a); } catch(e) {} }, 100);
+                opened = true;
+                console.log('[SETTINGS] Android intent tried:', m.substring(0, 50));
+                break;
+            } catch(e) {}
+        }
+    } else if (!opened && isWindows) {
+        try { window.location.href = 'ms-settings:network-wifi'; opened = true; } catch(e) {}
+    } else if (!opened && isMac) {
+        try { window.location.href = 'x-apple.systempreferences:com.apple.preference.network'; opened = true; } catch(e) {}
+    } else if (!opened && isIOS) {
+        try { window.location.href = 'App-Prefs:root=WIFI'; opened = true; } catch(e) {}
+    }
+
+    setTimeout(() => { showNetworkGuideModal(isAndroid, isIOS, isWindows, isMac, opened); }, 400);
+}
+
+function showNetworkGuideModal(isAndroid, isIOS, isWindows, isMac, autoOpened) {
+    const existing = document.getElementById('networkGuideModal');
+    if (existing) existing.remove();
+    let title = '📶 CARA AKTIFKAN KONEKSI';
+    let steps = [];
+    if (isAndroid) {
+        title = '📶 PANDUAN KONEKSI — ANDROID';
+        steps = [
+            'Buka <b>Pengaturan</b> (ikon gerigi) di HP',
+            'Pilih <b>Koneksi</b> atau <b>Jaringan & Internet</b>',
+            'Aktifkan <b>WiFi</b> — sambungkan ke WiFi terdekat',
+            'Kalau WiFi gak ada, aktifkan <b>Data Seluler</b>',
+            'Kalau masih error, <b>restart HP</b> atau <b>matikan mode pesawat</b> 10 detik',
+            '⚠️ <b>Kalau pakai Data Seluler tetap error:</b> coba <b>WiFi</b> dulu — beberapa provider blokir akses server'
+        ];
+    } else if (isIOS) {
+        title = '📶 PANDUAN KONEKSI — iOS / iPhone';
+        steps = [
+            'Buka <b>Settings</b> (ikon gerigi) di iPhone',
+            'Pilih <b>Wi-Fi</b> — sambungkan ke WiFi terdekat',
+            'Kalau WiFi gak ada, pilih <b>Cellular / Seluler</b> → aktifkan',
+            'Kalau masih error, <b>restart iPhone</b>'
+        ];
+    } else if (isWindows) {
+        title = '📶 PANDUAN KONEKSI — WINDOWS PC';
+        steps = [
+            'Klik ikon <b>WiFi / Network</b> di pojok kanan bawah (taskbar)',
+            'Pilih <b>WiFi terdekat</b> → sambungkan',
+            'Atau klik <b>Network & Internet Settings</b>',
+            'Kalau masih error, <b>restart PC</b> atau <b>restart router</b>'
+        ];
+    } else if (isMac) {
+        title = '📶 PANDUAN KONEKSI — MACOS';
+        steps = [
+            'Klik ikon <b>WiFi</b> di kanan atas (menu bar)',
+            'Pilih <b>WiFi terdekat</b> → sambungkan',
+            'Atau buka <b>System Preferences → Network</b>'
+        ];
+    } else {
+        title = '📶 PANDUAN KONEKSI';
+        steps = [
+            'Aktifkan <b>WiFi</b> atau <b>Data Seluler</b>',
+            'Coba buka browser lain untuk test koneksi',
+            'Kalau masih error, <b>restart device</b>'
+        ];
+    }
+    const autoNote = autoOpened
+        ? '<div style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.4); border-radius:10px; padding:10px; margin-bottom:14px; font-size:11px; color:#10B981;">✅ Settings sudah dicoba dibuka otomatis. Kalau gak kebuka, ikuti panduan di bawah 👇</div>'
+        : '<div style="background:rgba(251,191,36,0.1); border:1px solid rgba(251,191,36,0.4); border-radius:10px; padding:10px; margin-bottom:14px; font-size:11px; color:#FBBF24;">⚠️ Browser gak bisa buka Settings otomatis. Ikuti panduan di bawah ya 👇</div>';
+    const stepsHtml = steps.map((s, i) => `
+        <div style="display:flex; gap:10px; padding:10px; background:rgba(139,92,246,0.05); border-radius:10px; margin-bottom:8px; align-items:flex-start;">
+            <div style="min-width:22px; height:22px; border-radius:50%; background:linear-gradient(135deg,#8B5CF6,#06B6D4); color:#FFF; font-size:11px; font-weight:900; display:flex; align-items:center; justify-content:center; flex-shrink:0;">${i + 1}</div>
+            <div style="font-size:12.5px; color:#B0B7C3; line-height:1.5;">${s}</div>
+        </div>
+    `).join('');
+    const modal = document.createElement('div');
+    modal.id = 'networkGuideModal';
+    modal.className = 'modal-overlay show';
+    modal.innerHTML = `
+        <div class="modal-sheet" onclick="event.stopPropagation()">
+            <div class="modal-close" onclick="document.getElementById('networkGuideModal').remove()">✕</div>
+            <div class="modal-title">${title}</div>
+            ${autoNote}
+            <div style="margin-bottom:18px;">${stepsHtml}</div>
+            <div class="modal-actions">
+                <button class="btn-modal-primary" onclick="location.reload()">🔄 COBA LAGI</button>
+                <button class="btn-modal-secondary" onclick="document.getElementById('networkGuideModal').remove()">Tutup</button>
+            </div>
+        </div>
+    `;
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+    document.body.appendChild(modal);
+}
+
+/* ==================== LEADERBOARD ==================== */
+async function loadLeaderboard() {
+    const input = document.getElementById('lbChatId');
+    const chatId = input ? (input.value || '').trim() : '';
+    const el = document.getElementById('leaderboardResult');
+    if (!el) return;
+    setBtnLoading('btnLoadLeaderboard', true);
+    el.innerHTML = '<div class="paket-card" style="cursor:default;"><div class="paket-desc" style="margin-top:0; text-align:center;">⏳ Loading...</div></div>';
+    try {
+        const r = await safeFetch(API_URL + '/api/leaderboard');
+        const j = await safeJson(r);
+        if (j && j.status === 'OK' && Array.isArray(j.leaderboard)) {
+            if (j.leaderboard.length === 0) {
+                el.innerHTML = '<div class="paket-card" style="cursor:default;"><div class="paket-desc" style="margin-top:0; text-align:center;">📭 Belum ada transaksi sukses</div></div>';
+                return;
+            }
+            let html = '<div class="section-title">🥇 TOP BUYER</div>';
+            const medals = ['🥇', '🥈', '🥉'];
+            j.leaderboard.forEach((u, idx) => {
+                let rankClass = '';
+                if (idx === 0) rankClass = 'gold';
+                else if (idx === 1) rankClass = 'silver';
+                else if (idx === 2) rankClass = 'bronze';
+                let isMe = false;
+                if (chatId && String(u.chat_id) === String(chatId)) isMe = true;
+                const marker = isMe ? ' 👈 <span style="color:#FBBF24;">(KAMU)</span>' : '';
+                const rankLabel = idx < 3 ? medals[idx] : (idx + 1);
+                html += `
+                    <div class="lb-row" style="${isMe ? 'border-color:rgba(251,191,36,0.5); background:rgba(251,191,36,0.05);' : ''}">
+                        <div class="lb-rank ${rankClass}">${rankLabel}</div>
+                        <div class="lb-info">
+                            <div class="lb-name">${escapeHtml(u.chat_id_masked)}${marker}</div>
+                            <div class="lb-stats">📦 ${u.total_order}x transaksi</div>
+                        </div>
+                        <div class="lb-value">Rp ${Number(u.total_belanja).toLocaleString('id-ID')}</div>
+                    </div>
+                `;
+            });
+            el.innerHTML = html;
+        } else {
+            el.innerHTML = '<div class="paket-card" style="cursor:default;"><div class="paket-desc" style="margin-top:0; text-align:center;">❌ Gagal load</div></div>';
+        }
+    } catch(e) {
+        el.innerHTML = '<div class="paket-card" style="cursor:default;"><div class="paket-desc" style="margin-top:0; text-align:center;">⚠️ Koneksi error</div></div>';
+    } finally {
+        setBtnLoading('btnLoadLeaderboard', false, '🏆 TAMPILKAN LEADERBOARD');
+    }
+}
+
+/* ==================== LUCKY DRAW ==================== */
+async function checkLuckyStatus() {
+    const input = document.getElementById('luckyChatId');
+    const chatId = (input.value || '').trim();
+    if (!isValidTelegramId(chatId)) { showToast('❌ Chat ID tidak valid!', 'error', 5000); return; }
+    const el = document.getElementById('luckyResult');
+    setBtnLoading('btnCheckSpin', true);
+    el.innerHTML = '<div class="paket-card" style="cursor:default;"><div class="paket-desc" style="margin-top:0; text-align:center;">⏳ Loading...</div></div>';
+    safeSetStorage('chat_id', chatId);
+    try {
+        const r = await safeFetch(API_URL + '/api/lucky-draw?chat_id=' + encodeURIComponent(chatId));
+        const j = await safeJson(r);
+        if (j && j.status === 'OK' && j.data) {
+            if (j.data.can_spin) {
+                el.innerHTML = `
+                    <div class="paket-card" style="cursor:default;">
+                        <div class="spin-wheel-wrap">
+                            <div class="spin-pointer"></div>
+                            <div class="spin-wheel" id="spinWheel"></div>
+                            <button class="spin-btn" id="btnSpinNow" onclick="spinLuckyNow('${escapeHtml(chatId)}')">🎰 SPIN SEKARANG!</button>
+                        </div>
+                        <div class="paket-desc" style="margin-top:16px; text-align:center;">
+                            🎁 Hadiah:<br>
+                            • 🪙 Poin 5-50<br>
+                            • 🎁 Diskon 5-10%<br>
+                            • 💎 Paket Semi-Safe GRATIS
+                        </div>
+                    </div>
+                `;
+            } else {
+                const sisa = j.data.sisa_detik || 0;
+                const jam = Math.floor(sisa / 3600);
+                const menit = Math.floor((sisa % 3600) / 60);
+                el.innerHTML = `
+                    <div class="paket-card" style="cursor:default; text-align:center;">
+                        <div style="font-size:60px; margin-bottom:12px;">⏰</div>
+                        <div style="font-size:15px; font-weight:900; color:#FFF; margin-bottom:8px;">Sudah Spin Hari Ini!</div>
+                        <div style="font-size:12.5px; color:#9CA3AF;">Spin berikutnya dalam:<br><b style="color:#FBBF24; font-size:16px;">${jam} jam ${menit} menit</b></div>
+                    </div>
+                `;
+            }
+        } else {
+            el.innerHTML = '<div class="paket-card" style="cursor:default;"><div class="paket-desc" style="margin-top:0; text-align:center;">❌ Gagal cek status</div></div>';
+        }
+    } catch(e) {
+        el.innerHTML = '<div class="paket-card" style="cursor:default;"><div class="paket-desc" style="margin-top:0; text-align:center;">⚠️ Koneksi error</div></div>';
+    } finally {
+        setBtnLoading('btnCheckSpin', false, '🎯 CEK KESEMPATAN SPIN');
+    }
+}
+
+async function spinLuckyNow(chatId) {
+    const btn = document.getElementById('btnSpinNow');
+    const wheel = document.getElementById('spinWheel');
+    if (btn) { btn.disabled = true; btn.textContent = '🎰 SPINNING...'; }
+    soundSpin();
+    if (wheel) {
+        const randDeg = 1440 + Math.floor(Math.random() * 360);
+        wheel.style.transform = `rotate(${randDeg}deg)`;
+    }
+    try {
+        const r = await safeFetch(API_URL + '/api/lucky-draw/spin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId })
+        });
+        const j = await safeJson(r);
+        setTimeout(() => {
+            const el = document.getElementById('luckyResult');
+            if (j && j.status === 'OK') {
+                const emoji = j.tipe === 'poin' ? '🪙' : (j.tipe === 'diskon' ? '🎁' : '💎');
+                el.innerHTML = `
+                    <div class="paket-card" style="cursor:default; text-align:center;">
+                        <div style="font-size:80px; margin-bottom:15px; animation: splashPop 0.6s ease-out forwards;">${emoji}</div>
+                        <div style="font-size:22px; font-weight:900; color:#FBBF24; margin-bottom:8px;">${escapeHtml(j.hadiah)}</div>
+                        <div style="font-size:13px; color:#10B981; font-weight:700; margin-bottom:16px;">${escapeHtml(j.message)}</div>
+                        ${j.total_poin != null ? `<div style="font-size:13px; color:#FFF;">🪙 Total Poin: <b>${j.total_poin}</b></div>` : ''}
+                        <div style="font-size:11px; color:#6B7280; margin-top:14px;">Balik lagi besok!</div>
+                    </div>
+                `;
+                showToast('🎉 ' + j.hadiah + '!', 'success', 5000);
+            } else {
+                showToast('❌ ' + (j && j.message ? j.message : 'Spin gagal'), 'error', 5000);
+                checkLuckyStatus();
+            }
+        }, 4200);
+    } catch(e) {
+        showToast('⚠️ Koneksi error', 'error');
+        if (btn) { btn.disabled = false; btn.textContent = '🎰 SPIN SEKARANG!'; }
+    }
+}
+
+/* ==================== REFERRAL ==================== */
+async function loadReferral() {
+    const input = document.getElementById('refChatId');
+    const chatId = (input.value || '').trim();
+    if (!isValidTelegramId(chatId)) { showToast('❌ Chat ID tidak valid!', 'error', 5000); return; }
+    const el = document.getElementById('referralResult');
+    setBtnLoading('btnLoadReferral', true);
+    el.innerHTML = '<div class="paket-card" style="cursor:default;"><div class="paket-desc" style="margin-top:0; text-align:center;">⏳ Loading...</div></div>';
+    safeSetStorage('chat_id', chatId);
+    try {
+        const r = await safeFetch(API_URL + '/api/referral?chat_id=' + encodeURIComponent(chatId));
+        const j = await safeJson(r);
+        if (j && j.status === 'OK' && j.data) {
+            const link = j.data.link;
+            const shareText = encodeURIComponent('Gabung & belanja script VIP MLBB terpercaya di Pakel MlbbStore!');
+            const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${shareText}`;
+            el.innerHTML = `
+                <div class="paket-card" style="cursor:default;">
+                    <div class="modal-info">
+                        <div class="info-row"><div class="info-label">👥 Total Teman Diundang</div><div class="info-value gold">${j.data.total_ref}</div></div>
+                        <div class="info-row"><div class="info-label">✅ Bonus Cair</div><div class="info-value gold">${j.data.bonus_cair}</div></div>
+                    </div>
+                    <div class="modal-desc">
+                        <b>🔗 LINK REFERRAL LU:</b><br>
+                        <code style="word-break:break-all; font-size:11px; display:block; margin-top:8px; padding:8px; background:rgba(0,0,0,0.3); border-radius:6px;">${escapeHtml(link)}</code>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn-modal-primary" onclick="copyText('${escapeHtml(link)}', 'Link Referral')">📋 COPY LINK</button>
+                        <button class="btn-modal-secondary" onclick="safeOpenUrl('${shareUrl}')">📤 BAGIKAN KE TEMAN</button>
+                    </div>
+                </div>
+            `;
+        } else {
+            el.innerHTML = '<div class="paket-card" style="cursor:default;"><div class="paket-desc" style="margin-top:0; text-align:center;">❌ Gagal load</div></div>';
+        }
+    } catch(e) {
+        el.innerHTML = '<div class="paket-card" style="cursor:default;"><div class="paket-desc" style="margin-top:0; text-align:center;">⚠️ Koneksi error</div></div>';
+    } finally {
+        setBtnLoading('btnLoadReferral', false, '🎯 LIHAT REFERRAL SAYA');
+    }
+}
+
+/* ==================== RIWAYAT LIST ==================== */
+async function loadRiwayatList() {
+    const input = document.getElementById('riwayatChatId');
+    const chatId = (input && input.value) ? input.value.trim() : safeGetStorage('chat_id');
+    if (input) input.value = chatId || '';
+    const el = document.getElementById('riwayatListResult');
+    if (!el) return;
+    if (!isValidTelegramId(chatId)) {
+        el.innerHTML = '<div class="paket-card" style="cursor:default;"><div class="paket-desc" style="margin-top:0; text-align:center;">⏳ Masukkan Chat ID</div></div>';
+        return;
+    }
+    setBtnLoading('btnLoadRiwayat', true);
+    el.innerHTML = '<div class="paket-card" style="cursor:default;"><div class="paket-desc" style="margin-top:0; text-align:center;">⏳ Loading...</div></div>';
+    safeSetStorage('chat_id', chatId);
+    try {
+        const r = await safeFetch(API_URL + '/api/riwayat?chat_id=' + encodeURIComponent(chatId));
+        const j = await safeJson(r);
+        if (j && j.status === 'OK') {
+            if (!j.orders || j.orders.length === 0) {
+                el.innerHTML = '<div class="paket-card" style="cursor:default;"><div class="paket-desc" style="margin-top:0; text-align:center;">📭 Belum ada riwayat</div></div>';
+                return;
+            }
+            let html = '';
+            j.orders.slice().reverse().forEach(o => {
+                const statusMap = { 'BERHASIL': 'berhasil', 'PENDING': 'pending', 'DITOLAK': 'ditolak', 'EXPIRED': 'expired', 'CANCELLED': 'expired' };
+                const statusLabel = { 'BERHASIL': '✅ BERHASIL', 'PENDING': '⏳ PENDING', 'DITOLAK': '❌ DITOLAK', 'EXPIRED': '⌛ EXPIRED', 'CANCELLED': '🚫 BATAL' };
+                const cls = statusMap[o.status] || 'pending';
+                const label = statusLabel[o.status] || o.status;
+                html += `
+                    <div class="riwayat-row">
+                        <div class="riwayat-head">
+                            <div class="riwayat-paket">📦 ${escapeHtml(o.paket)}</div>
+                            <div class="riwayat-status ${cls}">${label}</div>
+                        </div>
+                        <div class="riwayat-meta">💰 ${escapeHtml(o.harga)} • 💳 ${escapeHtml(o.metode || 'TRANSFER')}</div>
+                        <div class="riwayat-meta">🔑 ${escapeHtml(o.resi)}</div>
+                        <div class="riwayat-meta">📅 ${escapeHtml(o.hari || '')}, ${escapeHtml(o.tanggal || '')}</div>
+                    </div>
+                `;
+            });
+            el.innerHTML = html;
+        } else {
+            el.innerHTML = '<div class="paket-card" style="cursor:default;"><div class="paket-desc" style="margin-top:0; text-align:center;">❌ Gagal load</div></div>';
+        }
+    } catch(e) {
+        el.innerHTML = '<div class="paket-card" style="cursor:default;"><div class="paket-desc" style="margin-top:0; text-align:center;">⚠️ Koneksi error</div></div>';
+    } finally {
+        setBtnLoading('btnLoadRiwayat', false, '📦 LIHAT RIWAYAT');
+    }
+}
+
+/* ==================== AUTO REFRESH PROMOS ==================== */
+let _lastVoucherSnapshot = '';
+let _lastFlashsaleSnapshot = '';
+
+async function autoRefreshPromos() {
+    try {
+        const r1 = await safeFetch(API_URL + '/api/vouchers');
+        const j1 = await safeJson(r1);
+        if (j1 && j1.status === 'OK' && Array.isArray(j1.vouchers)) {
+            const snapshot = j1.vouchers.map(v => v.kode).sort().join('|');
+            if (_lastVoucherSnapshot && snapshot !== _lastVoucherSnapshot && j1.vouchers.length > 0) {
+                const oldKodes = _lastVoucherSnapshot ? _lastVoucherSnapshot.split('|') : [];
+                const newKodes = j1.vouchers.filter(v => !oldKodes.includes(v.kode));
+                if (newKodes.length > 0) {
+                    const v = newKodes[0];
+                    showToast(`🎁 <b>VOUCHER BARU: ${escapeHtml(v.kode)}</b><br>Diskon ${Number(v.diskon)}%!`, 'success', 8000);
+                    loadVoucherAktif();
+                }
+            }
+            _lastVoucherSnapshot = snapshot;
+        }
+        const r2 = await safeFetch(API_URL + '/api/paket');
+        const j2 = await safeJson(r2);
+        if (j2 && j2.status === 'OK') {
+            const fsDiskon = Number(j2.flashsale_diskon) || 0;
+            const snapshot = String(fsDiskon);
+            if (_lastFlashsaleSnapshot !== '' && snapshot !== _lastFlashsaleSnapshot && fsDiskon > 0) {
+                showToast(`⚡ <b>FLASH SALE ${fsDiskon}%!</b><br>Semua paket diskon!`, 'warning', 8000);
+            }
+            _lastFlashsaleSnapshot = snapshot;
+            if (Array.isArray(j2.paket)) {
+                const newData = j2.paket.map(p => ({
+                    kode: p.kode, nama: p.nama || 'Paket',
+                    harga: Number(p.harga) || 0,
+                    harga_str: p.harga_str || 'Rp 0',
+                    harga_final: Number(p.harga_final) || Number(p.harga) || 0,
+                    harga_final_str: p.harga_final_str || p.harga_str,
+                    poin: Number(p.poin) || 0,
+                    stok: Number(p.stok) || 0,
+                    kategori: p.kategori || KATEGORI_MAP[p.kode] || 'all',
+                    desc: p.deskripsi || ''
+                }));
+                detectRestockFromData(newData);
+                PAKET_DATA = newData;
+                FLASH_SALE_DISKON = fsDiskon;
+                if (Number(j2.flashsale_sisa) > 0) FLASH_SALE_END = Date.now() + (Number(j2.flashsale_sisa) * 1000);
+                else FLASH_SALE_END = 0;
+                renderHomePaket();
+                renderKatalogPaket();
+            }
+        }
+    } catch(e) {}
+}
+
+/* ==================== LIVE TICKER ==================== */
+function showLiveTicker() {
+    try {
+        const ticker = document.getElementById('liveTicker');
+        const textEl = document.getElementById('liveTickerText');
+        if (!ticker || !textEl) return;
+        const nama = TESTI_NAMES[Math.floor(Math.random() * TESTI_NAMES.length)];
+        const pkt = TESTI_PAKET[Math.floor(Math.random() * TESTI_PAKET.length)];
+        const isPoin = Math.random() < 0.3;
+        const harga = isPoin ? pkt[2] : pkt[1];
+        const menit = Math.floor(Math.random() * 10) + 1;
+        textEl.innerHTML = `<b>${nama}</b> baru beli <b>${pkt[0]}</b> — ${harga} (${menit} menit lalu)`;
+        ticker.classList.add('show');
+        setTimeout(() => ticker.classList.remove('show'), 6000);
+    } catch(e) {}
+}
+setTimeout(() => { showLiveTicker(); setInterval(showLiveTicker, 15000); }, 8000);
+
+/* ==================== TOAST ==================== */
+function showToast(msg, type, duration) {
+    type = type || 'info';
+    duration = duration || 3000;
+    if (type === 'success') soundSuccess();
+    else if (type === 'error') soundError();
+    else if (type === 'warning') soundWarning();
+    else if (type === 'restock') soundRestock();
+    try {
+        const c = document.getElementById('toast-container');
+        if (!c) return;
+        const t = document.createElement('div');
+        t.className = 'toast ' + type;
+        t.innerHTML = msg;
+        c.appendChild(t);
+        setTimeout(() => { t.classList.add('hide'); setTimeout(() => { if (t.parentNode) t.parentNode.removeChild(t); }, 300); }, duration);
+    } catch(e) {}
+}
+
+/* ==================== CONNECTION MONITOR ==================== */
+function setupConnectionMonitor() {
+    window.addEventListener('online', () => {
+        document.getElementById('offline').classList.remove('show');
+        showToast('✅ Koneksi kembali!', 'success');
+        if (!API_ONLINE) {
+            fetchPaketFromAPI().then(() => { renderHomePaket(); renderKatalogPaket(); loadVoucherAktif(); }).catch(()=>{});
+        }
+    });
+    window.addEventListener('offline', () => document.getElementById('offline').classList.add('show'));
+    setInterval(async () => {
+        try {
+            if (!navigator.onLine) { document.getElementById('offline').classList.add('show'); return; }
+            const online = await testConnection();
+            if (!online) document.getElementById('offline').classList.add('show');
+            else document.getElementById('offline').classList.remove('show');
+        } catch(e) {}
+    }, 5000);
+}
+
+/* ==================== CONFETTI ==================== */
+function launchConfetti() {
+    try {
+        const canvas = document.getElementById('confettiCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        canvas.classList.add('show');
+        const colors = ['#8B5CF6', '#06B6D4', '#FBBF24', '#10B981', '#EF4444', '#F59E0B'];
+        const particles = [];
+        for (let i = 0; i < 100; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: -20 - Math.random() * 100,
+                vx: (Math.random() - 0.5) * 8,
+                vy: Math.random() * 5 + 3,
+                size: Math.random() * 6 + 4,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                rot: Math.random() * 360,
+                rotSpeed: (Math.random() - 0.5) * 15,
+                shape: Math.random() < 0.5 ? 'rect' : 'circle'
+            });
+        }
+        let frames = 0;
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.15;
+                p.rot += p.rotSpeed;
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rot * Math.PI / 180);
+                ctx.fillStyle = p.color;
+                if (p.shape === 'rect') ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+                else { ctx.beginPath(); ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2); ctx.fill(); }
+                ctx.restore();
+            });
+            frames++;
+            if (frames < 180) requestAnimationFrame(animate);
+            else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                canvas.classList.remove('show');
+            }
+        }
+        animate();
+    } catch(e) {}
+}
+
+/* ==================== OPEN TELEGRAM ==================== */
+function openTelegram(username) {
+    if (!username) return;
+    let url;
+    if (String(username).startsWith('http')) url = username;
+    else url = 'https://t.me/' + String(username).replace('@', '');
+    safeOpenUrl(url);
+}
+
+/* ==================== FLASH TIMER ==================== */
+function startFlashTimer() {
+    function update() {
+        try {
+            const sisa = FLASH_SALE_END - Date.now();
+            if (sisa <= 0 || FLASH_SALE_DISKON <= 0) {
+                ['tJam','tMenit','tDetik','tJam2','tMenit2','tDetik2'].forEach(id => { const e = document.getElementById(id); if (e) e.textContent = '00'; });
+                const fb = document.getElementById('flashBanner'); const fb2 = document.getElementById('flashBanner2');
+                if (fb) fb.style.display = 'none'; if (fb2) fb2.style.display = 'none';
+                return;
+            }
+            const jam = Math.floor(sisa / 3600000);
+            const menit = Math.floor((sisa % 3600000) / 60000);
+            const detik = Math.floor((sisa % 60000) / 1000);
+            const j = String(jam).padStart(2, '0'), m = String(menit).padStart(2, '0'), d = String(detik).padStart(2, '0');
+            ['tJam','tJam2'].forEach(id => { const e = document.getElementById(id); if (e) e.textContent = j; });
+            ['tMenit','tMenit2'].forEach(id => { const e = document.getElementById(id); if (e) e.textContent = m; });
+            ['tDetik','tDetik2'].forEach(id => { const e = document.getElementById(id); if (e) e.textContent = d; });
+            const t1 = document.getElementById('flashTitle'), t2 = document.getElementById('flashTitle2');
+            if (t1) t1.textContent = 'Diskon ' + FLASH_SALE_DISKON + '% Semua Paket!';
+            if (t2) t2.textContent = 'Diskon ' + FLASH_SALE_DISKON + '% Semua Paket!';
+        } catch(e) {}
+    }
+    update();
+    setInterval(update, 1000);
+}
+
+/* ==================== INIT ON LOAD ==================== */
+window.addEventListener('load', () => {
+    setTimeout(() => { updateSoundButton(); }, 300);
+    setTimeout(() => {
+        autoVerifyInput('modalInputField', 'modalInputStatus', 600);
+        autoVerifyInput('voucherChatId', 'voucherChatStatus', 800);
+        autoVerifyInput('inputChatId', 'poinChatStatus', 800);
+        autoVerifyInput('akunChatId', 'akunChatStatus', 800);
+        autoVerifyInput('lbChatId', 'lbChatStatus', 800);
+        autoVerifyInput('luckyChatId', 'luckyChatStatus', 800);
+        autoVerifyInput('refChatId', 'refChatStatus', 800);
+        autoVerifyInput('riwayatChatId', 'riwayatChatStatus', 800);
+    }, 600);
+});
+
+/* ==================== SECURITY LAYER ==================== */
+(function() {
+    'use strict';
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; }, false);
+    document.addEventListener('selectstart', function(e) {
+        const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+        if (tag !== 'input' && tag !== 'textarea') { e.preventDefault(); return false; }
+    }, false);
+    document.addEventListener('copy', function(e) {
+        const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+        if (tag !== 'input' && tag !== 'textarea') { e.preventDefault(); return false; }
+    }, false);
+    document.addEventListener('dragstart', function(e) {
+        if (e.target && e.target.tagName && e.target.tagName.toLowerCase() === 'img') { e.preventDefault(); return false; }
+    }, false);
+    document.addEventListener('keydown', function(e) {
+        if (e.keyCode === 123) { e.preventDefault(); return false; }
+        if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) { e.preventDefault(); return false; }
+        if (e.ctrlKey && e.keyCode === 85) { e.preventDefault(); return false; }
+        if (e.ctrlKey && e.keyCode === 83) { e.preventDefault(); return false; }
+        if (e.ctrlKey && e.keyCode === 65) {
+            const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+            if (tag !== 'input' && tag !== 'textarea') { e.preventDefault(); return false; }
+        }
+        if (e.ctrlKey && e.keyCode === 80) { e.preventDefault(); return false; }
+        if (e.ctrlKey && e.keyCode === 67) {
+            const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+            if (tag !== 'input' && tag !== 'textarea') { e.preventDefault(); return false; }
+        }
+    }, false);
+    try {
+        const bigWarn = ['%c⛔ STOP! ⛔', 'font-size:48px; color:#EF4444; font-weight:900; text-shadow:0 0 20px #EF4444;'];
+        const smallWarn = ['%c⚠️ Area ini KHUSUS DEVELOPER PAKEL MLBBSTORE.\n\nKalau kamu bukan developer resmi, TUTUP SEKARANG!\n\n© Pakel MlbbStore', 'font-size:14px; color:#FBBF24; font-weight:bold; line-height:1.6;'];
+        console.log(bigWarn[0], bigWarn[1]);
+        console.log(smallWarn[0], smallWarn[1]);
+    } catch(e) {}
+    try {
+        const style = document.createElement('style');
+        style.textContent = `
+            *:not(input):not(textarea) { -webkit-user-select: none !important; -moz-user-select: none !important; -ms-user-select: none !important; user-select: none !important; -webkit-touch-callout: none !important; }
+            input, textarea { -webkit-user-select: text !important; user-select: text !important; }
+            img { pointer-events: none; -webkit-user-drag: none; }
+            @media print { body { display: none !important; } }
+        `;
+        document.head.appendChild(style);
+    } catch(e) {}
+    try { if (window.top !== window.self) window.top.location = window.self.location; } catch(e) {}
+    try { window._pakelMark = 'PAKEL-MLBB-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8); } catch(e) {}
+    console.log('%c🔒 Pakel Security v1.0 — ACTIVE', 'color:#10B981; font-weight:900; font-size:14px;');
+})();
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { closeModal(); closeInputModal(null); closeMenu(); }
+});
+</script>
+</body>
+</html>
