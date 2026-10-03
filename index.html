@@ -687,6 +687,54 @@ function validateName(nama) {
     if ((n.match(/\s/g) || []).length > 2) return { valid: false, reason: '⚠ Maksimal 2 spasi!' };
     if (/\s{2,}/.test(n)) return { valid: false, reason: '⚠ Spasi gak boleh dobel!' };
     if (containsBadWords(n)) return { valid: false, reason: '🚫 <b>NAMA MENGANDUNG KATA KASAR!</b><br>Ganti nama yang sopan ya!' };
+    
+    // === ANTI-NAMA-ACAK LEVEL 2 (KUAT) ===
+    var lower = n.toLowerCase().replace(/\s/g, '');
+    var len = lower.length;
+    
+    // 1. Cek vowel ratio — minimal 30%
+    var vowels = (lower.match(/[aiueo]/g) || []).length;
+    var vowelRatio = vowels / len;
+    if (vowelRatio < 0.3) {
+        return { valid: false, reason: '🚫 <b>NAMA TERLALU RANDOM!</b><br>Pake nama wajar.<br>Contoh: Budi, Andi, Sarah' };
+    }
+    
+    // 2. Cek max konsonan berturut — max 3
+    var maxCons = 0, currCons = 0;
+    for (var i = 0; i < len; i++) {
+        if (/[aiueo]/.test(lower[i])) { currCons = 0; }
+        else { currCons++; if (currCons > maxCons) maxCons = currCons; }
+    }
+    if (maxCons > 3) {
+        return { valid: false, reason: '🚫 <b>NAMA TERLALU RANDOM!</b><br>Terlalu banyak konsonan berturut.' };
+    }
+    
+    // 3. Cek pattern keyboard mashing
+    if (/^(asdf|qwer|zxcv|jkl|asdfg|qwerty|jkl;|uiop|bnm)/i.test(lower)) {
+        return { valid: false, reason: '🚫 <b>NAMA RANDOM!</b><br>Jangan ketik asal.' };
+    }
+    
+    // 4. Cek pattern huruf berulang — max 2x
+    if (/(.)\1{2,}/.test(lower)) {
+        return { valid: false, reason: '🚫 <b>NAMA ADA HURUF BERULANG!</b><br>Contoh: budiiiii ❌' };
+    }
+    
+    // 5. Cek panjang maksimal tanpa vowel — max 4
+    var parts = lower.split(/[aiueo]/);
+    for (var j = 0; j < parts.length; j++) {
+        if (parts[j].length > 4) {
+            return { valid: false, reason: '🚫 <b>NAMA RANDOM!</b><br>Terlalu banyak konsonan.' };
+        }
+    }
+    
+    // 6. Cek rasio huruf unik — minimal 40% unik
+    var unique = {};
+    for (var k = 0; k < len; k++) unique[lower[k]] = true;
+    var uniqueRatio = Object.keys(unique).length / len;
+    if (uniqueRatio < 0.4 && len > 5) {
+        return { valid: false, reason: '🚫 <b>NAMA TERLALU RANDOM!</b><br>Banyak huruf sama.' };
+    }
+    
     return { valid: true, reason: '' };
 }
 
