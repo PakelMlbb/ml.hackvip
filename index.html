@@ -2848,9 +2848,7 @@ function checkUpdate() {
 }
 
 function showUpdateNotif(data, currentVer) {
-  var today = new Date().toDateString();
-  var lastSkip = lsGet('update_skip', '');
-  if (lastSkip === today && !data.forceUpdate) return;
+  // Skip logic dihapus — notif muncul terus sampe update
   if (document.getElementById('updateNotifModal')) return;
 
   var modal = document.createElement('div');
@@ -2912,8 +2910,8 @@ function showUpdateNotif(data, currentVer) {
 
   var skipBtn = document.getElementById('updateSkipBtn');
   if (skipBtn) skipBtn.addEventListener('click', function() {
-    lsSet('update_skip', new Date().toDateString());
     modal.remove();
+    // Notif bakal muncul lagi pas buka app berikutnya
   });
 }
 
