@@ -3208,6 +3208,111 @@ document.addEventListener('keydown', (e) => {
     });
 })();
 
+
+/* ===== FORCE UPDATE NOTIFIER PAKELSTORE ===== */
+(function(){
+    'use strict';
+    var VERSION_URL = 'https://pakelmlbb.github.io/ml.hackvip/version-store.json';
+    var LS_KEY = 'pakelstore_version';
+    
+    function getInstalledVersion() {
+        try {
+            var params = new URLSearchParams(window.location.search);
+            var v = params.get('v');
+            if (v) {
+                try { localStorage.setItem(LS_KEY, v); } catch(e) {}
+                return String(v);
+            }
+        } catch(e) {}
+        try { return localStorage.getItem(LS_KEY) || null; } catch(e) { return null; }
+    }
+    
+    function checkUpdate() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', VERSION_URL + '?t=' + Date.now(), true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState !== 4) return;
+            if (xhr.status !== 200) return;
+            try {
+                var data = JSON.parse(xhr.responseText);
+                var latestVer = String(data.version || '1.0');
+                var currentVer = getInstalledVersion();
+                if (!currentVer) {
+                    try { localStorage.setItem(LS_KEY, latestVer); } catch(e) {}
+                    console.log('[FORCE-UPDATE] First install: ' + latestVer);
+                    return;
+                }
+                if (latestVer !== String(currentVer)) {
+                    console.log('[FORCE-UPDATE] Update WAJIB: ' + currentVer + ' -> ' + latestVer);
+                    showForceUpdate(data, currentVer);
+                } else {
+                    console.log('[FORCE-UPDATE] Latest version. No update.');
+                }
+            } catch(e) { console.log('[FORCE-UPDATE] Error: ' + e); }
+        };
+        xhr.send();
+    }
+    
+    function showForceUpdate(data, currentVer) {
+        if (document.getElementById('forceUpdateModal')) return;
+        var modal = document.createElement('div');
+        modal.id = 'forceUpdateModal';
+        modal.style.cssText = 'position:fixed;inset:0;z-index:9999999;background:rgba(0,0,0,0.98);display:flex;align-items:center;justify-content:center;padding:22px;';
+        var notes = (data.notes || 'Perbaikan bug & fitur baru').replace(/\n/g, '<br>');
+        
+        var h = '<div style="background:#0A0E1A;border:2px solid #FF0033;padding:26px;max-width:400px;width:100%;text-align:center;box-shadow:0 0 60px rgba(255,0,51,0.7);border-radius:16px;">';
+        h += '<div style="font-size:64px;margin-bottom:14px;animation:pulseGlow 2s infinite;">⚠️</div>';
+        h += '<div style="font-size:18px;color:#FF0033;font-weight:900;letter-spacing:3px;margin-bottom:12px;">UPDATE WAJIB!</div>';
+        h += '<div style="font-size:11px;color:#9CA3AF;margin-bottom:14px;">Versi kamu udah <b style="color:#FF0033;">KEDALUWARSA</b></div>';
+        h += '<div style="display:flex;justify-content:center;gap:20px;margin-bottom:16px;font-family:monospace;font-size:11px;">';
+        h += '<div><div style="color:#666;">Versi lama</div><div style="color:#8B5CF6;font-weight:900;">v' + currentVer + '</div></div>';
+        h += '<div style="color:#FF0033;font-size:20px;">→</div>';
+        h += '<div><div style="color:#666;">Versi baru</div><div style="color:#06B6D4;font-weight:900;">v' + data.version + '</div></div></div>';
+        h += '<div style="background:rgba(255,0,51,0.08);border-left:3px solid #FF0033;padding:12px;text-align:left;font-size:11px;color:#FF8888;line-height:1.7;margin-bottom:16px;border-radius:8px;">';
+        h += '<b>📝 Yang baru:</b><br>' + notes + '</div>';
+        h += '<div style="background:rgba(255,204,0,0.08);border:1px dashed rgba(255,204,0,0.5);padding:10px;text-align:left;font-size:10px;color:#FFCC00;line-height:1.7;margin-bottom:16px;border-radius:8px;">';
+        h += '<b>📥 CARA UPDATE (WAJIB):</b><br>';
+        h += '1. Klik tombol <b>DOWNLOAD</b> di bawah<br>';
+        h += '2. Download file APK baru<br>';
+        h += '3. Buka file APK → Install<br>';
+        h += '4. Setelah install, buka PakelStore baru<br>';
+        h += '5. Notif ini akan hilang otomatis ✓</div>';
+        h += '<button id="forceUpdateBtn" style="width:100%;padding:16px;background:linear-gradient(135deg,#FF0033,#FF8800);color:#FFF;border:none;font-family:inherit;font-size:15px;font-weight:900;letter-spacing:2px;cursor:pointer;margin-bottom:10px;box-shadow:0 0 30px rgba(255,0,51,0.6);border-radius:12px;">📥 DOWNLOAD SEKARANG</button>';
+        h += '<div style="font-size:10px;color:#EF4444;font-weight:900;margin-top:12px;">⚠️ TIDAK BISA DI-SKIP — WAJIB UPDATE</div>';
+        h += '<div style="font-size:9.5px;color:#666;margin-top:10px;line-height:1.5;">Kalau tombol gak works, copy link di bawah:<br><span style="color:#06B6D4;word-break:break-all;font-family:monospace;font-size:9px;">' + data.downloadUrl + '</span></div>';
+        h += '</div>';
+        modal.innerHTML = h;
+        document.body.appendChild(modal);
+        
+        // Cegah user tutup pakai tombol back Android
+        history.pushState({}, '', location.href);
+        window.addEventListener('popstate', function() {
+            if (document.getElementById('forceUpdateModal')) {
+                history.pushState({}, '', location.href);
+            }
+        });
+        
+        // Blokir scroll body
+        document.body.style.overflow = 'hidden';
+        
+        if (typeof soundError === 'function') soundError();
+        if (typeof haptic === 'function') haptic([100, 50, 100]);
+        
+        var btn = document.getElementById('forceUpdateBtn');
+        if (btn) btn.addEventListener('click', function() {
+            try { window.open(data.downloadUrl, '_blank'); }
+            catch(e) { window.location.href = data.downloadUrl; }
+            if (typeof showToast === 'function') showToast('📥 Download dimulai...');
+        });
+    }
+    
+    window.addEventListener('load', function() {
+        setTimeout(checkUpdate, 5000);
+    });
+    setInterval(checkUpdate, 5 * 60 * 1000);
+    console.log('%c🔒 FORCE-UPDATE LOADED', 'color:#FF0033;font-size:13px;font-weight:900;');
+})();
+
 </script>
 </body>
 </html>
