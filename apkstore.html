@@ -2743,10 +2743,49 @@ async function checkLuckyStatus() {
                 el.innerHTML = `
                     <div class="paket-card" style="cursor:default; text-align:center;">
                         <div style="font-size:60px; margin-bottom:12px;">⏰</div>
-                        <div style="font-size:15px; font-weight:900; color:#FFF; margin-bottom:8px;">Sudah Spin Hari Ini!</div>
-                        <div style="font-size:12.5px; color:#9CA3AF;">Spin berikutnya dalam:<br><b style="color:#FBBF24; font-size:16px;">${jam} jam ${menit} menit</b></div>
+                        <div style="font-size:15px; font-weight:900; color:#FFF; margin-bottom:10px;">Sudah Spin Hari Ini!</div>
+                        <div style="font-size:12.5px; color:#9CA3AF; margin-bottom:14px;">Spin berikutnya dalam:</div>
+                        <div style="display:flex; justify-content:center; gap:8px;">
+                            <div style="background:rgba(139,92,246,0.15); border:1px solid rgba(139,92,246,0.4); border-radius:10px; padding:10px 14px; min-width:62px;">
+                                <div style="font-family:'Courier New',monospace; font-size:24px; font-weight:900; color:#FBBF24;" id="spinTimerJam">--</div>
+                                <div style="font-size:9px; color:#9CA3AF; letter-spacing:1px; margin-top:2px;">JAM</div>
+                            </div>
+                            <div style="background:rgba(139,92,246,0.15); border:1px solid rgba(139,92,246,0.4); border-radius:10px; padding:10px 14px; min-width:62px;">
+                                <div style="font-family:'Courier New',monospace; font-size:24px; font-weight:900; color:#FBBF24;" id="spinTimerMenit">--</div>
+                                <div style="font-size:9px; color:#9CA3AF; letter-spacing:1px; margin-top:2px;">MENIT</div>
+                            </div>
+                            <div style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.4); border-radius:10px; padding:10px 14px; min-width:62px;">
+                                <div style="font-family:'Courier New',monospace; font-size:24px; font-weight:900; color:#EF4444;" id="spinTimerDetik">--</div>
+                                <div style="font-size:9px; color:#9CA3AF; letter-spacing:1px; margin-top:2px;">DETIK</div>
+                            </div>
+                        </div>
+                        <div style="font-size:10.5px; color:#6B7280; margin-top:14px;">💡 Tombol spin aktif otomatis saat countdown habis</div>
                     </div>
                 `;
+                if (window._spinTimerInterval) clearInterval(window._spinTimerInterval);
+                let _remaining = sisa;
+                function _spinTick() {
+                    if (_remaining <= 0) {
+                        clearInterval(window._spinTimerInterval);
+                        window._spinTimerInterval = null;
+                        const b = document.getElementById('btnCheckSpin');
+                        if (b) { b.disabled = false; b.textContent = '🎯 CEK KESEMPATAN SPIN'; }
+                        if (typeof checkLuckyStatus === 'function') checkLuckyStatus();
+                        return;
+                    }
+                    const _j = Math.floor(_remaining / 3600);
+                    const _m = Math.floor((_remaining % 3600) / 60);
+                    const _d = _remaining % 60;
+                    const ej = document.getElementById('spinTimerJam');
+                    const em = document.getElementById('spinTimerMenit');
+                    const ed = document.getElementById('spinTimerDetik');
+                    if (ej) ej.textContent = String(_j).padStart(2, '0');
+                    if (em) em.textContent = String(_m).padStart(2, '0');
+                    if (ed) ed.textContent = String(_d).padStart(2, '0');
+                    _remaining--;
+                }
+                _spinTick();
+                window._spinTimerInterval = setInterval(_spinTick, 1000);
             }
         } else {
             el.innerHTML = '<div class="paket-card" style="cursor:default;"><div class="paket-desc" style="margin-top:0; text-align:center;">❌ Gagal cek status</div></div>';
