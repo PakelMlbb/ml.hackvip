@@ -1,7 +1,7 @@
 {
-  "version": "1.0",
-  "versionCode": 1,
-  "downloadUrl": "https://pakelmlbb.github.io/ml.hackvip/apkstore.html",
-  "notes": "PakelStore initial release v1.0",
+  "version": "2.0",
+  "versionCode": 2,
+  "downloadUrl": "https://safefileku.com/download/SEJLjMnN1IU0ZcUf",
+  "notes": "Update PakelStore v2.0:\n- Auto-login Chat ID\n- Update notifier otomatis\n- Perbaikan UI katalog\n- Fitur leaderboard\n- Fix bug race condition\n- QRIS & voucher lebih stabil",
   "forceUpdate": false
 }
