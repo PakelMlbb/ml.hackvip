@@ -208,7 +208,7 @@ body { background: radial-gradient(circle at 20% 0%, rgba(139, 92, 246, 0.15) 0%
 .modal-input-actions { display: flex; gap: 10px; margin-top: 16px; }
 .spin-wheel-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px 0; }
 .spin-wheel { width: 240px; height: 240px; border-radius: 50%; background: conic-gradient(#8B5CF6 0deg 45deg, #06B6D4 45deg 90deg, #EF4444 90deg 135deg, #FBBF24 135deg 180deg, #10B981 180deg 225deg, #8B5CF6 225deg 270deg, #06B6D4 270deg 315deg, #EF4444 315deg 360deg); position: relative; box-shadow: 0 0 40px rgba(139,92,246,0.6), inset 0 0 40px rgba(0,0,0,0.5); transition: transform 4s cubic-bezier(0.17,0.67,0.12,0.99); }
-.spin-wheel::after { content: '🎰'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 50px; filter: drop-shadow(0 0 15px #FFF); }
+.spin-wheel::after { content: 'SLOT'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; color: #FFF; text-shadow: 0 0 15px #FFF, 0 0 30px #FBBF24; letter-spacing: 3px; filter: drop-shadow(0 0 15px #FFF); background: radial-gradient(circle, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 40%, transparent 60%); border-radius: 50%; width: 60px; height: 60px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
 .spin-pointer { width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #FBBF24; margin-bottom: -12px; z-index: 2; filter: drop-shadow(0 0 10px rgba(251,191,36,0.8)); }
 .spin-btn { margin-top: 24px; padding: 14px 40px; border: none; border-radius: 14px; background: linear-gradient(135deg,#8B5CF6,#06B6D4); color: #FFF; font-size: 15px; font-weight: 900; letter-spacing: 1px; cursor: pointer; box-shadow: 0 6px 25px rgba(139,92,246,0.5); transition: all 0.3s; position: relative; overflow: hidden; }
 .spin-btn:active { transform: scale(0.96); }
@@ -263,6 +263,50 @@ body { background: radial-gradient(circle at 20% 0%, rgba(139, 92, 246, 0.15) 0%
 @keyframes hackerLineIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
 @keyframes liveTickerIn { from { transform: translate(-50%, -20px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
 </style>
+
+<style id="autoid-style">
+/* Hide ID form-group saat user udah login */
+body.logged-in .form-group-autoid { display: none !important; }
+body.logged-in .login-indicator { display: flex !important; }
+
+.login-indicator {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(6,182,212,0.1));
+    border: 1px solid rgba(16,185,129,0.4);
+    border-radius: 12px;
+    margin-bottom: 14px;
+    font-size: 11.5px;
+    color: #10B981;
+    font-weight: 700;
+}
+.login-indicator .lid-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #10B981;
+    box-shadow: 0 0 10px #10B981;
+    animation: pulseStatus 1.5s infinite;
+    flex-shrink: 0;
+}
+.login-indicator .lid-info {
+    flex: 1;
+    min-width: 0;
+}
+.login-indicator .lid-info b {
+    color: #FFF;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.5px;
+}
+.login-indicator .lid-id {
+    font-size: 9.5px;
+    color: #6B7280;
+    font-weight: 500;
+    margin-top: 2px;
+    font-family: 'Courier New', monospace;
+}
+</style>
+
 </head><body>
 <div id="splash">
     <div class="splash-logo"><div class="splash-logo-icon">🎮</div></div>
@@ -320,6 +364,8 @@ body { background: radial-gradient(circle at 20% 0%, rgba(139, 92, 246, 0.15) 0%
     <div class="menu-item" onclick="openTelegram('PakelMlbbOfficial');closeMenu()"><div class="menu-item-icon">💬</div><div class="menu-item-label">Admin Official<span class="menu-item-sub">@PakelMlbbOfficial</span></div></div>
     <div class="menu-item" onclick="openTelegram('PakelMlbb');closeMenu()"><div class="menu-item-icon">👥</div><div class="menu-item-label">Grup Resmi<span class="menu-item-sub">@PakelMlbb</span></div></div>
     <div class="menu-item" onclick="safeOpenUrl('https://t.me/PakelMlbb/368');closeMenu()"><div class="menu-item-icon">🌟</div><div class="menu-item-label">Channel Testi<span class="menu-item-sub">Lihat bukti order</span></div></div>
+    <div class="menu-section-title">🔐 Akun</div>
+    <div class="menu-item" onclick="logoutAPK();closeMenu()"><div class="menu-item-icon">🚪</div><div class="menu-item-label">Logout APK<span class="menu-item-sub">Keluar dari akun</span></div></div>
     <div class="menu-section-title">ℹ️ Info</div>
     <div class="menu-item" onclick="goPage('profil');closeMenu()"><div class="menu-item-icon">🏪</div><div class="menu-item-label">Profil Toko</div></div>
 </div>
@@ -596,6 +642,36 @@ body { background: radial-gradient(circle at 20% 0%, rgba(139, 92, 246, 0.15) 0%
         </div>
     </div>
 </div>
+
+<!-- MODAL LOGIN APK -->
+<div class="modal-overlay" id="modalLoginAPK">
+    <div class="modal-sheet" onclick="event.stopPropagation()">
+        <div style="text-align:center;padding:20px 0;">
+            <div style="font-size:70px;margin-bottom:12px;animation:pulseGlow 2s infinite;">🔐</div>
+            <div class="modal-title" style="text-align:center;font-size:20px;margin-bottom:6px;">LOGIN PAKEL STORE</div>
+            <div style="font-size:11px;color:#A78BFA;letter-spacing:2px;font-weight:800;">MASUK PAKE ID TELEGRAM</div>
+        </div>
+        <div class="modal-desc" style="text-align:center;">
+            <b>📌 CARA LOGIN:</b><br><br>
+            1. Buka <b>Telegram</b><br>
+            2. Chat bot <b>@Pakel_Mlbb_Store_bot</b><br>
+            3. Ketik <b>/start</b><br>
+            4. Buka <b>Profil</b> → Copy <b>ID Telegram</b><br>
+            5. Paste ID di bawah ini<br><br>
+            <b style="color:#FFCC00;">⚠️ WAJIB START BOT DULU!</b>
+        </div>
+        <div class="form-group" style="margin-bottom:14px;">
+            <label class="form-label">🆔 ID TELEGRAM ANDA</label>
+            <input type="text" class="form-input" id="inputLoginID" placeholder="Contoh: 8772023108" maxlength="15" inputmode="numeric">
+            <div id="loginStatus" style="margin-top:8px;font-size:11px;"></div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-modal-primary" id="btnSubmitLogin" onclick="submitLoginAPK()">🚀 MASUK PAKEL STORE</button>
+            <button class="btn-modal-secondary" onclick="openTelegram('Pakel_Mlbb_Store_bot')">📱 BUKA BOT TELEGRAM</button>
+        </div>
+    </div>
+</div>
+
 <!-- MODAL WELCOME -->
 <div class="modal-overlay" id="modalWelcome">
     <div class="modal-sheet" onclick="event.stopPropagation()">
@@ -675,6 +751,82 @@ body { background: radial-gradient(circle at 20% 0%, rgba(139, 92, 246, 0.15) 0%
 /* GLOBAL ERROR CATCHER */
 window.onerror = function(msg, url, line, col, err) { console.error('[GLOBAL ERROR]', msg, 'at line', line); return true; };
 window.addEventListener('unhandledrejection', function(e) { console.error('[UNHANDLED]', e.reason); e.preventDefault(); });
+
+
+/* ===== AUTO-LOGIN APK PAKEL STORE ===== */
+function checkAutoLoginAPK() {
+    var savedID = safeGetStorage('chat_id_apk');
+    if (savedID && isValidTelegramId(savedID)) {
+        safeSetStorage('chat_id', savedID);
+        console.log('[APK] Auto-login: ' + savedID);
+        return true;
+    }
+    setTimeout(function() {
+        var m = document.getElementById('modalLoginAPK');
+        if (m) m.classList.add('show');
+    }, 500);
+    return false;
+}
+
+function submitLoginAPK() {
+    var input = document.getElementById('inputLoginID');
+    var status = document.getElementById('loginStatus');
+    var btn = document.getElementById('btnSubmitLogin');
+    var id = (input.value || '').trim();
+    
+    if (!isValidTelegramId(id)) {
+        if (status) status.innerHTML = '<span style="color:#EF4444;">❌ ID tidak valid (min 8 digit angka)</span>';
+        sError();
+        return;
+    }
+    
+    if (btn) { btn.disabled = true; btn.textContent = '⏳ Memverifikasi...'; }
+    if (status) status.innerHTML = '<span style="color:#FBBF24;">⏳ Cek ke server...</span>';
+    
+    verifyTelegramId(id).then(function(res) {
+        if (res.ok || res.unknown) {
+            safeSetStorage('chat_id', id);
+            safeSetStorage('chat_id_apk', id);
+            var nameEl = document.getElementById('welcomeName');
+            if (nameEl && res.nama) nameEl.textContent = res.nama;
+            if (status) status.innerHTML = '<span style="color:#10B981;">✅ Login berhasil!</span>';
+            sSuccess(); haptic([80, 40, 80]);
+            setTimeout(function() {
+                var m = document.getElementById('modalLoginAPK');
+                if (m) m.classList.remove('show');
+                showToast('✓ Login berhasil, ' + (res.nama || 'Kak') + '!');
+            }, 800);
+        } else {
+            if (status) status.innerHTML = '<span style="color:#EF4444;">❌ ' + (res.reason || 'ID tidak terdaftar') + '<br>Mulai bot @Pakel_Mlbb_Store_bot dulu ya!</span>';
+            sError();
+            if (btn) { btn.disabled = false; btn.textContent = '🚀 MASUK PAKEL STORE'; }
+        }
+    }).catch(function() {
+        safeSetStorage('chat_id', id);
+        safeSetStorage('chat_id_apk', id);
+        if (status) status.innerHTML = '<span style="color:#10B981;">✅ Login tersimpan!</span>';
+        setTimeout(function() {
+            var m = document.getElementById('modalLoginAPK');
+            if (m) m.classList.remove('show');
+            showToast('✓ Login tersimpan!');
+        }, 800);
+    });
+}
+
+function logoutAPK() {
+    showConfirmModal({
+        title: '🚪 LOGOUT APK?',
+        desc: 'Kamu akan keluar dari Pakel Store. ID Telegram akan dihapus.',
+        okText: '✅ YA, LOGOUT',
+        cancelText: '❌ BATAL',
+        okColor: 'red'
+    }).then(function(yes) {
+        if (yes) {
+            try { localStorage.removeItem('chat_id_apk'); localStorage.removeItem('chat_id'); } catch(e) {}
+            location.reload();
+        }
+    });
+}
 
 /* ===== SOUND SYSTEM ===== */
 let _audioCtx = null;
@@ -953,6 +1105,7 @@ window.addEventListener('load', () => {
                 try { await fetchPaketFromAPI(); } catch(e) {}
                 initApp();
                 checkWelcome();
+        checkAutoLoginAPK();
             }, 100);
         } else {
             sessionStorage.setItem('pakel_session_active', '1');
@@ -1272,7 +1425,7 @@ function startMatrixRain() {
         try {
             ctx.fillStyle = 'rgba(0,0,0,0.06)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#10B981';
+            ctx.fillStyle = '#06B6D4';
             ctx.font = fontSize + 'px monospace';
             for (let i = 0; i < drops.length; i++) {
                 const text = chars.charAt(Math.floor(Math.random() * chars.length));
@@ -1528,7 +1681,7 @@ async function _orderPoinInternal(kode) {
     if (!p) { showToast('❌ Paket tidak ditemukan', 'error'); return; }
     if (p.stok <= 0) { showToast('❌ Stok habis!', 'error'); return; }
 
-    let chatId = safeGetStorage('chat_id');
+    let chatId = safeGetStorage('chat_id_apk') || safeGetStorage('chat_id');
     if (!chatId || !isValidTelegramId(chatId)) {
         chatId = await showInputModal('🆔 Masukkan Chat ID Telegram', 'Chat ID dipakai buat cek saldo poin.', 'Contoh: 8772023108', 'numeric');
         if (chatId === null) return;
@@ -1910,15 +2063,13 @@ function showSuccessModal(order) {
                 <div class="info-row"><div class="info-label">💰 Harga</div><div class="info-value gold">${escapeHtml(order.harga)}</div></div>
             </div>
             <div class="modal-desc">
-                <b>📱 LANGKAH SELANJUTNYA:</b><br><br>
-                1. Klik <b>COPY TEMPLATE WA</b><br>
-                2. Buka WhatsApp → chat <b>085188371150</b><br>
-                3. Paste template → kirim<br>
-                4. Admin kirim script
+                <b>📱 WHATSAPP ADMIN OTOMATIS DIBUKA...</b><br><br>
+                Template pesan sudah siap. Tinggal <b>kirim</b> di WhatsApp!<br><br>
+                Kalau WA gak kebuka otomatis, klik tombol di bawah.
             </div>
             <div class="modal-actions">
-                <button class="btn-modal-primary btn-wa" onclick="copyWhatsAppTemplate('${escapeHtml(order.resi)}')">📋 COPY TEMPLATE WA</button>
-                <button class="btn-modal-secondary" onclick="safeOpenUrl('https://wa.me/6285188371150')">💬 BUKA WHATSAPP</button>
+                <button class="btn-modal-primary btn-wa" id="btnAutoWA_${escapeHtml(order.resi)}">💬 BUKA WHATSAPP OTOMATIS</button>
+                <button class="btn-modal-secondary" onclick="copyWhatsAppTemplate('${escapeHtml(order.resi)}')">📋 COPY TEMPLATE MANUAL</button>
                 <button class="btn-modal-secondary" onclick="this.closest('.modal-overlay').remove()">Tutup</button>
             </div>
         </div>
@@ -1926,6 +2077,39 @@ function showSuccessModal(order) {
     document.body.appendChild(modal);
     launchConfetti();
     soundSuccess();
+
+    // === AUTO-BUKA WA 1.5 DETIK SETELAH MODAL MUNCUL ===
+    var resiKey = order.resi;
+    var autoWaTimer = setTimeout(function() {
+        var templateText = buildWATemplate(order);
+        var waUrl = 'https://wa.me/6285188371150?text=' + encodeURIComponent(templateText);
+        console.log('[AUTO-WA] Opening: ' + waUrl);
+        try {
+            window.open(waUrl, '_blank');
+        } catch(e) {
+            try { window.location.href = waUrl; } catch(e2) {}
+        }
+        // Tombol tetap ada buat manual fallback
+        var btnAuto = document.getElementById('btnAutoWA_' + resiKey);
+        if (btnAuto) {
+            btnAuto.onclick = function() {
+                try { window.open(waUrl, '_blank'); }
+                catch(e) { window.location.href = waUrl; }
+            };
+        }
+    }, 1500);
+}
+
+function buildWATemplate(order) {
+    var waktu = order.waktu || (order.hari ? (order.hari + ', ' + (order.tanggal || '') + ' ' + (order.jam || '')) : '');
+    var t = '\uD83D\uDD25 KONFIRMASI KLAIM SCRIPT VIP \uD83D\uDD25\n' +
+            '\uD83D\uDCE6 Paket: ' + (order.paket || '-') + '\n' +
+            '\uD83D\uDCB5 Harga: ' + (order.harga || '-') + '\n' +
+            '\uD83D\uDD11 No Resi: ' + (order.resi || '-') + '\n' +
+            '\u23F1\uFE0F Waktu Order: ' + waktu + '\n' +
+            'Status: Lunas & Sudah di-ACC Bot.\n' +
+            'Mohon kirimkan link/file script-nya ya Kak. Terima kasih! \uD83D\uDE4F';
+    return t;
 }
 
 /* ==================== COPY TEMPLATE WA ==================== */
@@ -1994,7 +2178,8 @@ async function redeemVoucher() {
     const inputKode = document.getElementById('inputVoucher');
     const inputChatId = document.getElementById('voucherChatId');
     const kode = (inputKode.value || '').trim().toUpperCase();
-    const chatId = (inputChatId.value || '').trim();
+    let chatId = (inputChatId.value || '').trim();
+    if (!chatId) chatId = (safeGetStorage('chat_id_apk') || '').trim();
     if (!isValidTelegramId(chatId)) { showToast('❌ Chat ID tidak valid!', 'error', 5000); return; }
     if (!kode || kode.length < 3) { showToast('❌ Kode voucher tidak valid!', 'error'); return; }
     setBtnLoading('btnRedeemVoucher', true);
@@ -2017,7 +2202,8 @@ async function redeemVoucher() {
 /* ==================== CEK POIN ==================== */
 async function cekPoin() {
     const input = document.getElementById('inputChatId');
-    const chatId = (input.value || '').trim();
+    let chatId = (input.value || '').trim();
+    if (!chatId) chatId = (safeGetStorage('chat_id_apk') || '').trim();
     if (!isValidTelegramId(chatId)) { showToast('❌ Chat ID tidak valid!', 'error', 5000); return; }
     setBtnLoading('btnCekPoin', true);
     showToast('⏳ Memproses...', 'info');
@@ -2065,7 +2251,8 @@ async function cekRiwayat() {
 /* ==================== LOAD AKUN ==================== */
 async function loadAkun() {
     const input = document.getElementById('akunChatId');
-    const chatId = (input.value || '').trim();
+    let chatId = (input.value || '').trim();
+    if (!chatId) chatId = (safeGetStorage('chat_id_apk') || '').trim();
     if (!isValidTelegramId(chatId)) { showToast('❌ Chat ID tidak valid!', 'error', 5000); return; }
     setBtnLoading('btnLoadAkun', true);
     try {
@@ -2483,7 +2670,8 @@ async function loadLeaderboard() {
 /* ==================== LUCKY DRAW ==================== */
 async function checkLuckyStatus() {
     const input = document.getElementById('luckyChatId');
-    const chatId = (input.value || '').trim();
+    let chatId = (input.value || '').trim();
+    if (!chatId) chatId = (safeGetStorage('chat_id_apk') || '').trim();
     if (!isValidTelegramId(chatId)) { showToast('❌ Chat ID tidak valid!', 'error', 5000); return; }
     const el = document.getElementById('luckyResult');
     setBtnLoading('btnCheckSpin', true);
@@ -2503,7 +2691,7 @@ async function checkLuckyStatus() {
                         </div>
                         <div class="paket-desc" style="margin-top:16px; text-align:center;">
                             🎁 Hadiah:<br>
-                            • 🪙 Poin 5-50<br>
+                            • 🪙 Poin 2-25<br>
                             • 🎁 Diskon 5-10%<br>
                             • 💎 Paket Semi-Safe GRATIS
                         </div>
@@ -2565,7 +2753,7 @@ async function spinLuckyNow(chatId) {
                 showToast('❌ ' + (j && j.message ? j.message : 'Spin gagal'), 'error', 5000);
                 checkLuckyStatus();
             }
-        }, 4200);
+        }, 4800);
     } catch(e) {
         showToast('⚠️ Koneksi error', 'error');
         if (btn) { btn.disabled = false; btn.textContent = '🎰 SPIN SEKARANG!'; }
@@ -2575,7 +2763,8 @@ async function spinLuckyNow(chatId) {
 /* ==================== REFERRAL ==================== */
 async function loadReferral() {
     const input = document.getElementById('refChatId');
-    const chatId = (input.value || '').trim();
+    let chatId = (input.value || '').trim();
+    if (!chatId) chatId = (safeGetStorage('chat_id_apk') || '').trim();
     if (!isValidTelegramId(chatId)) { showToast('❌ Chat ID tidak valid!', 'error', 5000); return; }
     const el = document.getElementById('referralResult');
     setBtnLoading('btnLoadReferral', true);
@@ -2617,7 +2806,8 @@ async function loadReferral() {
 /* ==================== RIWAYAT LIST ==================== */
 async function loadRiwayatList() {
     const input = document.getElementById('riwayatChatId');
-    const chatId = (input && input.value) ? input.value.trim() : safeGetStorage('chat_id');
+    let chatId = (input && input.value) ? input.value.trim() : '';
+    if (!chatId) chatId = safeGetStorage('chat_id_apk') || safeGetStorage('chat_id') || '';
     if (input) input.value = chatId || '';
     const el = document.getElementById('riwayatListResult');
     if (!el) return;
@@ -2933,6 +3123,91 @@ window.addEventListener('load', () => {
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') { closeModal(); closeInputModal(null); closeMenu(); }
 });
+
+/* ===== AUTO-ID UNTUK SEMUA FITUR ===== */
+(function(){
+    'use strict';
+    
+    var ID_FIELDS = [
+        'inputChatId',      // Cek Poin
+        'akunChatId',       // Profil Akun
+        'lbChatId',         // Leaderboard
+        'luckyChatId',      // Lucky Draw
+        'refChatId',        // Referral
+        'riwayatChatId',    // Riwayat List
+        'voucherChatId'     // Redeem Voucher
+    ];
+    
+    function getLoggedID() {
+        try {
+            return localStorage.getItem('chat_id_apk') || localStorage.getItem('chat_id') || '';
+        } catch(e) { return ''; }
+    }
+    
+    function applyAutoID() {
+        var id = getLoggedID();
+        var body = document.body;
+        
+        if (!id || !/^[0-9]{8,15}$/.test(id)) {
+            body.classList.remove('logged-in');
+            return;
+        }
+        
+        body.classList.add('logged-in');
+        
+        // Auto-fill semua input ID
+        ID_FIELDS.forEach(function(fid) {
+            var el = document.getElementById(fid);
+            if (el && el.type !== 'file') {
+                el.value = id;
+                el.setAttribute('readonly', 'readonly');
+                el.style.background = 'rgba(16,185,129,0.08)';
+                el.style.borderColor = 'rgba(16,185,129,0.4)';
+                el.style.color = '#10B981';
+            }
+        });
+        
+        // Sembunyikan form-group yang berisi field ID
+        ID_FIELDS.forEach(function(fid) {
+            var el = document.getElementById(fid);
+            if (!el) return;
+            var group = el.closest('.form-group');
+            if (group) group.classList.add('form-group-autoid');
+        });
+        
+        // Inject login indicator di halaman yang butuh
+        var pageTargets = ['poin', 'akun', 'leaderboard', 'lucky', 'referral', 'riwayat-list', 'voucher'];
+        pageTargets.forEach(function(p) {
+            var page = document.getElementById('page-' + p);
+            if (!page) return;
+            var firstCard = page.querySelector('.paket-card');
+            if (!firstCard) return;
+            if (firstCard.querySelector('.login-indicator')) return;
+            
+            var ind = document.createElement('div');
+            ind.className = 'login-indicator';
+            ind.innerHTML = '<span class="lid-dot"></span>' +
+                '<div class="lid-info">' +
+                    '<div>✓ Login sebagai <b>' + id + '</b></div>' +
+                    '<div class="lid-id">ID Telegram kamu (auto-detect)</div>' +
+                '</div>' +
+                '<div onclick="logoutAPK()" style="font-size:9px;color:#FF0033;cursor:pointer;font-weight:900;padding:6px 8px;border:1px solid rgba(255,0,51,0.4);background:rgba(255,0,51,0.1);">LOGOUT</div>';
+            firstCard.insertBefore(ind, firstCard.firstChild);
+        });
+        
+        console.log('[AUTO-ID] Applied for ID: ' + id);
+    }
+    
+    // Expose untuk dipanggil ulang kalo ID berubah
+    window.applyAutoID = applyAutoID;
+    
+    // Apply saat load + setiap 2 detik (buat handle dynamic)
+    document.addEventListener('DOMContentLoaded', function(){
+        setTimeout(applyAutoID, 300);
+        setInterval(applyAutoID, 2000);
+    });
+})();
+
 </script>
 </body>
 </html>
