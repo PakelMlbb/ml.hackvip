@@ -307,9 +307,105 @@ body.logged-in .login-indicator { display: flex !important; }
     margin-top: 2px;
     font-family: 'Courier New', monospace;
 }
+
+/* ===== BATCH 1: ANTI-SCAM + THEME + COUNTDOWN + SOUND ===== */
+#antiScamBanner { position: sticky; top: 70px; z-index: 99; margin: 12px 16px 0; padding: 12px 40px 12px 14px; background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(251,191,36,0.15)); border: 1px solid rgba(239,68,68,0.4); border-radius: 12px; display: flex; align-items: center; gap: 10px; animation: fadeIn 0.4s ease; }
+#antiScamBanner.hide { display: none; }
+#antiScamBanner .asb-icon { font-size: 22px; flex-shrink: 0; }
+#antiScamBanner .asb-text { font-size: 11px; color: #FBBF24; font-weight: 700; line-height: 1.5; flex: 1; }
+#antiScamBanner .asb-text b { color: #FFF; }
+#antiScamBanner .asb-close { position: absolute; right: 8px; top: 8px; width: 24px; height: 24px; border-radius: 50%; background: rgba(239,68,68,0.3); color: #FFF; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; }
+.slot-badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 6px; background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(251,191,36,0.15)); border: 1px solid rgba(239,68,68,0.4); font-size: 10.5px; font-weight: 800; color: #FBBF24; margin-bottom: 10px; letter-spacing: 0.3px; }
+.slot-badge.urgent { animation: pulseStatus 1.2s infinite; border-color: rgba(239,68,68,0.8); }
+body.light-mode { background: linear-gradient(180deg, #F8FAFC 0%, #E2E8F0 100%) !important; color: #1E293B; }
+body.light-mode .header { background: rgba(248,250,252,0.95); border-bottom-color: rgba(139,92,246,0.3); }
+body.light-mode .header-info h1 { background: linear-gradient(135deg,#1E293B,#8B5CF6); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+body.light-mode .section-title { color: #1E293B; }
+body.light-mode .paket-card { background: linear-gradient(135deg,#FFFFFF,#F1F5F9); border-color: rgba(139,92,246,0.3); }
+body.light-mode .paket-name { color: #1E293B; }
+body.light-mode .paket-desc { color: #64748B; }
+body.light-mode .search-input { background: #FFF; border-color: rgba(139,92,246,0.4); color: #1E293B; }
+body.light-mode .search-input::placeholder { color: #94A3B8; }
+body.light-mode .chip { background: #FFF; color: #64748B; border-color: rgba(139,92,246,0.3); }
+body.light-mode .chip.active { background: linear-gradient(135deg,#8B5CF6,#06B6D4); color: #FFF; }
+body.light-mode .bottom-nav { background: rgba(255,255,255,0.98); border-top-color: rgba(139,92,246,0.3); }
+body.light-mode .nav-label { color: #94A3B8; }
+body.light-mode .nav-item.active { background: rgba(139,92,246,0.1); }
+body.light-mode .menu-drawer { background: linear-gradient(180deg,#FFFFFF 0%,#F1F5F9 100%); }
+body.light-mode .menu-item { background: rgba(139,92,246,0.05); border-color: rgba(139,92,246,0.2); }
+body.light-mode .menu-item-label { color: #1E293B; }
+body.light-mode .menu-item-sub { color: #64748B; }
+body.light-mode .menu-head-title { color: #1E293B; }
+body.light-mode .modal-sheet { background: linear-gradient(180deg,#FFFFFF 0%,#F1F5F9 100%); }
+body.light-mode .modal-title { color: #1E293B; }
+body.light-mode .modal-desc { color: #475569; }
+body.light-mode .info-row { background: rgba(139,92,246,0.06); }
+body.light-mode .info-label { color: #64748B; }
+body.light-mode .info-value { color: #1E293B; }
+body.light-mode .faq-item { background: #FFF; border-color: rgba(139,92,246,0.3); }
+body.light-mode .faq-q { color: #1E293B; }
+body.light-mode .faq-a { color: #64748B; }
+body.light-mode .testi-card { background: #FFF; border-color: rgba(139,92,246,0.3); }
+body.light-mode .testi-name { color: #1E293B; }
+body.light-mode .testi-text { color: #64748B; }
+body.light-mode .form-input { background: #FFF; color: #1E293B; border-color: rgba(139,92,246,0.4); }
+body.light-mode .form-input::placeholder { color: #94A3B8; }
+body.light-mode .form-label { color: #8B5CF6; }
+body.light-mode .riwayat-row { background: #FFF; border-color: rgba(139,92,246,0.3); }
+body.light-mode .riwayat-paket { color: #1E293B; }
+body.light-mode .riwayat-meta { color: #94A3B8; }
+body.light-mode .quick-item { background: linear-gradient(135deg,#FFFFFF,#F1F5F9); }
+body.light-mode .quick-label { color: #64748B; }
+body.light-mode .lb-row { background: #FFF; }
+body.light-mode .lb-name { color: #1E293B; }
+body.light-mode .lb-stats { color: #64748B; }
+body.light-mode #antiScamBanner { background: linear-gradient(135deg, rgba(239,68,68,0.08), rgba(251,191,36,0.08)); }
+body.light-mode .flash-banner { border-color: rgba(239,68,68,0.5); }
+body.light-mode .live-ticker-box { color: #FFF; }
+/* ===== END BATCH 1 CSS ===== */
+
+
+/* ===== BATCH 3: INBOX + LIVE CHAT ===== */
+#inboxBadge { position: absolute; top: -6px; right: -6px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: linear-gradient(135deg,#EF4444,#F59E0B); color: #FFF; font-size: 10px; font-weight: 900; display: none; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(239,68,68,0.6); animation: pulseStatus 1.5s infinite; z-index: 2; }
+#inboxBadge.show { display: flex; }
+#inboxBtnWrap { position: relative; }
+.inbox-list { display: flex; flex-direction: column; gap: 8px; max-height: 60vh; overflow-y: auto; padding-right: 4px; }
+.inbox-item { padding: 12px 14px; background: rgba(139,92,246,0.06); border: 1px solid rgba(139,92,246,0.2); border-left: 3px solid #8B5CF6; border-radius: 10px; cursor: pointer; transition: all 0.2s; position: relative; }
+.inbox-item:active { transform: scale(0.98); background: rgba(139,92,246,0.15); }
+.inbox-item.unread { border-left-color: #EF4444; background: rgba(239,68,68,0.08); }
+.inbox-item.unread::after { content: ''; position: absolute; top: 12px; right: 12px; width: 8px; height: 8px; border-radius: 50%; background: #EF4444; box-shadow: 0 0 8px #EF4444; }
+.inbox-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; gap: 8px; }
+.inbox-title { font-size: 13px; font-weight: 800; color: #FFF; flex: 1; }
+.inbox-time { font-size: 10px; color: #6B7280; white-space: nowrap; }
+.inbox-body { font-size: 11.5px; color: #B0B7C3; line-height: 1.5; word-break: break-word; }
+.inbox-icon { font-size: 18px; margin-right: 6px; }
+.inbox-empty { text-align: center; padding: 40px 20px; color: #6B7280; font-size: 13px; }
+body.light-mode .inbox-item { background: rgba(139,92,246,0.06); border-color: rgba(139,92,246,0.3); }
+body.light-mode .inbox-item.unread { background: rgba(239,68,68,0.06); }
+body.light-mode .inbox-title { color: #1E293B; }
+body.light-mode .inbox-body { color: #64748B; }
+#liveChatBtn { position: fixed; right: 18px; bottom: 90px; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg,#25D366,#128C7E); color: #FFF; font-size: 26px; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 25px rgba(37,211,102,0.5), 0 0 20px rgba(37,211,102,0.3); cursor: pointer; z-index: 250; transition: all 0.3s; animation: logoFloat 3s infinite ease-in-out; }
+#liveChatBtn:active { transform: scale(0.9); }
+.chat-option { display: flex; align-items: center; gap: 14px; padding: 16px; background: rgba(255,255,255,0.04); border: 1px solid rgba(139,92,246,0.2); border-radius: 14px; margin-bottom: 10px; cursor: pointer; transition: all 0.3s; }
+.chat-option:active { transform: scale(0.98); background: rgba(139,92,246,0.12); }
+.chat-icon { font-size: 32px; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 12px; flex-shrink: 0; }
+.chat-icon.wa { background: linear-gradient(135deg,#25D366,#128C7E); }
+.chat-icon.tg { background: linear-gradient(135deg,#0088CC,#005F8F); }
+.chat-info { flex: 1; }
+.chat-info h4 { font-size: 14px; color: #FFF; font-weight: 800; margin-bottom: 2px; }
+.chat-info p { font-size: 11px; color: #9CA3AF; }
+body.light-mode .chat-info h4 { color: #1E293B; }
+body.light-mode .chat-option { background: rgba(139,92,246,0.06); }
+/* ===== END BATCH 3 CSS ===== */
+
 </style>
 
 </head><body>
+<div id="antiScamBanner">
+    <div class="asb-icon">🛡️</div>
+    <div class="asb-text"><b>PAKEL MLBBSTORE 100% AMAN.</b> Kami <b>TIDAK PERNAH</b> minta password/OTP/data pribadi. Waspada penipu yang mengaku dari kami!</div>
+    <div class="asb-close" onclick="dismissBanner()">✕</div>
+</div>
 <div id="splash">
     <div class="splash-logo"><div class="splash-logo-icon">🎮</div></div>
     <div class="splash-title">PAKEL MLBBSTORE</div>
@@ -394,6 +490,11 @@ body.logged-in .login-indicator { display: flex !important; }
         </div>
     </div>
     <div style="display:flex; gap:8px; align-items:center;">
+    <div id="inboxBtnWrap">
+        <div class="header-menu" onclick="openInbox()" style="width:42px; height:42px; border-radius:12px; background:rgba(139,92,246,0.1); border:1px solid rgba(139,92,246,0.3); display:flex; align-items:center; justify-content:center; font-size:18px; cursor:pointer; color:#A78BFA;">📬</div>
+        <div id="inboxBadge">0</div>
+    </div>
+    <div class="header-menu" id="themeToggleBtn" onclick="toggleTheme()" style="width:42px; height:42px; border-radius:12px; background:rgba(139,92,246,0.1); border:1px solid rgba(139,92,246,0.3); display:flex; align-items:center; justify-content:center; font-size:18px; cursor:pointer; color:#A78BFA;">🌙</div>
     <div class="header-menu" id="soundToggleBtn" onclick="toggleSound()" style="width:42px; height:42px; border-radius:12px; background:rgba(139,92,246,0.1); border:1px solid rgba(139,92,246,0.3); display:flex; align-items:center; justify-content:center; font-size:18px; cursor:pointer; color:#A78BFA;">🔊</div>
     <div class="header-menu" onclick="openMenu()">☰</div>
 </div>
@@ -1477,6 +1578,7 @@ function renderPaketCard(p) {
     const isHot = p.stok < 20 && p.stok > 0;
     const isOut = p.stok <= 0;
     const flash = FLASH_SALE_DISKON > 0;
+    const slotBadge = (typeof renderSlotBadge === 'function') ? renderSlotBadge(p.kode, p.stok || 10, isOut) : '';
     return `
         <div class="paket-card ${isHot?'hot':''} ${isOut?'out':''}" onclick="openDetail('${escapeHtml(p.kode)}')">
             <div class="paket-head">
@@ -1488,6 +1590,7 @@ function renderPaketCard(p) {
                 ${flash ? `<div class="price-strike">${escapeHtml(p.harga_str)}</div>` : ''}
                 <div class="price-poin">🪙 ${p.poin} Poin</div>
             </div>
+            ${slotBadge}
             <div class="paket-desc">${escapeHtml(p.desc)}</div>
             <div class="paket-actions">
                 <button class="btn-order" onclick="event.stopPropagation(); orderPaket('${escapeHtml(p.kode)}')">🛒 ORDER SEKARANG</button>
@@ -1884,13 +1987,14 @@ function showSuccessModalPoin(order) {
             </div>
             <div class="modal-actions">
                 <button class="btn-modal-primary btn-wa" onclick="copyWhatsAppTemplate('${escapeHtml(order.resi)}')">📋 COPY TEMPLATE WA</button>
+                <button class="btn-modal-primary" onclick="showSertifikat()" style="background:linear-gradient(135deg,#FBBF24,#F59E0B); color:#1A1F2E;">📜 LIHAT SERTIFIKAT</button>
                 <button class="btn-modal-secondary" onclick="safeOpenUrl('https://wa.me/6285188371150')">💬 BUKA WHATSAPP</button>
                 <button class="btn-modal-secondary" onclick="this.closest('.modal-overlay').remove()">Tutup</button>
             </div>
         </div>
     `;
     document.body.appendChild(modal);
-    soundSuccess();
+    if (typeof soundOrderSuccess === 'function') soundOrderSuccess(); else soundSuccess();
     haptic(80);
     launchConfetti();
 }
@@ -2088,6 +2192,7 @@ function showSuccessModal(order) {
             </div>
             <div class="modal-actions">
                 <button class="btn-modal-primary btn-wa" id="btnAutoWA_${escapeHtml(order.resi)}">💬 BUKA WHATSAPP OTOMATIS</button>
+                <button class="btn-modal-primary" onclick="showSertifikat()" style="background:linear-gradient(135deg,#FBBF24,#F59E0B); color:#1A1F2E;">📜 LIHAT SERTIFIKAT</button>
                 <button class="btn-modal-secondary" onclick="copyWhatsAppTemplate('${escapeHtml(order.resi)}')">📋 COPY TEMPLATE MANUAL</button>
                 <button class="btn-modal-secondary" onclick="this.closest('.modal-overlay').remove()">Tutup</button>
             </div>
@@ -2095,7 +2200,7 @@ function showSuccessModal(order) {
     `;
     document.body.appendChild(modal);
     launchConfetti();
-    soundSuccess();
+    if (typeof soundOrderSuccess === 'function') soundOrderSuccess(); else soundSuccess();
 
     // === AUTO-BUKA WA 1.5 DETIK SETELAH MODAL MUNCUL ===
     var resiKey = order.resi;
@@ -2210,6 +2315,7 @@ async function redeemVoucher() {
         });
         const j = await safeJson(r);
         if (j && j.status === 'OK') {
+            if (typeof soundVoucher === 'function') soundVoucher();
             showToast('✅ Voucher ' + escapeHtml(kode) + ' berhasil! Diskon ' + Number(j.diskon) + '%', 'success', 4000);
             inputKode.value = '';
             safeSetStorage('chat_id', chatId);
@@ -2234,6 +2340,7 @@ async function cekPoin() {
             document.getElementById('resultTier').textContent = j.data.tier || 'Bronze';
             document.getElementById('resultOrder').textContent = j.data.total_order != null ? j.data.total_order : 0;
             document.getElementById('poinResult').style.display = 'block';
+            if (typeof soundCoin === 'function') soundCoin();
             showToast('✅ Data ditemukan!', 'success');
             setTimeout(() => document.getElementById('poinResult').scrollIntoView({ behavior:'smooth' }), 300);
         } else showToast('❌ ' + (j && j.message ? j.message : 'Data tidak ditemukan'), 'error');
@@ -3391,6 +3498,460 @@ document.addEventListener('keydown', (e) => {
     console.log('%c🔒 FORCE-UPDATE LOADED', 'color:#FF0033;font-size:13px;font-weight:900;');
 })();
 
+
+/* ===== BATCH 1: SOUND + THEME + BANNER + SLOT ===== */
+function soundOrderSuccess() {
+    playTone(523, 0.12, 'sine', 0.14);
+    setTimeout(function() { playTone(659, 0.12, 'sine', 0.14); }, 120);
+    setTimeout(function() { playTone(784, 0.12, 'sine', 0.14); }, 240);
+    setTimeout(function() { playTone(1047, 0.2, 'sine', 0.16); }, 360);
+}
+function soundCoin() {
+    playTone(1318, 0.08, 'square', 0.08);
+    setTimeout(function() { playTone(1760, 0.12, 'square', 0.08); }, 80);
+}
+function soundVoucher() {
+    playTone(660, 0.1, 'triangle', 0.12);
+    setTimeout(function() { playTone(880, 0.1, 'triangle', 0.12); }, 100);
+    setTimeout(function() { playTone(1100, 0.15, 'triangle', 0.12); }, 200);
+}
+
+function getSavedTheme() {
+    try { return localStorage.getItem('pakel_theme') || 'dark'; } catch(e) { return 'dark'; }
+}
+function applyTheme(mode) {
+    if (mode === 'light') {
+        document.body.classList.add('light-mode');
+    } else {
+        document.body.classList.remove('light-mode');
+    }
+    var btn = document.getElementById('themeToggleBtn');
+    if (btn) btn.textContent = (mode === 'light') ? '☀️' : '🌙';
+    try { localStorage.setItem('pakel_theme', mode); } catch(e) {}
+}
+function toggleTheme() {
+    var cur = getSavedTheme();
+    var next = (cur === 'light') ? 'dark' : 'light';
+    applyTheme(next);
+    if (typeof soundClick === 'function') soundClick();
+    if (typeof haptic === 'function') haptic(30);
+    if (typeof showToast === 'function') showToast((next === 'light') ? '☀️ Mode Terang' : '🌙 Mode Gelap', 'info', 2000);
+}
+
+function checkBanner() {
+    try {
+        var hidden = localStorage.getItem('pakel_banner_hidden');
+        if (hidden === '1') {
+            var el = document.getElementById('antiScamBanner');
+            if (el) el.classList.add('hide');
+        }
+    } catch(e) {}
+}
+function dismissBanner() {
+    var el = document.getElementById('antiScamBanner');
+    if (el) el.classList.add('hide');
+    try { localStorage.setItem('pakel_banner_hidden', '1'); } catch(e) {}
+    if (typeof soundClick === 'function') soundClick();
+}
+
+function getDayKey() {
+    var d = new Date();
+    return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+}
+function getSlotCount(kode, totalStok) {
+    var dayKey = getDayKey();
+    var key = 'pakel_slot_' + kode + '_' + dayKey;
+    try {
+        var val = localStorage.getItem(key);
+        if (!val) {
+            var base = Math.max(3, Math.min(20, Math.floor((totalStok || 10) * 0.5)));
+            val = String(Math.floor(Math.random() * base) + 3);
+            localStorage.setItem(key, val);
+        }
+        return parseInt(val);
+    } catch(e) {
+        return Math.max(3, Math.floor((totalStok || 10) * 0.3));
+    }
+}
+function renderSlotBadge(kode, stok, isOut) {
+    if (isOut || stok <= 0) return '';
+    var slot = getSlotCount(kode, stok);
+    var urgent = slot <= 5 ? ' urgent' : '';
+    return '<div class="slot-badge' + urgent + '">🔥 Sisa ' + slot + ' slot hari ini!</div>';
+}
+
+setTimeout(function() {
+    applyTheme(getSavedTheme());
+    checkBanner();
+}, 200);
+/* ===== END BATCH 1 JS ===== */
+
+
+/* ===== BATCH 2: TESTIMONI REAL + SERTIFIKAT ===== */
+async function loadTestimoniReal() {
+    try {
+        var r = await safeFetch(API_URL + '/api/testimoni?limit=12');
+        var j = await safeJson(r);
+        if (j && j.status === 'OK' && Array.isArray(j.testimoni) && j.testimoni.length > 0) {
+            return j.testimoni.map(function(t) {
+                return {
+                    nama: t.chat_id_masked || 'User***',
+                    paket: t.paket || '-',
+                    harga: t.harga || '-',
+                    poin: '',
+                    timestamp: (t.timestamp || 0) * 1000,
+                    isPoin: (t.metode || '').toUpperCase() === 'POIN',
+                    real: true
+                };
+            });
+        }
+    } catch(e) {}
+    return null;
+}
+
+function renderTestiReal(list) {
+    var el = document.getElementById('testiList');
+    if (!el) return;
+    var html = '<div style="text-align:center; font-size:10.5px; color:#10B981; margin-bottom:10px; font-weight:800; letter-spacing:1px;">✅ ' + list.length + ' ORDER REAL DARI HARI INI</div>';
+    list.forEach(function(t) {
+        var badgeClass = t.real ? 'badge-ok' : 'badge-hot';
+        var badgeText = t.real ? '✅ REAL' : '🌟 FAKE';
+        html += '<div class="testi-card">' +
+            '<div class="testi-head">' +
+                '<div class="testi-name">👤 ' + escapeHtml(t.nama) + '</div>' +
+                '<div class="testi-time" data-ts="' + t.timestamp + '">' + formatWaktuRelatif(t.timestamp) + '</div>' +
+            '</div>' +
+            '<div class="testi-text">Beli <b>' + escapeHtml(t.paket) + '</b> — ' + escapeHtml(t.harga) + '</div>' +
+            '<div class="testi-badge">🔒 ' + (t.isPoin ? 'REDEEMED VIA LOYALTY POINTS' : 'LUNAS & SCRIPT TERKIRIM') + '</div>' +
+        '</div>';
+    });
+    el.innerHTML = html;
+}
+
+async function refreshTestimoni() {
+    var real = await loadTestimoniReal();
+    if (real && real.length > 0) {
+        _testiCache = real;
+        renderTestiReal(real);
+        window._isTestiReal = true;
+    } else {
+        _testiCache = getRandomTesti(12);
+        renderTesti();
+        window._isTestiReal = false;
+    }
+}
+
+function generateSertifikat(order) {
+    try {
+        var canvas = document.createElement('canvas');
+        canvas.width = 900;
+        canvas.height = 600;
+        var ctx = canvas.getContext('2d');
+        var grad = ctx.createLinearGradient(0, 0, 900, 600);
+        grad.addColorStop(0, '#0A0E1A');
+        grad.addColorStop(1, '#1A1F2E');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 900, 600);
+        ctx.strokeStyle = '#8B5CF6';
+        ctx.lineWidth = 6;
+        ctx.strokeRect(30, 30, 840, 540);
+        ctx.strokeStyle = '#06B6D4';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(45, 45, 810, 510);
+        ctx.fillStyle = '#FBBF24';
+        ctx.font = 'bold 46px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('SERTIFIKAT PEMBELI', 450, 130);
+        ctx.font = '18px Arial';
+        ctx.fillStyle = '#06B6D4';
+        ctx.fillText('PAKEL MLBBSTORE - VERIFIED', 450, 165);
+        ctx.fillStyle = '#FFF';
+        ctx.font = '20px Arial';
+        ctx.fillText('Diberikan kepada:', 450, 240);
+        ctx.fillStyle = '#8B5CF6';
+        ctx.font = 'bold 42px Arial';
+        var namaUser = order.paket || 'Buyer';
+        var chatId = (window._lastOrderData && window._lastOrderData.resi) ? '' : '';
+        ctx.fillText('Verified Buyer', 450, 295);
+        ctx.fillStyle = '#FFF';
+        ctx.font = '18px Arial';
+        ctx.fillText('Telah menyelesaikan pembelian:', 450, 350);
+        ctx.fillStyle = '#FBBF24';
+        ctx.font = 'bold 28px Arial';
+        ctx.fillText(order.paket || '-', 450, 395);
+        ctx.fillStyle = '#FFF';
+        ctx.font = '18px Arial';
+        ctx.fillText('Harga: ' + (order.harga || '-'), 450, 435);
+        ctx.fillText('Resi: ' + (order.resi || '-'), 450, 465);
+        ctx.fillStyle = '#06B6D4';
+        ctx.font = 'bold 22px Arial';
+        ctx.fillText('✅ VERIFIED BY PAKEL MLBBSTORE', 450, 525);
+        ctx.font = '12px Arial';
+        ctx.fillStyle = '#6B7280';
+        ctx.fillText('t.me/PakelMlbbOfficial', 450, 560);
+        return canvas.toDataURL('image/png');
+    } catch(e) {
+        console.error('Sertifikat error:', e);
+        return null;
+    }
+}
+
+function showSertifikat() {
+    var order = window._lastOrderData || {};
+    var dataUrl = generateSertifikat(order);
+    if (!dataUrl) {
+        if (typeof showToast === 'function') showToast('Gagal buat sertifikat', 'error');
+        return;
+    }
+    var modal = document.createElement('div');
+    modal.className = 'modal-overlay show';
+    modal.innerHTML = '<div class="modal-sheet">' +
+        '<div class="modal-close" onclick="this.closest(\'.modal-overlay\').remove()">✕</div>' +
+        '<div class="modal-title" style="text-align:center;">📜 Sertifikat Pembelian</div>' +
+        '<img src="' + dataUrl + '" style="width:100%; border-radius:12px; margin:14px 0; border:1px solid rgba(139,92,246,0.4);">' +
+        '<div class="modal-actions">' +
+            '<a class="btn-modal-primary" href="' + dataUrl + '" download="sertifikat-' + (order.resi || 'pakel') + '.png" style="text-decoration:none; text-align:center; display:block;">📥 Simpan Gambar</a>' +
+            '<button class="btn-modal-secondary" onclick="shareSertifikat(\'' + dataUrl + '\', \'' + (order.resi || '') + '\')">📤 Bagikan</button>' +
+            '<button class="btn-modal-secondary" onclick="this.closest(\'.modal-overlay\').remove()">Tutup</button>' +
+        '</div>' +
+    '</div>';
+    document.body.appendChild(modal);
+    if (typeof soundVoucher === 'function') soundVoucher();
+}
+
+async function shareSertifikat(dataUrl, resi) {
+    try {
+        var blob = await (await fetch(dataUrl)).blob();
+        var file = new File([blob], 'sertifikat-' + resi + '.png', { type: 'image/png' });
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({ files: [file], title: 'Sertifikat PakelStore', text: 'Bukti pembelian saya di PakelStore! 🔥' });
+        } else {
+            if (typeof showToast === 'function') showToast('Device gak support share, simpan gambar dulu', 'info', 3000);
+        }
+    } catch(e) {
+        if (typeof showToast === 'function') showToast('Gagal share', 'error');
+    }
+}
+
+setTimeout(function() {
+    if (typeof refreshTestimoni === 'function') {
+        var origLoad = window.loadTestimoni;
+        window.loadTestimoni = async function() {
+            await refreshTestimoni();
+            if (window._testiInterval) clearInterval(window._testiInterval);
+            window._testiInterval = setInterval(function() {
+                if (!_testiCache) return;
+                document.querySelectorAll('#testiList .testi-time').forEach(function(el) {
+                    var ts = Number(el.dataset.ts);
+                    if (ts) el.textContent = formatWaktuRelatif(ts);
+                });
+            }, 5000);
+        };
+    }
+}, 500);
+/* ===== END BATCH 2 JS ===== */
+
+
+/* ===== BATCH 3: INBOX + LIVE CHAT JS ===== */
+var _inboxCache = [];
+var INBOX_LAST_READ_KEY = 'pakel_inbox_last_read';
+
+function getInboxLastRead() {
+    try { return parseInt(localStorage.getItem(INBOX_LAST_READ_KEY) || '0'); } catch(e) { return 0; }
+}
+function setInboxLastRead(ts) {
+    try { localStorage.setItem(INBOX_LAST_READ_KEY, String(ts)); } catch(e) {}
+}
+
+function getInboxChatId() {
+    try {
+        return localStorage.getItem('chat_id_apk') || localStorage.getItem('chat_id') || '';
+    } catch(e) { return ''; }
+}
+
+async function fetchInbox() {
+    var cid = getInboxChatId();
+    if (!cid) { _inboxCache = []; updateInboxBadge(0); return []; }
+    try {
+        var r = await safeFetch(API_URL + '/api/inbox?chat_id=' + encodeURIComponent(cid) + '&limit=50');
+        var j = await safeJson(r);
+        if (j && j.status === 'OK' && Array.isArray(j.inbox)) {
+            _inboxCache = j.inbox;
+            var lastRead = getInboxLastRead();
+            var unread = 0;
+            for (var i = 0; i < _inboxCache.length; i++) {
+                if ((_inboxCache[i].timestamp || 0) > lastRead) unread++;
+            }
+            updateInboxBadge(unread);
+            return _inboxCache;
+        }
+    } catch(e) {}
+    return [];
+}
+
+function updateInboxBadge(n) {
+    var el = document.getElementById('inboxBadge');
+    if (!el) return;
+    if (n > 0) {
+        el.textContent = n > 99 ? '99+' : String(n);
+        el.classList.add('show');
+    } else {
+        el.classList.remove('show');
+    }
+}
+
+function formatInboxTime(ts) {
+    if (!ts) return '-';
+    var d = new Date(ts * 1000);
+    var now = new Date();
+    var diff = Math.floor((now.getTime() - d.getTime()) / 1000);
+    if (diff < 60) return 'baru saja';
+    if (diff < 3600) return Math.floor(diff / 60) + 'm lalu';
+    if (diff < 86400) return Math.floor(diff / 3600) + 'j lalu';
+    if (diff < 604800) return Math.floor(diff / 86400) + 'h lalu';
+    var pad = function(x){ return x < 10 ? '0' + x : String(x); };
+    return d.getDate() + '/' + (d.getMonth() + 1) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+}
+
+function getInboxIcon(type) {
+    var map = {
+        'order_acc': '🎉',
+        'order_reject': '❌',
+        'order_expired': '⏰',
+        'order_cancel': '🚫',
+        'bc': '📢',
+        'flashsale': '⚡',
+        'restock': '🔥'
+    };
+    return map[type] || '📩';
+}
+
+async function openInbox() {
+    var modal = document.getElementById('modalInbox');
+    if (modal) modal.classList.add('show');
+    var list = document.getElementById('inboxList');
+    if (list) list.innerHTML = '<div class="inbox-empty">⏳ Memuat...</div>';
+    if (typeof soundClick === 'function') soundClick();
+    var data = await fetchInbox();
+    var lastRead = getInboxLastRead();
+    if (!data || data.length === 0) {
+        if (list) list.innerHTML = '<div class="inbox-empty">📭 Belum ada pesan masuk<br><span style="font-size:11px;">Notif pesanan & pengumuman bakal muncul di sini</span></div>';
+        return;
+    }
+    var html = '';
+    var newestTs = 0;
+    data.forEach(function(item) {
+        var isUnread = (item.timestamp || 0) > lastRead;
+        if ((item.timestamp || 0) > newestTs) newestTs = item.timestamp;
+        html += '<div class="inbox-item ' + (isUnread ? 'unread' : '') + '">' +
+            '<div class="inbox-head">' +
+                '<div class="inbox-title"><span class="inbox-icon">' + getInboxIcon(item.type) + '</span>' + escapeHtml(item.title || '-') + '</div>' +
+                '<div class="inbox-time">' + formatInboxTime(item.timestamp) + '</div>' +
+            '</div>' +
+            '<div class="inbox-body">' + escapeHtml(item.body || '') + '</div>' +
+        '</div>';
+    });
+    if (list) list.innerHTML = html;
+    if (newestTs > lastRead) {
+        setInboxLastRead(newestTs);
+        setTimeout(function() { updateInboxBadge(0); }, 2000);
+    }
+}
+
+function closeInbox() {
+    var modal = document.getElementById('modalInbox');
+    if (modal) modal.classList.remove('show');
+}
+
+async function clearInbox() {
+    if (!confirm('Kosongkan semua pesan inbox?')) return;
+    try {
+        var cid = getInboxChatId();
+        if (!cid) { closeInbox(); return; }
+        var r = await safeFetch(API_URL + '/api/inbox/clear', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: cid })
+        });
+        var j = await safeJson(r);
+        if (j && j.status === 'OK') {
+            _inboxCache = [];
+            updateInboxBadge(0);
+            var list = document.getElementById('inboxList');
+            if (list) list.innerHTML = '<div class="inbox-empty">🗑️ Inbox dikosongkan</div>';
+            if (typeof showToast === 'function') showToast('✅ Inbox dikosongkan', 'success');
+        }
+    } catch(e) {
+        if (typeof showToast === 'function') showToast('Gagal hapus inbox', 'error');
+    }
+}
+
+function openLiveChat() {
+    var modal = document.getElementById('modalLiveChat');
+    if (modal) modal.classList.add('show');
+    if (typeof soundClick === 'function') soundClick();
+    if (typeof haptic === 'function') haptic(30);
+}
+
+function closeLiveChat() {
+    var modal = document.getElementById('modalLiveChat');
+    if (modal) modal.classList.remove('show');
+}
+
+function buildChatTemplate() {
+    var cid = getInboxChatId() || 'belum-login';
+    return 'Halo Admin PakelStore!\n\nID Saya: ' + cid + '\nSaya mau tanya:';
+}
+
+function chatViaWhatsApp() {
+    var text = buildChatTemplate();
+    var url = 'https://wa.me/6285188371150?text=' + encodeURIComponent(text);
+    try { window.open(url, '_blank'); } catch(e) { window.location.href = url; }
+    closeLiveChat();
+}
+
+function chatViaTelegram() {
+    var url = 'https://t.me/PakelMlbbOfficial';
+    try { window.open(url, '_blank'); } catch(e) { window.location.href = url; }
+    closeLiveChat();
+}
+
+setTimeout(function() {
+    fetchInbox();
+    setInterval(function() {
+        if (!document.hidden) fetchInbox();
+    }, 30000);
+}, 3000);
+/* ===== END BATCH 3 JS ===== */
+
 </script>
+
+<div id="liveChatBtn" onclick="openLiveChat()">💬</div>
+<div class="modal-overlay" id="modalInbox">
+    <div class="modal-sheet" onclick="event.stopPropagation()">
+        <div class="modal-close" onclick="closeInbox()">✕</div>
+        <div class="modal-title">📬 Inbox</div>
+        <div style="display:flex; justify-content:flex-end; margin-bottom:12px;">
+            <button class="btn-copy" onclick="clearInbox()" style="margin-left:0;">🗑️ Kosongkan</button>
+        </div>
+        <div class="inbox-list" id="inboxList"></div>
+    </div>
+</div>
+<div class="modal-overlay" id="modalLiveChat">
+    <div class="modal-sheet" onclick="event.stopPropagation()">
+        <div class="modal-close" onclick="closeLiveChat()">✕</div>
+        <div class="modal-title">💬 Chat dengan Admin</div>
+        <div class="modal-desc">Pilih channel — pesan akan otomatis terisi dengan info akunmu.</div>
+        <div class="chat-option" onclick="chatViaWhatsApp()">
+            <div class="chat-icon wa">📱</div>
+            <div class="chat-info"><h4>WhatsApp</h4><p>Respon cepat, admin aktif 07:00-00:00 WIB</p></div>
+        </div>
+        <div class="chat-option" onclick="chatViaTelegram()">
+            <div class="chat-icon tg">✈️</div>
+            <div class="chat-info"><h4>Telegram</h4><p>@PakelMlbbOfficial - chat langsung</p></div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
