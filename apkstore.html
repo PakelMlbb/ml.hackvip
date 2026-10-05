@@ -2494,7 +2494,7 @@ function getRandomTesti(count) {
     for (let i = 0; i < count; i++) {
         const nama = TESTI_NAMES[Math.floor(Math.random() * TESTI_NAMES.length)];
         const pkt = TESTI_PAKET[Math.floor(Math.random() * TESTI_PAKET.length)];
-        const menitLalu = Math.floor(Math.random() * 44) + 1;
+        const menitLalu = Math.floor(Math.random() * 58) + 2;
         const isPoin = Math.random() < 0.3;
         arr.push({ nama, paket: pkt[0], harga: isPoin ? pkt[2] : pkt[1], poin: pkt[2], menitLalu, timestamp: Date.now() - (menitLalu * 60 * 1000), isPoin });
     }
@@ -3697,43 +3697,36 @@ function renderTestiReal(list) {
 
 async function refreshTestimoni() {
     var real = await loadTestimoniReal();
-    var fake = getRandomTesti(8);
+    var fake = getRandomTesti(12);
     var merged = [];
     if (real && real.length > 0) {
-        merged = real.slice(0, 6).concat(fake.slice(0, 8));
+        // Ambil 4 real + 8 fake, shuffle biar campur
+        merged = real.slice(0, 4).concat(fake.slice(0, 8));
     } else {
         merged = fake.slice(0, 12);
     }
+    // Shuffle acak biar setiap refresh beda urutan
+    for (var i = merged.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = merged[i]; merged[i] = merged[j]; merged[j] = tmp;
+    }
     _testiCache = merged;
     renderTestiMerged(merged);
+    window._lastTestiRefresh = Date.now();
 }
 
 function renderTestiMerged(list) {
     var el = document.getElementById('testiList');
     if (!el) return;
-    var realCount = 0;
-    for (var i = 0; i < list.length; i++) { if (list[i].real) realCount++; }
-    var headerText = realCount > 0
-        ? ('✅ ' + realCount + ' ORDER REAL + ' + (list.length - realCount) + ' TESTIMONI')
-        : ('🌟 ' + list.length + ' TESTIMONI');
-    var html = '<div style="text-align:center; font-size:10.5px; color:#10B981; margin-bottom:10px; font-weight:800; letter-spacing:1px;">' + headerText + '</div>';
+    var html = '';
     list.forEach(function(t) {
-        var isReal = t.real ? true : false;
-        var icon = isReal ? '✅' : '🌟';
-        var badge = isReal ? 'REAL' : 'FAKE';
-        var badgeColor = isReal ? 'rgba(16,185,129,0.15)' : 'rgba(139,92,246,0.15)';
-        var badgeBorder = isReal ? 'rgba(16,185,129,0.4)' : 'rgba(139,92,246,0.4)';
-        var badgeText = isReal ? '#10B981' : '#A78BFA';
         html += '<div class="testi-card">' +
             '<div class="testi-head">' +
-                '<div class="testi-name">' + icon + ' ' + escapeHtml(t.nama) + '</div>' +
+                '<div class="testi-name">✅ ' + escapeHtml(t.nama) + '</div>' +
                 '<div class="testi-time" data-ts="' + t.timestamp + '">' + formatWaktuRelatif(t.timestamp) + '</div>' +
             '</div>' +
             '<div class="testi-text">Beli <b>' + escapeHtml(t.paket) + '</b> — ' + escapeHtml(t.harga) + '</div>' +
-            '<div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;">' +
-                '<div style="display:inline-block; font-size:9.5px; font-weight:800; padding:2px 8px; border-radius:6px; background:' + badgeColor + '; border:1px solid ' + badgeBorder + '; color:' + badgeText + ';">' + badge + '</div>' +
-                '<div style="display:inline-block; font-size:9.5px; font-weight:800; padding:2px 8px; border-radius:6px; background:rgba(16,185,129,0.15); color:#10B981;">🔒 ' + (t.isPoin ? 'LOYALTY POINTS' : 'LUNAS') + '</div>' +
-            '</div>' +
+            '<div class="testi-badge">🔒 ' + (t.isPoin ? 'REDEEMED VIA LOYALTY POINTS' : 'LUNAS & SCRIPT TERKIRIM') + '</div>' +
         '</div>';
     });
     el.innerHTML = html;
@@ -3853,17 +3846,25 @@ async function shareSertifikat(dataUrl, resi) {
 
 setTimeout(function() {
     if (typeof refreshTestimoni === 'function') {
-        var origLoad = window.loadTestimoni;
         window.loadTestimoni = async function() {
             await refreshTestimoni();
-            if (window._testiInterval) clearInterval(window._testiInterval);
-            window._testiInterval = setInterval(function() {
+            // Update waktu relatif tiap 5 detik
+            if (window._testiTickInterval) clearInterval(window._testiTickInterval);
+            window._testiTickInterval = setInterval(function() {
                 if (!_testiCache) return;
                 document.querySelectorAll('#testiList .testi-time').forEach(function(el) {
                     var ts = Number(el.dataset.ts);
                     if (ts) el.textContent = formatWaktuRelatif(ts);
                 });
             }, 5000);
+            // AUTO-REFRESH: ganti testimoni tiap 30 detik
+            if (window._testiAutoRefresh) clearInterval(window._testiAutoRefresh);
+            window._testiAutoRefresh = setInterval(async function() {
+                if (document.hidden) return;
+                try {
+                    await refreshTestimoni();
+                } catch(e) {}
+            }, 30000);
         };
     }
 }, 500);
