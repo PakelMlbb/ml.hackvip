@@ -2468,88 +2468,71 @@ async function loadAkun() {
 }
 
 /* ==================== TESTIMONI ==================== */
-const TESTI_NAMES = [
-    "@R_Zky***", "@Alvinn_***", "@Dimas_99***", "@RezaPrat_***", "@Bayu_Official***", "@Farel_X***", "@Yoga_Mlg***", "@DickyGez_***",
-    "@SuryaPratama***", "@RamaWicak***", "@Gilang_ID***", "@BagasKusn***", "@Arif_Wd***", "@DaniPratama***", "@Hendra_99***", "@Rian_Xyz***",
-    "@Aldi_07***", "@Bintang_ID***", "@CandraPras***", "@DikaPrast_***", "@Fajar_01***", "@GalihGmr***", "@IqbalID***", "@JokoPrasetyo***",
-    "@KevinWdj***", "@LukmanHkm***", "@MaulanaID***", "@NaufalXyz***", "@Pratama99***", "@RafliSultan***", "@SatriaGaming***", "@TegarGanz***",
-    "@VianID***", "@WahyuPrat***", "@YudaDev***", "@ZakiMlf***", "@Amirul_My***", "@Haikal_Iskandar***", "@Farhan_Zul***", "@Aiman_Badri***",
-    "@Aqil_Danial***", "@Syahmi_Zain***", "@Luqman_Hakim***", "@Zulhelmi_My***", "@Alex_Walker***", "@Liam_Smith***", "@Noah_Miller***", "@Oliver_Davis***",
-    "@Sultan_Mlbb***", "@Anjay_Mabar***", "@Gacor_Gaming***", "@TopGlobal_1***", "@Zul_Ganz***", "@Rizky_Store***", "@Ibnu_Hkm***", "@Pandu_ID***",
-    "@Fikri_Xp***", "@Aditya_Prat***", "@Eko_Cyber***", "@Bayu_Sena***", "@angga_99***", "@febri_nj***", "@putra_ml***", "@rendi_sultan***"
-];
-const TESTI_PAKET = [
-    ["Sultan One Hit 100% (30 Hari)", "Rp 150.000", "55 Poin"],
-    ["VIP Pro One Hit 80% (30 Hari)", "Rp 100.000", "40 Poin"],
-    ["Permanent Legend (Lifetime)", "Rp 250.000", "90 Poin"],
-    ["Natural Balance (30 Hari)", "Rp 120.000", "45 Poin"],
-    ["Lifetime Safe Permanent", "Rp 200.000", "75 Poin"],
-    ["Light VIP + Drone (30 Hari)", "Rp 95.000", "35 Poin"],
-    ["Semi-Safe 14 Hari", "Rp 75.000", "25 Poin"],
-    ["Semi-Private 14 Hari", "Rp 75.000", "25 Poin"]
-];
-let _testiCache = null;
-function getRandomTesti(count) {
-    const arr = [];
-    for (let i = 0; i < count; i++) {
-        const nama = TESTI_NAMES[Math.floor(Math.random() * TESTI_NAMES.length)];
-        const pkt = TESTI_PAKET[Math.floor(Math.random() * TESTI_PAKET.length)];
-        const menitLalu = Math.floor(Math.random() * 58) + 2;
-        const isPoin = Math.random() < 0.3;
-        arr.push({ nama, paket: pkt[0], harga: isPoin ? pkt[2] : pkt[1], poin: pkt[2], menitLalu, timestamp: Date.now() - (menitLalu * 60 * 1000), isPoin });
-    }
-    return arr;
+/* TESTI_NAMES — pindah ke backend */
+/* TESTI_PAKET — pindah ke backend */
+/* ===== TESTIMONI (REAL + FAKE dari BACKEND) ===== */
+var _testiCache = [];
+
+async function fetchTestimoni() {
+    try {
+        var r = await safeFetch(API_URL + '/api/testimoni?limit=12');
+        var j = await safeJson(r);
+        if (j && j.status === 'OK' && Array.isArray(j.testimoni)) {
+            return j.testimoni;
+        }
+    } catch(e) {}
+    return [];
 }
-function formatWaktuRelatif(ts) {
-    const detik = Math.floor((Date.now() - ts) / 1000);
-    if (detik < 5) return 'baru saja';
-    if (detik < 60) return detik + ' detik lalu';
-    const menit = Math.floor(detik / 60);
-    if (menit < 60) return menit + ' menit lalu';
-    const jam = Math.floor(menit / 60);
-    if (jam < 24) return jam + ' jam lalu';
-    return Math.floor(jam / 24) + ' hari lalu';
-}
-function renderTesti() {
-    const el = document.getElementById('testiList');
+
+function renderTestiList(list) {
+    var el = document.getElementById('testiList');
     if (!el) return;
-    if (!_testiCache) _testiCache = getRandomTesti(12);
-    let html = '';
-    _testiCache.forEach(t => {
-        html += `
-            <div class="testi-card">
-                <div class="testi-head">
-                    <div class="testi-name">✅ ${t.nama}</div>
-                    <div class="testi-time" data-ts="${t.timestamp}">${formatWaktuRelatif(t.timestamp)}</div>
-                </div>
-                <div class="testi-text">Beli <b>${t.paket}</b> — ${t.harga}</div>
-                <div class="testi-badge">🔒 ${t.isPoin ? 'REDEEMED VIA LOYALTY POINTS' : 'LUNAS & SCRIPT TERKIRIM'}</div>
-            </div>
-        `;
-    });
+    if (!list || list.length === 0) {
+        el.innerHTML = '<div class="paket-card" style="cursor:default; text-align:center; padding:30px 20px;"><div class="paket-desc" style="margin-top:0;">📭 Belum ada testimoni. Cek lagi nanti!</div></div>';
+        return;
+    }
+    var html = '';
+    for (var i = 0; i < list.length; i++) {
+        var t = list[i];
+        var isPoin = (t.metode || '').toUpperCase() === 'POIN';
+        var tsMs = (t.timestamp || 0) * 1000;
+        html += '<div class="testi-card">' +
+            '<div class="testi-head">' +
+                '<div class="testi-name">✅ ' + escapeHtml(t.chat_id_masked || 'User***') + '</div>' +
+                '<div class="testi-time" data-ts="' + tsMs + '">' + formatWaktuRelatif(tsMs) + '</div>' +
+            '</div>' +
+            '<div class="testi-text">Beli <b>' + escapeHtml(t.paket || '-') + '</b> — ' + escapeHtml(t.harga || '-') + '</div>' +
+            '<div class="testi-badge">🔒 ' + (isPoin ? 'REDEEMED VIA LOYALTY POINTS' : 'LUNAS & SCRIPT TERKIRIM') + '</div>' +
+        '</div>';
+    }
     el.innerHTML = html;
 }
-function loadTestimoni() {
-    _testiCache = getRandomTesti(12);
-    renderTesti();
-    if (window._testiInterval) clearInterval(window._testiInterval);
-    window._testiInterval = setInterval(() => {
-        if (!_testiCache) return;
-        document.querySelectorAll('#testiList .testi-time').forEach(el => {
-            const ts = Number(el.dataset.ts);
-            if (ts) el.textContent = formatWaktuRelatif(ts);
-        });
-    }, 5000);
-    if (window._testiPushInterval) clearInterval(window._testiPushInterval);
-    window._testiPushInterval = setInterval(() => {
-        if (!_testiCache) return;
-        const newTesti = getRandomTesti(1)[0];
-        newTesti.timestamp = Date.now();
-        _testiCache.unshift(newTesti);
-        if (_testiCache.length > 15) _testiCache.pop();
-        renderTesti();
-    }, 20000);
+
+async function refreshTestimoni() {
+    var list = await fetchTestimoni();
+    _testiCache = list;
+    renderTestiList(list);
 }
+
+async function loadTestimoni() {
+    await refreshTestimoni();
+    if (window._testiTickInterval) clearInterval(window._testiTickInterval);
+    window._testiTickInterval = setInterval(function() {
+        if (!_testiCache || _testiCache.length === 0) return;
+        var els = document.querySelectorAll('#testiList .testi-time');
+        for (var i = 0; i < els.length; i++) {
+            var ts = Number(els[i].dataset.ts);
+            if (ts) els[i].textContent = formatWaktuRelatif(ts);
+        }
+    }, 5000);
+    if (window._testiAutoRefresh) clearInterval(window._testiAutoRefresh);
+    window._testiAutoRefresh = setInterval(async function() {
+        if (document.hidden) return;
+        try { await refreshTestimoni(); } catch(e) {}
+    }, 30000);
+}
+/* ===== END TESTIMONI ===== */
+
 
 /* ==================== FAQ ==================== */
 const FAQ_DATA = [
@@ -3655,82 +3638,16 @@ setTimeout(function() {
 
 
 /* ===== BATCH 2: TESTIMONI REAL + SERTIFIKAT ===== */
-async function loadTestimoniReal() {
-    try {
-        var r = await safeFetch(API_URL + '/api/testimoni?limit=12');
-        var j = await safeJson(r);
-        if (j && j.status === 'OK' && Array.isArray(j.testimoni) && j.testimoni.length > 0) {
-            return j.testimoni.map(function(t) {
-                return {
-                    nama: t.chat_id_masked || 'User***',
-                    paket: t.paket || '-',
-                    harga: t.harga || '-',
-                    poin: '',
-                    timestamp: (t.timestamp || 0) * 1000,
-                    isPoin: (t.metode || '').toUpperCase() === 'POIN',
-                    real: true
-                };
-            });
-        }
-    } catch(e) {}
-    return null;
-}
+/* loadTestimoniReal — DIHAPUS */
 
-function renderTestiReal(list) {
-    var el = document.getElementById('testiList');
-    if (!el) return;
-    var html = '<div style="text-align:center; font-size:10.5px; color:#10B981; margin-bottom:10px; font-weight:800; letter-spacing:1px;">✅ ' + list.length + ' ORDER REAL DARI HARI INI</div>';
-    list.forEach(function(t) {
-        var badgeClass = t.real ? 'badge-ok' : 'badge-hot';
-        var badgeText = t.real ? '✅ REAL' : '🌟 FAKE';
-        html += '<div class="testi-card">' +
-            '<div class="testi-head">' +
-                '<div class="testi-name">👤 ' + escapeHtml(t.nama) + '</div>' +
-                '<div class="testi-time" data-ts="' + t.timestamp + '">' + formatWaktuRelatif(t.timestamp) + '</div>' +
-            '</div>' +
-            '<div class="testi-text">Beli <b>' + escapeHtml(t.paket) + '</b> — ' + escapeHtml(t.harga) + '</div>' +
-            '<div class="testi-badge">🔒 ' + (t.isPoin ? 'REDEEMED VIA LOYALTY POINTS' : 'LUNAS & SCRIPT TERKIRIM') + '</div>' +
-        '</div>';
-    });
-    el.innerHTML = html;
-}
 
-async function refreshTestimoni() {
-    var real = await loadTestimoniReal();
-    var fake = getRandomTesti(12);
-    var merged = [];
-    if (real && real.length > 0) {
-        // Ambil 4 real + 8 fake, shuffle biar campur
-        merged = real.slice(0, 4).concat(fake.slice(0, 8));
-    } else {
-        merged = fake.slice(0, 12);
-    }
-    // Shuffle acak biar setiap refresh beda urutan
-    for (var i = merged.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var tmp = merged[i]; merged[i] = merged[j]; merged[j] = tmp;
-    }
-    _testiCache = merged;
-    renderTestiMerged(merged);
-    window._lastTestiRefresh = Date.now();
-}
+/* renderTestiReal — DIHAPUS */
 
-function renderTestiMerged(list) {
-    var el = document.getElementById('testiList');
-    if (!el) return;
-    var html = '';
-    list.forEach(function(t) {
-        html += '<div class="testi-card">' +
-            '<div class="testi-head">' +
-                '<div class="testi-name">✅ ' + escapeHtml(t.nama) + '</div>' +
-                '<div class="testi-time" data-ts="' + t.timestamp + '">' + formatWaktuRelatif(t.timestamp) + '</div>' +
-            '</div>' +
-            '<div class="testi-text">Beli <b>' + escapeHtml(t.paket) + '</b> — ' + escapeHtml(t.harga) + '</div>' +
-            '<div class="testi-badge">🔒 ' + (t.isPoin ? 'REDEEMED VIA LOYALTY POINTS' : 'LUNAS & SCRIPT TERKIRIM') + '</div>' +
-        '</div>';
-    });
-    el.innerHTML = html;
-}
+
+/* refreshTestimoni LAMA — DIHAPUS (duplikat) */
+
+/* renderTestiMerged — DIHAPUS */
+
 
 function generateSertifikat(order) {
     /* SERTIFIKAT V2 — Pakai nama user + tanggal */
