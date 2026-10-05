@@ -398,6 +398,30 @@ body.light-mode .chat-info h4 { color: #1E293B; }
 body.light-mode .chat-option { background: rgba(139,92,246,0.06); }
 /* ===== END BATCH 3 CSS ===== */
 
+
+/* FIX 1: Inbox badge anti-clip */
+#inboxBtnWrap { position: relative; overflow: visible !important; }
+#inboxBtnWrap .header-menu { overflow: visible !important; }
+#inboxBadge { top: -4px !important; right: -4px !important; }
+.header > div:last-child { overflow: visible !important; }
+/* END FIX 1 */
+
+
+/* FIX 3: Header responsif di HP kecil */
+.header-brand { flex-shrink: 1; min-width: 0; overflow: hidden; }
+.header-info { min-width: 0; overflow: hidden; }
+.header-info h1 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.header > div:last-child { flex-shrink: 0; }
+@media (max-width: 400px) {
+    .header { padding: 12px 10px; }
+    .header-logo { width: 36px !important; height: 36px !important; font-size: 18px !important; }
+    .header-info h1 { font-size: 12px !important; }
+    .header-info p { font-size: 9px !important; }
+    .header-menu { width: 36px !important; height: 36px !important; font-size: 16px !important; border-radius: 10px !important; }
+    .header > div:last-child { gap: 5px !important; }
+}
+/* END FIX 3 */
+
 </style>
 
 </head><body>
@@ -1128,6 +1152,7 @@ function closeMenu() {
 
 /* MODAL KONFIRMASI CUSTOM */
 function showConfirmModal(opts) {
+    /* showConfirmModal v2 — visual premium */
     return new Promise(resolve => {
         opts = opts || {};
         const title = opts.title || 'Konfirmasi';
@@ -1135,6 +1160,7 @@ function showConfirmModal(opts) {
         const okText = opts.okText || '✅ YA';
         const cancelText = opts.cancelText || '❌ TIDAK';
         const okColor = opts.okColor || 'purple';
+        const icon = opts.icon || (okColor === 'red' ? '⚠️' : '❓');
         const okBg = okColor === 'red'
             ? 'linear-gradient(135deg,#EF4444,#F59E0B)'
             : 'linear-gradient(135deg,#8B5CF6,#06B6D4)';
@@ -1145,15 +1171,16 @@ function showConfirmModal(opts) {
         modal.className = 'modal-overlay show';
         modal.style.zIndex = '99999';
         modal.innerHTML = `
-            <div class="modal-sheet" style="max-width:420px; margin:auto; border-radius:20px;" onclick="event.stopPropagation()">
-                <div style="text-align:center; padding:24px 12px 8px;">
-                    <div style="font-size:56px; margin-bottom:14px; animation: splashPop 0.5s;">⚠️</div>
-                    <div class="modal-title" style="text-align:center; font-size:18px; margin:0 0 14px;">${escapeHtml(title)}</div>
+            <div class="modal-sheet" style="max-width:420px; margin:auto; border-radius:22px; border:1px solid rgba(139,92,246,0.35); box-shadow:0 20px 60px rgba(0,0,0,0.7);" onclick="event.stopPropagation()">
+                <div style="text-align:center; padding:28px 16px 10px;">
+                    <div style="font-size:64px; margin-bottom:16px; animation: splashPop 0.5s ease-out; filter: drop-shadow(0 0 20px rgba(139,92,246,0.5));">${icon}</div>
+                    <div style="font-size:19px; font-weight:900; color:#FFF; margin:0 0 6px; letter-spacing:0.3px;">${escapeHtml(title)}</div>
+                    <div style="width:50px; height:3px; margin:14px auto 0; background:linear-gradient(90deg,#8B5CF6,#06B6D4); border-radius:2px;"></div>
                 </div>
-                <div class="modal-desc" style="text-align:left; font-size:13px; line-height:1.6;">${desc}</div>
-                <div class="modal-actions" style="margin-top:18px;">
-                    <button class="btn-modal-primary" id="pakelConfirmOk" style="background:${okBg};">${escapeHtml(okText)}</button>
-                    <button class="btn-modal-secondary" id="pakelConfirmCancel">${escapeHtml(cancelText)}</button>
+                <div style="padding:16px 20px 0; text-align:left; font-size:13.5px; line-height:1.7; color:#B0B7C3;">${desc}</div>
+                <div style="padding:22px 20px 24px; display:flex; flex-direction:column; gap:10px;">
+                    <button class="btn-modal-primary" id="pakelConfirmOk" style="background:${okBg}; padding:16px; font-size:14px; border-radius:14px; font-weight:900; letter-spacing:0.5px; box-shadow:0 8px 25px rgba(0,0,0,0.3);">${escapeHtml(okText)}</button>
+                    <button class="btn-modal-secondary" id="pakelConfirmCancel" style="padding:14px; font-size:13px; border-radius:14px; font-weight:800;">${escapeHtml(cancelText)}</button>
                 </div>
             </div>
         `;
@@ -1164,6 +1191,11 @@ function showConfirmModal(opts) {
         if (okBtn) okBtn.onclick = () => { cleanup(); resolve(true); };
         if (cancelBtn) cancelBtn.onclick = () => { cleanup(); resolve(false); };
         modal.addEventListener('click', (e) => { if (e.target === modal) { cleanup(); resolve(false); } });
+        // ESC key untuk cancel
+        setTimeout(() => {
+            const _esc = (ev) => { if (ev.key === 'Escape') { cleanup(); resolve(false); document.removeEventListener('keydown', _esc); } };
+            document.addEventListener('keydown', _esc);
+        }, 100);
     });
 }
 
@@ -1946,6 +1978,26 @@ async function confirmCloseInvoice(btn) {
     const modal = btn.closest('.modal-overlay');
     if (!modal) return;
     const resi = window._lastOrderData && window._lastOrderData.resi ? window._lastOrderData.resi : '-';
+    try {
+        const r = await safeFetch(API_URL + '/api/cek-resi?resi=' + encodeURIComponent(resi));
+        const j = await safeJson(r);
+        if (j && j.status === 'OK' && j.order) {
+            const st = j.order.status;
+            if (st === 'BERHASIL') {
+                closeInvoice(btn);
+                showToast('✅ Pesanan sudah di-ACC. Cek DM admin!', 'success', 5000);
+                setTimeout(() => goPage('home'), 400);
+                return;
+            }
+            if (st === 'DITOLAK' || st === 'EXPIRED' || st === 'CANCELLED') {
+                closeInvoice(btn);
+                const msg = st === 'DITOLAK' ? '❌ Pesanan ditolak admin' : (st === 'EXPIRED' ? '⏰ Pesanan expired' : '🚫 Pesanan dibatalkan');
+                showToast(msg, 'warning', 5000);
+                setTimeout(() => goPage('home'), 400);
+                return;
+            }
+        }
+    } catch(e) {}
     const konfirmasi = await showConfirmModal({
         title: '⚠️ Keluar dari Halaman Ini?',
         desc: `Pesanan masih <b>PENDING</b>.<br><br><b>Resi:</b> ${escapeHtml(resi)}<br><br>Mau batalkan pesanan?`,
@@ -1956,6 +2008,9 @@ async function confirmCloseInvoice(btn) {
     if (konfirmasi) {
         closeInvoice(btn);
         setTimeout(() => cancelOrder(resi), 100);
+    } else {
+        closeInvoice(btn);
+        setTimeout(() => goPage('home'), 300);
     }
 }
 
@@ -2134,10 +2189,18 @@ async function startOrderPolling(resi) {
                 const st = j.order.status;
                 if (st === 'BERHASIL') {
                     clearInterval(_pollIntervals[resi]); delete _pollIntervals[resi];
+                    document.querySelectorAll('.modal-overlay.show').forEach(m => {
+                        if (m.id === 'pakelConfirmModal' || m.id === 'modalPaket') return;
+                        try { m.remove(); } catch(e) {}
+                    });
                     showToast('🎉 PESANAN DITERIMA! Copy template WA.', 'success', 15000);
                     showSuccessModal(j.order);
                 } else if (st === 'DITOLAK') {
                     clearInterval(_pollIntervals[resi]); delete _pollIntervals[resi];
+                    document.querySelectorAll('.modal-overlay.show').forEach(m => {
+                        if (m.id === 'pakelConfirmModal' || m.id === 'modalPaket') return;
+                        try { m.remove(); } catch(e) {}
+                    });
                     showToast('❌ Pesanan ditolak.', 'error', 8000);
                     try { const cid = safeGetStorage('chat_id'); if (cid) localStorage.removeItem('pending_order_' + cid); } catch(e) {}
                     document.querySelectorAll('.modal-overlay.show').forEach(m => {
@@ -2170,6 +2233,10 @@ async function startOrderPolling(resi) {
 /* ==================== SUCCESS MODAL (TRANSFER) ==================== */
 function showSuccessModal(order) {
     window._lastOrderData = order;
+    document.querySelectorAll('.modal-overlay.show').forEach(m => {
+        if (m.id === 'pakelConfirmModal' || m.id === 'modalPaket' || m.id === 'modalInbox' || m.id === 'modalLiveChat') return;
+        try { m.remove(); } catch(e) {}
+    });
     const modal = document.createElement('div');
     modal.className = 'modal-overlay show';
     modal.innerHTML = `
@@ -3630,65 +3697,116 @@ function renderTestiReal(list) {
 
 async function refreshTestimoni() {
     var real = await loadTestimoniReal();
+    var fake = getRandomTesti(8);
+    var merged = [];
     if (real && real.length > 0) {
-        _testiCache = real;
-        renderTestiReal(real);
-        window._isTestiReal = true;
+        merged = real.slice(0, 6).concat(fake.slice(0, 8));
     } else {
-        _testiCache = getRandomTesti(12);
-        renderTesti();
-        window._isTestiReal = false;
+        merged = fake.slice(0, 12);
     }
+    _testiCache = merged;
+    renderTestiMerged(merged);
+}
+
+function renderTestiMerged(list) {
+    var el = document.getElementById('testiList');
+    if (!el) return;
+    var realCount = 0;
+    for (var i = 0; i < list.length; i++) { if (list[i].real) realCount++; }
+    var headerText = realCount > 0
+        ? ('✅ ' + realCount + ' ORDER REAL + ' + (list.length - realCount) + ' TESTIMONI')
+        : ('🌟 ' + list.length + ' TESTIMONI');
+    var html = '<div style="text-align:center; font-size:10.5px; color:#10B981; margin-bottom:10px; font-weight:800; letter-spacing:1px;">' + headerText + '</div>';
+    list.forEach(function(t) {
+        var isReal = t.real ? true : false;
+        var icon = isReal ? '✅' : '🌟';
+        var badge = isReal ? 'REAL' : 'FAKE';
+        var badgeColor = isReal ? 'rgba(16,185,129,0.15)' : 'rgba(139,92,246,0.15)';
+        var badgeBorder = isReal ? 'rgba(16,185,129,0.4)' : 'rgba(139,92,246,0.4)';
+        var badgeText = isReal ? '#10B981' : '#A78BFA';
+        html += '<div class="testi-card">' +
+            '<div class="testi-head">' +
+                '<div class="testi-name">' + icon + ' ' + escapeHtml(t.nama) + '</div>' +
+                '<div class="testi-time" data-ts="' + t.timestamp + '">' + formatWaktuRelatif(t.timestamp) + '</div>' +
+            '</div>' +
+            '<div class="testi-text">Beli <b>' + escapeHtml(t.paket) + '</b> — ' + escapeHtml(t.harga) + '</div>' +
+            '<div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;">' +
+                '<div style="display:inline-block; font-size:9.5px; font-weight:800; padding:2px 8px; border-radius:6px; background:' + badgeColor + '; border:1px solid ' + badgeBorder + '; color:' + badgeText + ';">' + badge + '</div>' +
+                '<div style="display:inline-block; font-size:9.5px; font-weight:800; padding:2px 8px; border-radius:6px; background:rgba(16,185,129,0.15); color:#10B981;">🔒 ' + (t.isPoin ? 'LOYALTY POINTS' : 'LUNAS') + '</div>' +
+            '</div>' +
+        '</div>';
+    });
+    el.innerHTML = html;
 }
 
 function generateSertifikat(order) {
+    /* SERTIFIKAT V2 — Pakai nama user + tanggal */
     try {
         var canvas = document.createElement('canvas');
         canvas.width = 900;
-        canvas.height = 600;
+        canvas.height = 620;
         var ctx = canvas.getContext('2d');
-        var grad = ctx.createLinearGradient(0, 0, 900, 600);
+        var grad = ctx.createLinearGradient(0, 0, 900, 620);
         grad.addColorStop(0, '#0A0E1A');
         grad.addColorStop(1, '#1A1F2E');
         ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, 900, 600);
+        ctx.fillRect(0, 0, 900, 620);
         ctx.strokeStyle = '#8B5CF6';
         ctx.lineWidth = 6;
-        ctx.strokeRect(30, 30, 840, 540);
+        ctx.strokeRect(30, 30, 840, 560);
         ctx.strokeStyle = '#06B6D4';
         ctx.lineWidth = 2;
-        ctx.strokeRect(45, 45, 810, 510);
-        ctx.fillStyle = '#FBBF24';
-        ctx.font = 'bold 46px Arial';
+        ctx.strokeRect(45, 45, 810, 530);
         ctx.textAlign = 'center';
-        ctx.fillText('SERTIFIKAT PEMBELI', 450, 130);
-        ctx.font = '18px Arial';
-        ctx.fillStyle = '#06B6D4';
-        ctx.fillText('PAKEL MLBBSTORE - VERIFIED', 450, 165);
-        ctx.fillStyle = '#FFF';
-        ctx.font = '20px Arial';
-        ctx.fillText('Diberikan kepada:', 450, 240);
-        ctx.fillStyle = '#8B5CF6';
-        ctx.font = 'bold 42px Arial';
-        var namaUser = order.paket || 'Buyer';
-        var chatId = (window._lastOrderData && window._lastOrderData.resi) ? '' : '';
-        ctx.fillText('Verified Buyer', 450, 295);
-        ctx.fillStyle = '#FFF';
-        ctx.font = '18px Arial';
-        ctx.fillText('Telah menyelesaikan pembelian:', 450, 350);
         ctx.fillStyle = '#FBBF24';
-        ctx.font = 'bold 28px Arial';
-        ctx.fillText(order.paket || '-', 450, 395);
+        ctx.font = 'bold 42px Arial';
+        ctx.fillText('SERTIFIKAT PEMBELI', 450, 125);
+        ctx.font = '16px Arial';
+        ctx.fillStyle = '#06B6D4';
+        ctx.fillText('PAKEL MLBBSTORE - VERIFIED', 450, 158);
         ctx.fillStyle = '#FFF';
         ctx.font = '18px Arial';
+        ctx.fillText('Diberikan kepada:', 450, 225);
+        var namaUser = safeGetStorage('user_name') || '';
+        if (!namaUser) {
+            try {
+                var cid = safeGetStorage('chat_id_apk') || safeGetStorage('chat_id') || '';
+                if (cid.length > 4) namaUser = 'Buyer #' + cid.slice(-4);
+                else namaUser = 'Verified Buyer';
+            } catch(e) { namaUser = 'Verified Buyer'; }
+        }
+        ctx.fillStyle = '#8B5CF6';
+        ctx.font = 'bold 38px Arial';
+        ctx.fillText(namaUser, 450, 280);
+        var chatId = '';
+        try { chatId = safeGetStorage('chat_id_apk') || safeGetStorage('chat_id') || '-'; } catch(e) {}
+        ctx.fillStyle = '#9CA3AF';
+        ctx.font = '14px Arial';
+        ctx.fillText('ID: ' + chatId, 450, 312);
+        ctx.fillStyle = '#FFF';
+        ctx.font = '17px Arial';
+        ctx.fillText('Telah menyelesaikan pembelian:', 450, 358);
+        ctx.fillStyle = '#FBBF24';
+        ctx.font = 'bold 26px Arial';
+        var pktName = order.paket || '-';
+        if (pktName.length > 40) pktName = pktName.substring(0, 37) + '...';
+        ctx.fillText(pktName, 450, 398);
+        ctx.fillStyle = '#FFF';
+        ctx.font = '17px Arial';
         ctx.fillText('Harga: ' + (order.harga || '-'), 450, 435);
         ctx.fillText('Resi: ' + (order.resi || '-'), 450, 465);
+        var now = new Date();
+        var pad = function(x) { return x < 10 ? '0' + x : String(x); };
+        var tglStr = pad(now.getDate()) + '/' + pad(now.getMonth() + 1) + '/' + now.getFullYear() + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
         ctx.fillStyle = '#06B6D4';
-        ctx.font = 'bold 22px Arial';
-        ctx.fillText('✅ VERIFIED BY PAKEL MLBBSTORE', 450, 525);
-        ctx.font = '12px Arial';
+        ctx.font = '14px Arial';
+        ctx.fillText('Tanggal: ' + tglStr, 450, 500);
+        ctx.fillStyle = '#10B981';
+        ctx.font = 'bold 20px Arial';
+        ctx.fillText('VERIFIED BY PAKEL MLBBSTORE', 450, 545);
+        ctx.font = '11px Arial';
         ctx.fillStyle = '#6B7280';
-        ctx.fillText('t.me/PakelMlbbOfficial', 450, 560);
+        ctx.fillText('t.me/PakelMlbbOfficial', 450, 572);
         return canvas.toDataURL('image/png');
     } catch(e) {
         console.error('Sertifikat error:', e);
@@ -3864,10 +3982,29 @@ function closeInbox() {
 }
 
 async function clearInbox() {
-    if (!confirm('Kosongkan semua pesan inbox?')) return;
+    /* clearInbox v2 — auto-close + toast bersih */
+    var konfirmasi = await showConfirmModal({
+        title: 'Kosongkan Inbox?',
+        desc: '<b style="color:#FBBF24;">Semua pesan inbox kamu akan dihapus permanen.</b><br><br>Tindakan ini tidak bisa dibatalkan.',
+        okText: '🗑️ YA, KOSONGKAN',
+        cancelText: '⬅️ BATAL',
+        okColor: 'red',
+        icon: '🗑️'
+    });
+    if (!konfirmasi) return;
+    
+    // Loading state
+    var list = document.getElementById('inboxList');
+    if (list) list.innerHTML = '<div class="inbox-empty">⏳ Menghapus pesan...</div>';
+    
     try {
         var cid = getInboxChatId();
-        if (!cid) { closeInbox(); return; }
+        if (!cid) {
+            closeInbox();
+            if (typeof showToast === 'function') showToast('⚠️ Login dulu untuk hapus inbox', 'warning', 3000);
+            return;
+        }
+        
         var r = await safeFetch(API_URL + '/api/inbox/clear', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -3877,12 +4014,20 @@ async function clearInbox() {
         if (j && j.status === 'OK') {
             _inboxCache = [];
             updateInboxBadge(0);
-            var list = document.getElementById('inboxList');
-            if (list) list.innerHTML = '<div class="inbox-empty">🗑️ Inbox dikosongkan</div>';
-            if (typeof showToast === 'function') showToast('✅ Inbox dikosongkan', 'success');
+            if (list) list.innerHTML = '<div class="inbox-empty" style="color:#10B981;">✅ Inbox dikosongkan</div>';
+            // Auto close modal setelah 1.2 detik
+            setTimeout(function() {
+                closeInbox();
+                if (typeof showToast === 'function') showToast('✅ Inbox berhasil dikosongkan', 'success', 3000);
+                if (typeof soundVoucher === 'function') soundVoucher();
+            }, 1200);
+        } else {
+            if (list) list.innerHTML = '<div class="inbox-empty" style="color:#EF4444;">❌ Gagal hapus inbox</div>';
+            if (typeof showToast === 'function') showToast('❌ Gagal hapus inbox', 'error', 3000);
         }
     } catch(e) {
-        if (typeof showToast === 'function') showToast('Gagal hapus inbox', 'error');
+        if (list) list.innerHTML = '<div class="inbox-empty" style="color:#EF4444;">❌ Koneksi error</div>';
+        if (typeof showToast === 'function') showToast('⚠️ Koneksi error, coba lagi', 'error', 3000);
     }
 }
 
@@ -3923,6 +4068,63 @@ setTimeout(function() {
     }, 30000);
 }, 3000);
 /* ===== END BATCH 3 JS ===== */
+
+
+/* ===== PAKEL SECURITY GUARD v2 ===== */
+(function() {
+    'use strict';
+    if (window._pakelSecInit) return;
+    window._pakelSecInit = true;
+    var _errCount = 0;
+    var _lastReport = 0;
+    var REPORT_COOLDOWN = 60000;
+
+    function reportError(type, message, file, line, col) {
+        try {
+            var now = Date.now();
+            if (now - _lastReport < REPORT_COOLDOWN) return;
+            _lastReport = now;
+            _errCount++;
+            var cid = '';
+            try { cid = localStorage.getItem('chat_id_apk') || localStorage.getItem('chat_id') || 'anon'; } catch(e) {}
+            fetch(API_URL + '/api/report-error', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    type: type,
+                    message: String(message || '').substring(0, 400),
+                    file: String(file || '').substring(0, 180),
+                    line: String(line || ''),
+                    chat_id: cid
+                })
+            }).catch(function(){});
+        } catch(e) {}
+    }
+
+    window.addEventListener('error', function(e) {
+        try {
+            reportError('JS_ERROR', e.message, e.filename, e.lineno, e.colno);
+        } catch(err) {}
+    });
+
+    window.addEventListener('unhandledrejection', function(e) {
+        try {
+            var msg = (e.reason && e.reason.message) ? e.reason.message : String(e.reason || '');
+            reportError('PROMISE_REJECT', msg, '', '', '');
+        } catch(err) {}
+    });
+
+    setInterval(function() {
+        try {
+            if (_errCount > 0 && _errCount % 5 === 0) {
+                console.log('[SEC] ' + _errCount + ' errors logged');
+            }
+        } catch(e) {}
+    }, 60000);
+
+    console.log('%c🔒 PAKEL SECURITY GUARD v2 — ACTIVE', 'color:#10B981; font-weight:900; font-size:13px;');
+})();
+/* ===== END SECURITY GUARD ===== */
 
 </script>
 
