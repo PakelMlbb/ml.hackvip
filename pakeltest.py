@@ -145,7 +145,8 @@ FAQ_RESPONSES = {
 }
 
 processing_lock = set()
-pending_poin_edit = {}  # {admin_chat_id: {'target': user_id, 'ts': timestamp}}
+pending_poin_edit = {}
+pending_harga_edit = {}  # {admin_chat_id: {'target': user_id, 'ts': timestamp}}
 pending_flow = {}
 last_command_time = {}
 last_callback_time = {}
@@ -1702,6 +1703,7 @@ def update_order_status_by_resi(resi_target, status_baru):
             target_chat_id = None
             target_payment = "TRANSFER"
             target_paket_nama = ""
+            target_paket_harga = ""
             current_status_db = ""
             rows = []
             for parts in _read_all_orders():
@@ -1716,6 +1718,7 @@ def update_order_status_by_resi(resi_target, status_baru):
                     target_chat_id = chat_id
                     target_payment = pay_method
                     target_paket_nama = paket
+                    target_paket_harga = harga
                     current_status_db = status
                     if status != "PENDING":
                         rows.append('|'.join(parts) + "\n")
@@ -1731,6 +1734,14 @@ def update_order_status_by_resi(resi_target, status_baru):
                 if target_chat_id and current_status_db == "PENDING":
                     if status_baru == "BERHASIL":
                         set_user_coupon_status(target_chat_id, "USED")
+                        try:
+                            _write_testimoni_real(target_chat_id, target_paket_nama, target_paket_harga if 'target_paket_harga' in dir() else "", target_payment)
+                        except Exception:
+                            pass
+                        try:
+                            _write_inbox(target_chat_id, "order_acc", "🎉 Pesanan di-ACC!", "Paket " + str(target_paket_nama) + " - " + str(target_paket_harga))
+                        except Exception:
+                            pass
                         if target_payment != "POIN":
                             _, multiplier, _ = get_user_tier(target_chat_id)
                             bonus = int(10 * multiplier)
@@ -1745,6 +1756,12 @@ def update_order_status_by_resi(resi_target, status_baru):
                         check_tier_upgrade(target_chat_id)
                     elif status_baru in ["DITOLAK", "EXPIRED", "CANCELLED"]:
                         set_user_coupon_status(target_chat_id, "AVAILABLE")
+                        try:
+                            _tipe_map = {"DITOLAK": "order_reject", "EXPIRED": "order_expired", "CANCELLED": "order_cancel"}
+                            _msg_map = {"DITOLAK": "❌ Pesanan ditolak. Hubungi admin.", "EXPIRED": "⏰ Pesanan expired. Order ulang ya.", "CANCELLED": "🚫 Pesanan dibatalkan."}
+                            _write_inbox(target_chat_id, _tipe_map.get(status_baru, "order_reject"), "Status Pesanan: " + status_baru, _msg_map.get(status_baru, ""))
+                        except Exception:
+                            pass
                     try:
                         marker = f".reminded_{resi_target}"
                         if os.path.exists(marker):
@@ -2439,22 +2456,43 @@ def _kirim_profil_akun(chat_id, message_id, user, l='id'):
         bot.send_message(chat_id, text, parse_mode="HTML", reply_markup=markup,
                          disable_web_page_preview=True)
 
+def _get_all_paket_sorted():
+    """Ambil semua paket (default + custom minus blacklist) urut default-dulu."""
+    allp = get_all_paket_combined()
+    # Urutkan: default dulu (sesuai urutan MASTER_PAKET), custom kemudian
+    default_order = list(MASTER_PAKET.keys())
+    defaults = [k for k in default_order if k in allp]
+    customs = sorted([k for k in allp.keys() if k not in MASTER_PAKET])
+    ordered = defaults + customs
+    return [(k, allp[k]) for k in ordered]
+
+
+def _get_katalog_page(part):
+    """Ambil 4 paket untuk halaman `part`."""
+    all_paket = _get_all_paket_sorted()
+    PER_PAGE = 4
+    total = len(all_paket)
+    total_pages = max(1, (total + PER_PAGE - 1) // PER_PAGE)
+    if part < 1:
+        part = 1
+    if part > total_pages:
+        part = total_pages
+    start = (part - 1) * PER_PAGE
+    end = start + PER_PAGE
+    return all_paket[start:end], part, total_pages, total
+
+
 def build_katalog_markup(part, l='id'):
     t = TRANSLATIONS.get(l, TRANSLATIONS['id'])
     markup = types.InlineKeyboardMarkup(row_width=2)
 
-    if part == 1:
-        paket_urutan = ['buy_natural', 'buy_light', 'buy_semisafe', 'buy_lifetimesafe']
-        next_btn_text = t['next_1']
-        nav_cb = 'katalog_part2'
-    else:
-        paket_urutan = ['buy_sultan', 'buy_pro', 'buy_semiprivate', 'buy_permanent']
-        next_btn_text = t['prev_2']
-        nav_cb = 'katalog_part1'
+    paket_page, current_part, total_pages, total_paket = _get_katalog_page(part)
 
-    for code in paket_urutan:
-        nama, harga_angka, harga_str, poin, _ = MASTER_PAKET[code]
-        stok = get_stock(code)
+    # Tombol paket
+    for kode, p in paket_page:
+        nama = p['nama']
+        harga = p['harga']
+        stok = get_stock(kode)
         if stok <= 0:
             stok_emoji = "❌"
         elif stok < 20:
@@ -2463,53 +2501,75 @@ def build_katalog_markup(part, l='id'):
             stok_emoji = "⚠️"
         else:
             stok_emoji = "📦"
-        btn_label = f"🛒 {nama.split('(')[0].strip()}\n💰 {harga_str} | {stok_emoji} {stok}"
-        markup.add(types.InlineKeyboardButton(btn_label, callback_data=code))
+        is_custom = p.get('is_custom', False)
+        prefix = "🆕" if is_custom else "🛒"
+        harga_str = "Rp " + format(harga, ",").replace(",", ".")
+        btn_label = f"{prefix} {nama.split('(')[0].strip()}\n💰 {harga_str} | {stok_emoji} {stok}"
+        markup.add(types.InlineKeyboardButton(btn_label, callback_data=kode))
 
-    markup.add(types.InlineKeyboardButton(next_btn_text, callback_data=nav_cb))
+    # Navigasi halaman
+    nav_row = []
+    if current_part > 1:
+        nav_row.append(types.InlineKeyboardButton("◀️ Sebelumnya", callback_data=f"katalog_page_{current_part - 1}"))
+    if current_part < total_pages:
+        nav_row.append(types.InlineKeyboardButton("▶️ Selanjutnya", callback_data=f"katalog_page_{current_part + 1}"))
+    if nav_row:
+        markup.add(*nav_row)
+
     markup.add(types.InlineKeyboardButton(t['back'], callback_data='menu_utama'))
     return markup
 
+
 def build_katalog_text(part, user, l='id', coupon_status="AVAILABLE"):
     t = TRANSLATIONS.get(l, TRANSLATIONS['id'])
-    if part == 1:
-        paket_urutan = ['buy_natural', 'buy_light', 'buy_semisafe', 'buy_lifetimesafe']
-        title = t['cat_title_1'].format(name=user.first_name)
-    else:
-        paket_urutan = ['buy_sultan', 'buy_pro', 'buy_semiprivate', 'buy_permanent']
-        title = t['cat_title_2'].format(name=user.first_name)
+    paket_page, current_part, total_pages, total_paket = _get_katalog_page(part)
 
-    text = f"{title}\n\n{t['bonus_txt']}\n\n"
+    if current_part == 1:
+        title = f"🔥 <b>KATALOG VIP — BAGIAN 1/{total_pages}</b> (Kak {user.first_name}) 🔥\n<i>(Custom Damage High-Tier & Fair Play Anti-Detect)</i>"
+    elif current_part == 2:
+        title = f"👑 <b>KATALOG VIP — BAGIAN 2/{total_pages}</b> (Kak {user.first_name}) 👑\n<i>(Sultan One Hit Instan & Dominasi Mutlak)</i>"
+    else:
+        title = f"🆕 <b>KATALOG VIP — BAGIAN {current_part}/{total_pages}</b> (Kak {user.first_name}) 🆕\n<i>(Paket Spesial & Custom)</i>"
+
+    text = f"{title}\n\n"
+    if current_part == 1:
+        text += t['bonus_txt'] + "\n\n"
     text += "━━━━━━━━━━━━━━━━━━━\n\n"
 
-    for code in paket_urutan:
-        nama, harga_angka, harga_str, poin, deskripsi = MASTER_PAKET[code]
-        stok = get_stock(code)
+    for kode, p in paket_page:
+        nama = p['nama']
+        harga_angka = p['harga']
+        poin = p['poin']
+        deskripsi = p['deskripsi']
+        harga_str = "Rp " + format(harga_angka, ",").replace(",", ".")
+        stok = get_stock(kode)
         stok_label = format_stock_label(stok)
-        # FIX v12: Flash Sale prioritas
+        is_custom = p.get('is_custom', False)
+        custom_badge = " 🆕" if is_custom else ""
+
         fs_diskon, _fs_sisa = get_active_flashsale()
         if fs_diskon > 0:
-            harga_flashsale = int(harga_angka * (100 - fs_diskon) / 100)
+            harga_fs = int(harga_angka * (100 - fs_diskon) / 100)
             text += (
-                f"👑 <b>{nama}</b>\n"
+                f"👑 <b>{nama}</b>{custom_badge}\n"
                 f"   ⚡ <b>FLASH SALE {fs_diskon}%!</b>\n"
-                f"   💵 Harga: <s>{harga_str}</s> <b>Rp {harga_flashsale:,}</b>\n"
+                f"   💵 Harga: <s>{harga_str}</s> <b>Rp {format(harga_fs, ',').replace(',', '.')}</b>\n"
                 f"   🪙 Atau Tukar: <b>{poin} Poin</b>\n"
                 f"   {stok_label}\n"
                 f"   {deskripsi}\n\n"
             )
-        elif coupon_status == "AVAILABLE":
+        elif coupon_status == "AVAILABLE" and not is_custom:
             harga_promo = harga_angka - 10000
             text += (
-                f"👑 <b>{nama}</b>\n"
-                f"   💵 Harga: <s>{harga_str}</s> <b>Rp {harga_promo:,}</b> <i>(Hemat Rp 10.000)</i>\n"
+                f"👑 <b>{nama}</b>{custom_badge}\n"
+                f"   💵 Harga: <s>{harga_str}</s> <b>Rp {format(harga_promo, ',').replace(',', '.')}</b> <i>(Hemat Rp 10.000)</i>\n"
                 f"   🪙 Atau Tukar: <b>{poin} Poin</b>\n"
                 f"   {stok_label}\n"
                 f"   {deskripsi}\n\n"
             )
         else:
             text += (
-                f"👑 <b>{nama}</b>\n"
+                f"👑 <b>{nama}</b>{custom_badge}\n"
                 f"   💵 Harga: <b>{harga_str}</b>\n"
                 f"   🪙 Atau Tukar: <b>{poin} Poin</b>\n"
                 f"   {stok_label}\n"
@@ -2520,6 +2580,7 @@ def build_katalog_text(part, user, l='id', coupon_status="AVAILABLE"):
     if coupon_status == "AVAILABLE":
         text += "\n🎁 <b>INFO PROMO:</b> Anda punya hak potong harga spesial member baru otomatis!"
     return text
+
 
 # =====================================================================================
 #  BAGIAN 7: COMMAND HANDLERS
@@ -3009,6 +3070,10 @@ def cmd_flashsale(message):
         args=(diskon, durasi_jam),
         daemon=True
     ).start()
+    try:
+        _write_inbox_all_users("flashsale", "⚡ FLASH SALE " + str(diskon) + "%", "Diskon " + str(diskon) + "% semua paket berlaku " + str(durasi_jam) + " jam!")
+    except Exception:
+        pass
 
 
 @bot.message_handler(commands=['buatvoucher'])
@@ -3421,6 +3486,10 @@ def broadcast_message(message):
             time.sleep(0.05)
         except Exception:
             pass
+    try:
+        _write_inbox_all_users("bc", "📢 Pengumuman Resmi", pesan_bc[:250])
+    except Exception:
+        pass
     bot.send_message(message.chat.id, f"✅ Broadcast selesai. Berhasil: {success}")
 
 @bot.message_handler(commands=['bcs'])
@@ -3668,6 +3737,198 @@ def mask_username(username):
         masked = name_part[:keep_len] + "***"
     return f"@{masked}"
 
+
+
+
+
+
+
+# ═══════════════════════════════════════════════════════════
+#  SECURITY GUARD v2 — Spam + Error + Anomali
+# ═══════════════════════════════════════════════════════════
+_spam_tracker = {}  # {chat_id: [timestamps]}
+_SPAM_WINDOW = 60   # detik
+_SPAM_MAX_MSG = 15  # max pesan per window
+_BLOCK_DURATION = 900  # 15 menit
+
+
+def _spam_guard(chat_id):
+    """Return True kalau user spam (harus di-block sementara)."""
+    now = time.time()
+    cid = str(chat_id)
+    arr = _spam_tracker.get(cid, [])
+    arr = [t for t in arr if now - t < _SPAM_WINDOW]
+    arr.append(now)
+    _spam_tracker[cid] = arr
+    if len(arr) >= _SPAM_MAX_MSG:
+        try:
+            with _safe_lock("blocked"):
+                existing = {}
+                if os.path.exists(F_BLOCKED):
+                    with open(F_BLOCKED, "r") as f:
+                        for ln in f:
+                            p = ln.strip().split('|')
+                            if len(p) == 2:
+                                try:
+                                    existing[p[0]] = int(p[1])
+                                except ValueError:
+                                    pass
+                existing[cid] = int(now + _BLOCK_DURATION)
+                with open(F_BLOCKED, "w") as f:
+                    for k, v in existing.items():
+                        f.write(k + "|" + str(v) + "\n")
+        except Exception as e:
+            log_error("_spam_guard_block", e)
+        try:
+            with open(F_SPAM_LOG, "a") as f:
+                now_str = datetime.now(WIB).strftime('%d-%m-%Y %H:%M:%S')
+                f.write(now_str + " | " + cid + " | " + str(len(arr)) + " msgs in " + str(_SPAM_WINDOW) + "s\n")
+        except Exception:
+            pass
+        try:
+            bot.send_message(ADMIN_TELEGRAM_ID,
+                "🚨 <b>SPAM DETECTED!</b>\n\nUser: <code>" + cid + "</code>\nTotal: <b>" + str(len(arr)) + " pesan</b> dalam " + str(_SPAM_WINDOW) + " detik\n\nUser diblokir sementara 15 menit.",
+                parse_mode="HTML")
+        except Exception:
+            pass
+        return True
+    return False
+
+
+def _is_blocked_temp(chat_id):
+    """Cek apakah user masih dalam masa block sementara."""
+    try:
+        if not os.path.exists(F_BLOCKED):
+            return False
+        cid = str(chat_id)
+        now = time.time()
+        with open(F_BLOCKED, "r") as f:
+            for ln in f:
+                p = ln.strip().split('|')
+                if len(p) == 2 and p[0] == cid:
+                    try:
+                        if int(p[1]) > now:
+                            return True
+                    except ValueError:
+                        pass
+        return False
+    except Exception:
+        return False
+
+
+def _cleanup_blocked():
+    """Hapus block yang expired."""
+    try:
+        if not os.path.exists(F_BLOCKED):
+            return
+        now = time.time()
+        with _safe_lock("blocked"):
+            kept = []
+            with open(F_BLOCKED, "r") as f:
+                for ln in f:
+                    p = ln.strip().split('|')
+                    if len(p) == 2:
+                        try:
+                            if int(p[1]) > now:
+                                kept.append(ln.strip() + "\n")
+                        except ValueError:
+                            pass
+            with open(F_BLOCKED, "w") as f:
+                f.writelines(kept)
+    except Exception as e:
+        log_error("_cleanup_blocked", e)
+
+
+def _security_health_monitor():
+    """Thread background: cek file integrity tiap 5 menit."""
+    time.sleep(60)
+    while True:
+        try:
+            checks = []
+            files_check = [F_ORDERS, F_POINTS, F_USERS, F_STOCKS, F_CUSTOM_PAKET]
+            for fp in files_check:
+                if os.path.exists(fp):
+                    try:
+                        sz = os.path.getsize(fp)
+                        checks.append((os.path.basename(fp), sz, "OK"))
+                    except Exception:
+                        checks.append((os.path.basename(fp), 0, "ERR"))
+                else:
+                    checks.append((os.path.basename(fp), 0, "MISSING"))
+            miss = [c[0] for c in checks if c[2] != "OK"]
+            if miss:
+                try:
+                    bot.send_message(ADMIN_TELEGRAM_ID,
+                        "⚠️ <b>HEALTH WARNING</b>\n\nFile bermasalah:\n" + "\n".join("• " + m for m in miss),
+                        parse_mode="HTML")
+                except Exception:
+                    pass
+            _cleanup_blocked()
+        except Exception as e:
+            log_error("_security_health_monitor", e)
+        time.sleep(300)
+
+
+threading.Thread(target=_security_health_monitor, daemon=True).start()
+
+def _write_inbox(chat_id, tipe, title, body):
+    """Tulis 1 pesan inbox ke user. Auto-cleanup kalau >5000 lines."""
+    try:
+        with _safe_lock("inbox"):
+            title_clean = str(title).replace("|", "/").replace("\n", " ").replace("\r", " ").strip()
+            body_clean = str(body).replace("|", "/").replace("\n", " ").replace("\r", " ").strip()
+            if len(title_clean) > 80: title_clean = title_clean[:77] + "..."
+            if len(body_clean) > 300: body_clean = body_clean[:297] + "..."
+            line = str(chat_id) + "|" + str(tipe) + "|" + title_clean + "|" + body_clean + "|" + str(int(time.time())) + "\n"
+            with open(F_INBOX, "a") as f:
+                f.write(line)
+            try:
+                if os.path.getsize(F_INBOX) > 500000:
+                    with open(F_INBOX, "r") as f:
+                        all_lines = f.readlines()
+                    if len(all_lines) > 5000:
+                        with open(F_INBOX, "w") as f:
+                            f.writelines(all_lines[-3000:])
+            except Exception:
+                pass
+    except Exception as e:
+        log_error("_write_inbox", e)
+
+
+def _write_inbox_all_users(tipe, title, body):
+    """Broadcast inbox ke semua user."""
+    try:
+        with open(F_USERS, "r") as f:
+            users = [ln.strip() for ln in f if ln.strip() and not ln.startswith('-')]
+        for uid in set(users):
+            _write_inbox(uid, tipe, title, body)
+    except FileNotFoundError:
+        pass
+    except Exception as e:
+        log_error("_write_inbox_all_users", e)
+
+
+def _write_testimoni_real(chat_id, paket, harga, metode):
+    """Tulis testimoni real saat ACC order."""
+    try:
+        with _safe_lock("testimoni"):
+            try:
+                info = bot.get_chat(int(chat_id))
+                if info.username:
+                    raw = "@" + info.username
+                else:
+                    raw = info.first_name or "User"
+            except Exception:
+                raw = "User***"
+            masked = mask_username(raw)
+            ts = int(time.time())
+            line = chat_id + "|" + masked + "|" + paket + "|" + harga + "|" + str(ts) + "|" + metode + "\n"
+            with open(F_TESTIMONI, "a") as f:
+                f.write(line)
+    except Exception as e:
+        log_error("_write_testimoni_real", e)
+
+
 def generate_real_testimonial(chat_id, resi_target):
     now = datetime.now(WIB)
     current_hour = now.hour
@@ -3723,6 +3984,11 @@ def callback_handler_master(call):
     # ===== TAMBAHAN CUSTOM PAKET v1.0 =====
     if call.data and call.data.startswith(('cp_del_', 'cp_conf_', 'cp_cancel')):
         return handle_custom_paket_cb(call)
+
+    # ===== EDIT PAKET (harga/poin) =====
+    if call.data and call.data.startswith('cpk_'):
+        return handle_custompaket_cb(call)
+    # ===== END EDIT PAKET =====
     # ===== END TAMBAHAN =====
 
     # ===== EDIT POIN USER (admin only) =====
@@ -3769,6 +4035,14 @@ def callback_handler_master(call):
     data = call.data
 
     if is_banned(chat_id):
+        return
+
+    if _is_blocked_temp(chat_id):
+        bot.answer_callback_query(call.id, "🚫 Kamu diblokir sementara. Coba 15 menit lagi.", show_alert=True)
+        return
+
+    if _spam_guard(chat_id):
+        bot.answer_callback_query(call.id, "🚨 Spam terdeteksi! Blokir 15 menit.", show_alert=True)
         return
 
     if is_spam_callback(chat_id):
@@ -4167,8 +4441,8 @@ def callback_handler_master(call):
                                   reply_markup=get_back_markup(l))
             return
 
-        elif data in ('menu_katalog', 'katalog_part1'):
-            loading_toast(call.id, "⏳ Memuat katalog 1...")
+        elif data == 'menu_katalog':
+            loading_toast(call.id, "⏳ Memuat katalog...")
             try:
                 coupon_status = get_user_coupon_status(chat_id)
                 markup = build_katalog_markup(1, l)
@@ -4177,20 +4451,28 @@ def callback_handler_master(call):
                                       reply_markup=markup, parse_mode="HTML",
                                       disable_web_page_preview=True)
             except Exception as e:
-                log_error("katalog_part1", e)
+                log_error("menu_katalog", e)
             return
 
-        elif data == 'katalog_part2':
-            loading_toast(call.id, "⏳ Memuat katalog 2...")
+        elif data.startswith('katalog_page_') or data.startswith('katalog_part'):
+            # Support backward compat: katalog_part1, katalog_part2 (lama)
+            try:
+                if data.startswith('katalog_page_'):
+                    part_num = int(data.replace('katalog_page_', ''))
+                else:
+                    part_num = int(data.replace('katalog_part', ''))
+            except ValueError:
+                part_num = 1
+            loading_toast(call.id, f"⏳ Memuat katalog {part_num}...")
             try:
                 coupon_status = get_user_coupon_status(chat_id)
-                markup = build_katalog_markup(2, l)
-                katalog_text = build_katalog_text(2, user, l, coupon_status)
+                markup = build_katalog_markup(part_num, l)
+                katalog_text = build_katalog_text(part_num, user, l, coupon_status)
                 bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=katalog_text,
                                       reply_markup=markup, parse_mode="HTML",
                                       disable_web_page_preview=True)
             except Exception as e:
-                log_error("katalog_part2", e)
+                log_error(f"katalog_page_{part_num}", e)
             return
 
         elif data in MASTER_PAKET:
@@ -4699,7 +4981,54 @@ def handle_text_and_reviews(message):
     chat_id = message.chat.id
     if message.chat.type != 'private':
         return
+    # ===== SPAM GUARD DI TEXT HANDLER =====
+    if _is_blocked_temp(chat_id):
+        try:
+            bot.reply_to(message, "🚫 Kamu diblokir sementara. Coba lagi 15 menit.", disable_web_page_preview=True)
+        except Exception:
+            pass
+        return
+    if _spam_guard(chat_id):
+        try:
+            bot.reply_to(message, "🚨 Spam terdeteksi! Kamu diblokir 15 menit.", disable_web_page_preview=True)
+        except Exception:
+            pass
+        return
+    # ===== END SPAM GUARD =====
+
     
+    # ===== PENDING EDIT HARGA/POIN =====
+    if chat_id == ADMIN_TELEGRAM_ID and chat_id in pending_harga_edit:
+        state = pending_harga_edit[chat_id]
+        if time.time() - state.get('ts', 0) > 300:
+            del pending_harga_edit[chat_id]
+            bot.reply_to(message, "Sesi expired. Ketik /custompaket lagi.")
+            return
+        raw = (message.text or '').strip().lower()
+        if raw == 'cancel':
+            del pending_harga_edit[chat_id]
+            bot.reply_to(message, "Edit dibatalkan.")
+            return
+        try:
+            val = int(raw)
+            if val < 0:
+                raise ValueError
+        except ValueError:
+            bot.reply_to(message, "Kirim angka. Contoh: <code>50000</code> atau <code>cancel</code>.", parse_mode="HTML")
+            return
+        kode = state['kode']
+        field = state['field']
+        res = set_paket_override_field(kode, field, val)
+        del pending_harga_edit[chat_id]
+        if res:
+            fl = "HARGA" if field == 'harga' else "POIN"
+            vd = ("Rp " + format(val, ',').replace(',', '.')) if field == 'harga' else str(val)
+            bot.reply_to(message, "OK " + fl + " <code>" + kode + "</code> -> <b>" + vd + "</b>", parse_mode="HTML")
+        else:
+            bot.reply_to(message, "Gagal simpan.")
+        return
+    # ===== END PENDING EDIT HARGA/POIN =====
+
     # ===== CEK PENDING EDIT POIN (ADMIN) =====
     if chat_id == ADMIN_TELEGRAM_ID and chat_id in pending_poin_edit:
         state = pending_poin_edit[chat_id]
@@ -5000,11 +5329,71 @@ print("[INFO] Pakel MlbbStore v10 VOUCHER-MGMT + AUTO-BC Edition Berhasil Dijala
 # =====================================================================================
 
 F_CUSTOM_PAKET = os.path.join(DATA_DIR, "custom_paket.txt")
+F_PAKET_OVERRIDE = os.path.join(DATA_DIR, "paket_override.txt")
 F_BLACKLIST = os.path.join(DATA_DIR, "blacklist_paket.txt")
 F_RESTOCK_LOG = os.path.join(DATA_DIR, "restock_log.txt")
+F_TESTIMONI = os.path.join(DATA_DIR, "testimoni.txt")
+F_INBOX = os.path.join(DATA_DIR, "inbox.txt")
+F_ERROR_LOG_API = os.path.join(DATA_DIR, "client_errors.txt")
+F_SPAM_LOG = os.path.join(DATA_DIR, "spam_log.txt")
+F_BLOCKED = os.path.join(DATA_DIR, "blocked_temp.txt")
 
 
 # ---- HELPER: BACA/SIMPAN CUSTOM PAKET ----
+
+def read_paket_override():
+    ov = {}
+    try:
+        if not os.path.exists(F_PAKET_OVERRIDE):
+            return ov
+        with open(F_PAKET_OVERRIDE, "r") as f:
+            for line in f:
+                parts = line.strip().split('|')
+                if len(parts) == 3:
+                    try:
+                        ov[parts[0]] = {'harga': int(parts[1]), 'poin': int(parts[2])}
+                    except ValueError:
+                        pass
+    except Exception as e:
+        log_error("read_paket_override", e)
+    return ov
+
+
+def write_paket_override(ov):
+    try:
+        tmp = F_PAKET_OVERRIDE + ".tmp"
+        with open(tmp, "w") as f:
+            for k, v in ov.items():
+                f.write(k + "|" + str(v['harga']) + "|" + str(v['poin']) + "\n")
+        os.replace(tmp, F_PAKET_OVERRIDE)
+        return True
+    except Exception as e:
+        log_error("write_paket_override", e)
+        return False
+
+
+def _get_base_paket_values(kode):
+    if kode in MASTER_PAKET:
+        n, h, hs, p, d = MASTER_PAKET[kode]
+        return h, p
+    custom = read_custom_paket()
+    if kode in custom:
+        return custom[kode]['harga'], custom[kode]['poin']
+    return None, None
+
+
+def set_paket_override_field(kode, field, value):
+    with _safe_lock("paket_override"):
+        ov = read_paket_override()
+        if kode not in ov:
+            base_h, base_p = _get_base_paket_values(kode)
+            if base_h is None:
+                return False
+            ov[kode] = {'harga': base_h, 'poin': base_p}
+        ov[kode][field] = int(value)
+        return write_paket_override(ov)
+
+
 def read_custom_paket():
     """Baca custom paket — robust, skip line rusak."""
     paket = {}
@@ -5210,6 +5599,44 @@ def cmd_buatpaket(message):
         if harga <= 0:
             bot.reply_to(message, "❌ Harga harus > 0")
             return
+        # ==== VALIDASI LENGKAP ====
+        import re as _re
+        if not _re.match(r'^[a-z0-9_]+$', kode):
+            bot.reply_to(message, "❌ Kode tidak valid! Hanya boleh: a-z, 0-9, _. Contoh: buy_mega")
+            return
+        if len(kode) < 3 or len(kode) > 30:
+            bot.reply_to(message, "❌ Kode harus 3-30 karakter.")
+            return
+        nama = nama.replace('\n', ' ').replace('\r', ' ').strip()
+        if len(nama) < 3 or len(nama) > 80:
+            bot.reply_to(message, "❌ Nama harus 3-80 karakter.")
+            return
+        if harga <= 0 or harga > 100000000:
+            bot.reply_to(message, "❌ Harga harus 1 - 100.000.000.")
+            return
+        if poin < 0 or poin > 100000:
+            bot.reply_to(message, "❌ Poin harus 0 - 100.000.")
+            return
+        if stok < 0 or stok > 100000:
+            bot.reply_to(message, "❌ Stok harus 0 - 100.000.")
+            return
+        deskripsi = deskripsi.replace('\n', ' ').replace('\r', ' ').strip()
+        if len(deskripsi) > 500:
+            deskripsi = deskripsi[:497] + "..."
+        if len(deskripsi) < 3:
+            deskripsi = "🎯 Paket custom"
+        # Cek duplikat
+        if kode in MASTER_PAKET:
+            bot.reply_to(message, "❌ Kode <code>" + kode + "</code> bentrok dengan paket default!", parse_mode="HTML")
+            return
+        try:
+            _existing = read_custom_paket()
+            if kode in _existing:
+                bot.reply_to(message, "❌ Kode <code>" + kode + "</code> udah ada!", parse_mode="HTML")
+                return
+        except Exception:
+            pass
+        # ==== END VALIDASI ====
         data = {'nama': nama, 'harga': harga, 'poin': poin, 'deskripsi': deskripsi, 'kategori': kategori, 'stok': stok}
         saved, err = _atomic_add_custom_paket(kode, data)
         if not saved:
@@ -5217,6 +5644,8 @@ def cmd_buatpaket(message):
             return
         _atomic_set_stock(kode, stok)
         if saved:
+            _total_paket = len(_get_all_paket_sorted())
+            _total_pages = max(1, (_total_paket + 3) // 4)
             bot.reply_to(message,
                 f"✅ <b>PAKET BERHASIL DIBUAT!</b>\n\n"
                 f"📦 Kode: <code>{kode}</code>\n"
@@ -5225,7 +5654,10 @@ def cmd_buatpaket(message):
                 f"🪙 Poin: {poin}\n"
                 f"📁 Kategori: {kategori}\n"
                 f"📊 Stok: {stok}\n\n"
-                f"💡 Paket langsung muncul di APK & bot!",
+                f"🌐 <b>AUTO-SYNC:</b>\n"
+                f"  ✅ Bot: /katalog → halaman <b>terakhir</b>\n"
+                f"  ✅ APK PakelStore (auto-refresh 60s)\n"
+                f"\n📊 Total: <b>{_total_paket} paket</b> ({_total_pages} halaman)",
                 parse_mode="HTML")
             print(f"[BOT] ✅ Custom paket dibuat: {kode}")
         else:
@@ -5521,6 +5953,123 @@ def cmd_hapus_poin_user(message):
 #  COMMAND: /fixcustompaket — Bersihin custom_paket.txt dari baris rusak
 # =====================================================================================
 @bot.message_handler(commands=['fixcustompaket'])
+
+
+@bot.message_handler(commands=['cleartestimoni'])
+
+
+@bot.message_handler(commands=['clearinbox'])
+
+
+@bot.message_handler(commands=['securitystatus', 'secstat'])
+def cmd_securitystatus(message):
+    if not is_super_admin(message.chat.id):
+        return
+    try:
+        blocked_count = 0
+        now = time.time()
+        if os.path.exists(F_BLOCKED):
+            with open(F_BLOCKED, "r") as f:
+                for ln in f:
+                    p = ln.strip().split('|')
+                    if len(p) == 2:
+                        try:
+                            if int(p[1]) > now:
+                                blocked_count += 1
+                        except ValueError:
+                            pass
+        error_count = 0
+        if os.path.exists(F_ERROR_LOG_API):
+            with open(F_ERROR_LOG_API, "r") as f:
+                error_count = len([ln for ln in f if ln.strip()])
+        spam_count = 0
+        if os.path.exists(F_SPAM_LOG):
+            with open(F_SPAM_LOG, "r") as f:
+                spam_count = len([ln for ln in f if ln.strip()])
+        text = (
+            "🛡️ <b>SECURITY STATUS</b>\n\n"
+            "🚫 User di-block: <b>" + str(blocked_count) + "</b>\n"
+            "⚠️ Error client: <b>" + str(error_count) + "</b>\n"
+            "🚨 Spam logs: <b>" + str(spam_count) + "</b>\n\n"
+            "💡 Lapisan aktif:\n"
+            "• Global Error Catcher ✅\n"
+            "• Spam Guard ✅\n"
+            "• Health Monitor ✅\n"
+            "• Auto-Report Admin ✅\n"
+            "• Auto-Block 15 menit ✅"
+        )
+        bot.reply_to(message, text, parse_mode="HTML")
+    except Exception as e:
+        bot.reply_to(message, "Gagal: " + str(e))
+
+
+@bot.message_handler(commands=['unblock'])
+def cmd_unblock(message):
+    if not is_super_admin(message.chat.id):
+        return
+    args = message.text.replace('/unblock', '').strip().split()
+    if not args:
+        bot.reply_to(message, "Format: /unblock USER_ID")
+        return
+    uid = args[0].strip()
+    try:
+        if os.path.exists(F_BLOCKED):
+            with open(F_BLOCKED, "r") as f:
+                lines = [ln for ln in f if ln.strip()]
+            kept = [ln for ln in lines if not ln.startswith(uid + "|")]
+            with open(F_BLOCKED, "w") as f:
+                f.writelines(kept)
+        _spam_tracker.pop(uid, None)
+        bot.reply_to(message, "OK User " + uid + " di-unblock.")
+    except Exception as e:
+        bot.reply_to(message, "Gagal: " + str(e))
+
+
+def cmd_clearinbox(message):
+    if not is_super_admin(message.chat.id):
+        return
+    try:
+        if os.path.exists(F_INBOX):
+            os.remove(F_INBOX)
+        bot.reply_to(message, "OK Inbox semua user dihapus.")
+    except Exception as e:
+        bot.reply_to(message, "Gagal: " + str(e))
+
+
+@bot.message_handler(commands=['inboxstats'])
+def cmd_inboxstats(message):
+    if not is_super_admin(message.chat.id):
+        return
+    try:
+        if not os.path.exists(F_INBOX):
+            bot.reply_to(message, "Belum ada inbox.")
+            return
+        with open(F_INBOX, "r") as f:
+            lines = [ln for ln in f if ln.strip()]
+        counts = {}
+        for ln in lines:
+            p = ln.split('|')
+            if len(p) >= 2:
+                counts[p[1]] = counts.get(p[1], 0) + 1
+        text = "📬 <b>STATISTIK INBOX</b>\\n\\nTotal pesan: <b>" + str(len(lines)) + "</b>\\n\\n"
+        for k, v in sorted(counts.items(), key=lambda x: -x[1]):
+            text += "• " + k + ": <b>" + str(v) + "</b>\\n"
+        bot.reply_to(message, text, parse_mode="HTML")
+    except Exception as e:
+        bot.reply_to(message, "Gagal: " + str(e))
+
+
+def cmd_cleartestimoni(message):
+    if not is_super_admin(message.chat.id):
+        return
+    try:
+        if os.path.exists(F_TESTIMONI):
+            os.remove(F_TESTIMONI)
+        bot.reply_to(message, "OK Testimoni real dihapus. Mulai dari kosong lagi.")
+    except Exception as e:
+        bot.reply_to(message, "Gagal: " + str(e))
+
+
 def cmd_fixcustompaket(message):
     if not is_super_admin(message.chat.id):
         return
@@ -5566,6 +6115,124 @@ def cmd_fixcustompaket(message):
 # =====================================================================================
 #  CALLBACK: Custom Paket Hapus (dipanggil dari callback_handler_master)
 # =====================================================================================
+
+@bot.message_handler(commands=['custompaket', 'editpaket'])
+def cmd_custompaket(message):
+    if not is_super_admin(message.chat.id):
+        bot.reply_to(message, "⚠️ Command khusus admin utama!")
+        return
+    all_paket = get_all_paket_combined()
+    if not all_paket:
+        bot.reply_to(message, "📭 Belum ada paket.")
+        return
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    for kode, p in all_paket.items():
+        is_custom = p.get('is_custom', False)
+        emoji = "\U0001F195" if is_custom else "\U0001F4E6"
+        label = emoji + " " + p['nama'] + " — Rp " + format(p['harga'], ',').replace(',', '.') + " | " + str(p['poin']) + " Poin"
+        if len(label) > 60:
+            label = label[:57] + "..."
+        markup.add(types.InlineKeyboardButton(label, callback_data="cpk_show_" + kode))
+    bot.reply_to(message,
+        "✏️ <b>EDIT PAKET</b>\n\n"
+        "Total: <b>" + str(len(all_paket)) + "</b> paket\n"
+        "Pilih paket yang mau di-edit harga/poinnya:",
+        reply_markup=markup, parse_mode="HTML")
+
+
+
+def handle_custompaket_cb(call):
+    data = call.data
+    chat_id = call.message.chat.id
+    message_id = call.message.message_id
+    try:
+        if data.startswith('cpk_show_'):
+            kode = data.replace('cpk_show_', '')
+            allp = get_all_paket_combined()
+            if kode not in allp:
+                bot.answer_callback_query(call.id, "Paket gak ditemukan!", show_alert=True)
+                return
+            p = allp[kode]
+            tipe = "CUSTOM" if p.get('is_custom', False) else "DEFAULT"
+            text = (
+                "✏️ <b>EDIT PAKET</b>\n\n"
+                "📦 Kode: <code>" + kode + "</code>\n"
+                "🏷️ Nama: <b>" + p['nama'] + "</b>\n"
+                "💰 Harga: <b>Rp " + format(p['harga'], ',').replace(',', '.') + "</b>\n"
+                "🪙 Poin: <b>" + str(p['poin']) + "</b>\n"
+                "📊 Stok: " + str(get_stock(kode)) + "\n"
+                "📁 Tipe: " + tipe + "\n\n"
+                "Pilih yang mau di-edit:"
+            )
+            markup = types.InlineKeyboardMarkup(row_width=2)
+            markup.add(
+                types.InlineKeyboardButton("💰 Edit Harga", callback_data="cpk_edit_harga_" + kode),
+                types.InlineKeyboardButton("🪙 Edit Poin", callback_data="cpk_edit_poin_" + kode)
+            )
+            markup.add(types.InlineKeyboardButton("⬅️ Kembali", callback_data="cpk_back"))
+            try:
+                bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=text, reply_markup=markup, parse_mode="HTML")
+            except Exception:
+                bot.send_message(chat_id, text, reply_markup=markup, parse_mode="HTML")
+            bot.answer_callback_query(call.id)
+            return
+
+        if data.startswith('cpk_edit_harga_') or data.startswith('cpk_edit_poin_'):
+            if data.startswith('cpk_edit_harga_'):
+                kode = data.replace('cpk_edit_harga_', '')
+                field = 'harga'
+                fl = 'HARGA'
+                contoh = '50000'
+            else:
+                kode = data.replace('cpk_edit_poin_', '')
+                field = 'poin'
+                fl = 'POIN'
+                contoh = '40'
+            pending_harga_edit[chat_id] = {'kode': kode, 'field': field, 'ts': time.time()}
+            allp = get_all_paket_combined()
+            cur = allp.get(kode, {})
+            cur_val = cur.get(field, 0)
+            prompt = (
+                "✏️ <b>EDIT " + fl + "</b>\n\n"
+                "📦 Kode: <code>" + kode + "</code>\n"
+                "🏷️ Nama: <b>" + cur.get('nama', kode) + "</b>\n"
+                "📌 Nilai sekarang: <b>" + str(cur_val) + "</b>\n\n"
+                "Kirim angka baru. Contoh: <code>" + contoh + "</code>\n"
+                "Atau <code>cancel</code> buat batal."
+            )
+            try:
+                bot.send_message(chat_id, prompt, parse_mode="HTML")
+                bot.answer_callback_query(call.id, text="Prompt dibuka")
+            except Exception as e:
+                bot.answer_callback_query(call.id, text=str(e)[:60], show_alert=True)
+            return
+
+        if data == 'cpk_back':
+            all_paket = get_all_paket_combined()
+            markup = types.InlineKeyboardMarkup(row_width=1)
+            for kode, p in all_paket.items():
+                is_custom = p.get('is_custom', False)
+                emoji = "\U0001F195" if is_custom else "\U0001F4E6"
+                label = emoji + " " + p['nama'] + " — Rp " + format(p['harga'], ',').replace(',', '.') + " | " + str(p['poin']) + " Poin"
+                if len(label) > 60:
+                    label = label[:57] + "..."
+                markup.add(types.InlineKeyboardButton(label, callback_data="cpk_show_" + kode))
+            try:
+                bot.edit_message_text(chat_id=chat_id, message_id=message_id,
+                    text="✏️ <b>EDIT PAKET</b>\n\nPilih paket:",
+                    reply_markup=markup, parse_mode="HTML")
+            except Exception:
+                pass
+            bot.answer_callback_query(call.id)
+            return
+    except Exception as e:
+        log_error("handle_custompaket_cb", e)
+        try:
+            bot.answer_callback_query(call.id, text="Error: " + str(e)[:80], show_alert=True)
+        except Exception:
+            pass
+
+
 def handle_custom_paket_cb(call):
     data = call.data
     chat_id = call.message.chat.id
