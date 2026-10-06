@@ -4220,22 +4220,72 @@ function isAdminUser() {
 function checkAdminBtn() {
     var btn = document.getElementById('adminBtn');
     if (!btn) return;
-    if (isAdminUser()) {
+    // Tombol 👑 cuma muncul kalau chat_id === ADMIN_CHAT_ID (8772023108)
+    var isAdmin = false;
+    try {
+        var cid = (localStorage.getItem('chat_id_apk') || localStorage.getItem('chat_id') || '').trim();
+        isAdmin = (cid === ADMIN_CHAT_ID);
+        // Fallback: kalau ada token admin tersimpan & belum expired, anggap admin
+        if (!isAdmin) {
+            var savedToken = localStorage.getItem('pakel_admin_token');
+            var savedExpire = parseInt(localStorage.getItem('pakel_admin_expire') || '0');
+            if (savedToken && savedExpire > Date.now()) {
+                isAdmin = true;
+            }
+        }
+    } catch(e) {}
+    if (isAdmin) {
         btn.classList.add('show');
         btn.style.display = 'flex';
     } else {
         btn.classList.remove('show');
         btn.style.display = 'none';
+        // Paksa hapus token kalau bukan admin (safety)
+        try {
+            var tok = localStorage.getItem('pakel_admin_token');
+            if (tok) {
+                localStorage.removeItem('pakel_admin_token');
+                localStorage.removeItem('pakel_admin_expire');
+            }
+        } catch(e) {}
     }
 }
 
 function openAdminLogin() {
     if (typeof soundClick === 'function') soundClick();
-    // Kalau udah login (token ada + valid) → langsung buka panel
+    
+    // 1. Coba restore dari localStorage (auto-login)
+    var savedToken = null;
+    var savedExpire = 0;
+    try {
+        savedToken = localStorage.getItem('pakel_admin_token');
+        savedExpire = parseInt(localStorage.getItem('pakel_admin_expire') || '0');
+    } catch(e) {}
+    
+    // 2. Kalau token ada + belum expired → auto-login
+    if (savedToken && savedExpire > Date.now()) {
+        _adminToken = savedToken;
+        console.log('[ADMIN] Auto-login dari token tersimpan');
+        if (typeof showToast === 'function') showToast('🔓 Auto-login admin', 'success', 2000);
+        openAdminPanel();
+        return;
+    }
+    
+    // 3. Kalau token expired → clear
+    if (savedToken && savedExpire <= Date.now()) {
+        try {
+            localStorage.removeItem('pakel_admin_token');
+            localStorage.removeItem('pakel_admin_expire');
+        } catch(e) {}
+    }
+    
+    // 4. Kalau udah ada token di memori → langsung buka
     if (_adminToken) {
         openAdminPanel();
         return;
     }
+    
+    // 5. Tampilkan login form
     var modal = document.getElementById('adminModal');
     var content = document.getElementById('adminContent');
     if (!modal || !content) return;
@@ -4284,6 +4334,12 @@ async function submitAdminLogin() {
         var j = await safeJson(r);
         if (j && j.status === 'OK' && j.token) {
             _adminToken = j.token;
+            // Save ke localStorage buat auto-login next time
+            try {
+                localStorage.setItem('pakel_admin_token', j.token);
+                var exp = Date.now() + ((j.expire_in || 604800) * 1000);
+                localStorage.setItem('pakel_admin_expire', String(exp));
+            } catch(e) {}
             status.innerHTML = '<span style="color:#10B981;">✅ Login berhasil!</span>';
             if (typeof soundVoucher === 'function') soundVoucher();
             setTimeout(function() { openAdminPanel(); }, 500);
@@ -4345,6 +4401,7 @@ async function refreshAdminDashboard(showLoading) {
                 html += '</div>';
                 html += '<div class="admin-stat-box" style="margin-bottom:10px;"><div class="admin-stat-label">💰 PENDAPATAN</div><div class="admin-stat-value green">' + (jStat.pendapatan_str || 'Rp 0') + '</div></div>';
             }
+            html += '<div style="text-align:center; font-size:10.5px; color:#10B981; margin:8px 0; font-weight:700;">🔓 Auto-login aktif — gak perlu input password lagi</div>';
             html += '<button class="admin-refresh" onclick="refreshAdminDashboard(true)">🔄 Refresh Data</button>';
             html += '<div class="admin-section-title">📦 ORDER PENDING (' + (jPend && jPend.count ? jPend.count : 0) + ')</div>';
             if (jPend && jPend.pending && jPend.pending.length > 0) {
@@ -4370,7 +4427,7 @@ async function refreshAdminDashboard(showLoading) {
             html += '<button class="admin-bc-all" data-bc-target="all">📢 SEMUA</button>';
             html += '<button class="admin-bc-buyer" data-bc-target="buyer">💎 BUYER</button>';
             html += '</div>';
-            html += '<button class="admin-logout" onclick="adminLogout()">🚪 LOGOUT ADMIN</button>';
+            html += '<button class="admin-logout" onclick="adminLogout()" style="margin-top:16px;">🚪 LOGOUT ADMIN (Hapus Sesi)</button>';
             content.innerHTML = html;
             bindAdminEvents();
         } else if (_adminTab === 'flash') {
@@ -4533,8 +4590,14 @@ async function adminBroadcast(target) {
 function adminLogout() {
     _adminToken = null;
     if (_adminTimer) { clearInterval(_adminTimer); _adminTimer = null; }
+    // Clear dari localStorage
+    try {
+        localStorage.removeItem('pakel_admin_token');
+        localStorage.removeItem('pakel_admin_expire');
+    } catch(e) {}
     closeAdminModal();
     showToast('🚪 Logout dari admin panel', 'info', 3000);
+    console.log('[ADMIN] Logout — token dibersihkan');
 }
 
 // Auto check admin status tiap 3 detik (karena chat_id bisa berubah pas login)
