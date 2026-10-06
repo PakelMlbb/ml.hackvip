@@ -464,6 +464,101 @@ body.light-mode .admin-order-info b { color: #1E293B; }
 body.light-mode .admin-bc-input { background: #FFF; color: #1E293B; }
 /* ===== END ADMIN PANEL ===== */
 
+
+/* ===== BATCH 2: FLASHSALE + VOUCHER + RESTOCK ===== */
+.admin-panel-tab { display: flex; gap: 6px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 4px; }
+.admin-tab-btn { padding: 8px 14px; background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.3); border-radius: 20px; color: #A78BFA; font-size: 11px; font-weight: 800; cursor: pointer; white-space: nowrap; flex-shrink: 0; letter-spacing: 0.3px; }
+.admin-tab-btn.active { background: linear-gradient(135deg,#8B5CF6,#06B6D4); color: #FFF; border-color: transparent; }
+.admin-form-row { display: flex; gap: 8px; margin-bottom: 10px; }
+.admin-input { flex: 1; padding: 11px 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(139,92,246,0.3); border-radius: 10px; color: #FFF; font-size: 12.5px; font-family: inherit; outline: none; }
+.admin-input:focus { border-color: #8B5CF6; }
+.admin-input::placeholder { color: #4B5563; }
+.admin-execute-btn { width: 100%; padding: 13px; border: none; border-radius: 11px; background: linear-gradient(135deg,#10B981,#059669); color: #FFF; font-size: 13px; font-weight: 900; cursor: pointer; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(16,185,129,0.4); }
+.admin-execute-btn:active { transform: scale(0.98); }
+.admin-execute-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.admin-stop-btn { width: 100%; padding: 13px; border: none; border-radius: 11px; background: linear-gradient(135deg,#EF4444,#DC2626); color: #FFF; font-size: 13px; font-weight: 900; cursor: pointer; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(239,68,68,0.4); margin-top: 8px; animation: pulseStatus 1.5s infinite; }
+.admin-stop-btn:active { transform: scale(0.98); }
+.admin-active-box { background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(6,182,212,0.1)); border: 1px solid rgba(16,185,129,0.5); border-radius: 12px; padding: 14px; margin-bottom: 12px; text-align: center; }
+.admin-active-title { font-size: 11px; color: #10B981; letter-spacing: 2px; font-weight: 800; margin-bottom: 6px; }
+.admin-active-value { font-size: 22px; font-weight: 900; color: #FFF; font-family: 'Courier New', monospace; margin-bottom: 8px; }
+.admin-active-timer { font-size: 13px; color: #FBBF24; font-weight: 800; font-family: 'Courier New', monospace; letter-spacing: 1px; }
+.admin-voucher-item { background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.25); border-radius: 10px; padding: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.admin-voucher-info { flex: 1; }
+.admin-voucher-kode { font-family: 'Courier New', monospace; font-size: 13px; font-weight: 900; color: #06B6D4; margin-bottom: 3px; }
+.admin-voucher-detail { font-size: 10.5px; color: #9CA3AF; }
+.admin-voucher-del { padding: 8px 12px; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.4); border-radius: 8px; color: #EF4444; font-size: 14px; cursor: pointer; }
+.admin-voucher-del:active { transform: scale(0.95); }
+body.light-mode .admin-input { background: #FFF; color: #1E293B; }
+body.light-mode .admin-tab-btn { background: rgba(139,92,246,0.06); }
+body.light-mode .admin-active-value { color: #1E293B; }
+/* ===== END BATCH 2 ===== */
+
+
+/* ===== BATCH 3: USER + PAKET MANAGEMENT ===== */
+.admin-user-item { background: rgba(139,92,246,0.06); border: 1px solid rgba(139,92,246,0.2); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.admin-user-info { flex: 1; min-width: 0; }
+.admin-user-id { font-family: 'Courier New', monospace; font-size: 11.5px; font-weight: 800; color: #06B6D4; margin-bottom: 3px; word-break: break-all; }
+.admin-user-stats { font-size: 10.5px; color: #9CA3AF; }
+.admin-user-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.admin-user-btn { padding: 8px 10px; border: none; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer; }
+.admin-user-btn.edit { background: linear-gradient(135deg,#8B5CF6,#06B6D4); color: #FFF; }
+.admin-user-btn.block { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.4); color: #EF4444; }
+.admin-user-btn:active { transform: scale(0.95); }
+.admin-paket-item { background: rgba(139,92,246,0.06); border: 1px solid rgba(139,92,246,0.2); border-radius: 10px; padding: 12px; margin-bottom: 8px; }
+.admin-paket-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+.admin-paket-nama { font-size: 12.5px; font-weight: 800; color: #FFF; flex: 1; word-break: break-word; }
+.admin-paket-badge { font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 6px; white-space: nowrap; }
+.admin-paket-badge.custom { background: rgba(251,191,36,0.15); color: #FBBF24; border: 1px solid rgba(251,191,36,0.4); }
+.admin-paket-badge.default { background: rgba(139,92,246,0.15); color: #A78BFA; border: 1px solid rgba(139,92,246,0.4); }
+.admin-paket-detail { font-size: 11px; color: #B0B7C3; margin-bottom: 3px; }
+.admin-paket-detail b { color: #FFF; }
+.admin-paket-actions { display: flex; gap: 6px; margin-top: 8px; }
+.admin-paket-actions button { flex: 1; padding: 8px; border: none; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; }
+.admin-paket-btn.harga { background: linear-gradient(135deg,#FBBF24,#F59E0B); color: #1A1F2E; }
+.admin-paket-btn.poin { background: linear-gradient(135deg,#06B6D4,#0891B2); color: #FFF; }
+.admin-paket-btn.hapus { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.4); color: #EF4444; flex: 0 0 auto !important; padding: 8px 12px !important; }
+.admin-search-box { width: 100%; padding: 10px 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(139,92,246,0.3); border-radius: 10px; color: #FFF; font-size: 12.5px; margin-bottom: 12px; outline: none; }
+.admin-search-box:focus { border-color: #8B5CF6; }
+.admin-search-box::placeholder { color: #4B5563; }
+body.light-mode .admin-user-item, body.light-mode .admin-paket-item { background: rgba(139,92,246,0.04); }
+body.light-mode .admin-paket-nama { color: #1E293B; }
+body.light-mode .admin-paket-detail { color: #475569; }
+body.light-mode .admin-paket-detail b { color: #1E293B; }
+body.light-mode .admin-search-box { background: #FFF; color: #1E293B; }
+/* ===== END BATCH 3 ===== */
+
+
+/* ===== BATCH 4: LAPORAN + STATS ===== */
+.admin-graph { display: flex; align-items: flex-end; gap: 4px; height: 140px; padding: 12px; background: rgba(0,0,0,0.25); border: 1px solid rgba(139,92,246,0.2); border-radius: 12px; margin-bottom: 16px; }
+.admin-graph-bar { flex: 1; background: linear-gradient(180deg,#8B5CF6,#06B6D4); border-radius: 4px 4px 0 0; min-height: 4px; position: relative; transition: all 0.3s; cursor: pointer; }
+.admin-graph-bar:hover { background: linear-gradient(180deg,#A78BFA,#22D3EE); }
+.admin-graph-bar-label { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 9px; color: #FBBF24; font-weight: 800; white-space: nowrap; }
+.admin-graph-bar-date { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 8.5px; color: #6B7280; font-weight: 700; white-space: nowrap; }
+.admin-report-box { background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(6,182,212,0.06)); border: 1px solid rgba(139,92,246,0.3); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+.admin-report-title { font-size: 12px; font-weight: 900; color: #FFF; letter-spacing: 0.5px; margin-bottom: 10px; }
+.admin-report-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed rgba(139,92,246,0.15); font-size: 12px; }
+.admin-report-row:last-child { border-bottom: none; }
+.admin-report-label { color: #9CA3AF; font-weight: 600; }
+.admin-report-value { color: #FFF; font-weight: 800; font-family: 'Courier New', monospace; }
+.admin-report-value.green { color: #10B981; }
+.admin-report-value.gold { color: #FBBF24; }
+.admin-report-value.cyan { color: #06B6D4; }
+.admin-top-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 6px; }
+.admin-top-rank { min-width: 28px; height: 28px; border-radius: 50%; background: rgba(139,92,246,0.2); color: #A78BFA; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 12px; }
+.admin-top-rank.gold { background: linear-gradient(135deg,#FBBF24,#F59E0B); color: #FFF; }
+.admin-top-rank.silver { background: linear-gradient(135deg,#CBD5E1,#94A3B8); color: #1A1F2E; }
+.admin-top-rank.bronze { background: linear-gradient(135deg,#F59E0B,#B45309); color: #FFF; }
+.admin-top-info { flex: 1; }
+.admin-top-name { font-size: 12px; font-weight: 800; color: #FFF; margin-bottom: 2px; font-family: 'Courier New', monospace; }
+.admin-top-stats { font-size: 10px; color: #9CA3AF; }
+.admin-top-value { font-size: 11.5px; color: #FBBF24; font-weight: 900; }
+body.light-mode .admin-report-box { background: rgba(139,92,246,0.05); }
+body.light-mode .admin-report-title { color: #1E293B; }
+body.light-mode .admin-report-value { color: #1E293B; }
+body.light-mode .admin-top-name { color: #1E293B; }
+body.light-mode .admin-graph { background: rgba(139,92,246,0.05); }
+/* ===== END BATCH 4 ===== */
+
 </style>
 
 </head><body>
@@ -1472,7 +1567,7 @@ function initApp() {
                 await autoRefreshPromos();
                 await fetchRestockFromAPI();
             } catch(e) {}
-        }, 30000);
+        }, 15000);
         // Initial restock fetch
         setTimeout(() => { fetchRestockFromAPI(); }, 5000);
     } catch(e) { console.error('initApp error:', e); }
@@ -2594,7 +2689,7 @@ async function loadTestimoni() {
     window._testiAutoRefresh = setInterval(async function() {
         if (document.hidden) return;
         try { await refreshTestimoni(); } catch(e) {}
-    }, 30000);
+    }, 15000);
 }
 /* ===== END TESTIMONI ===== */
 
@@ -3846,7 +3941,7 @@ setTimeout(function() {
                 try {
                     await refreshTestimoni();
                 } catch(e) {}
-            }, 30000);
+            }, 15000);
         };
     }
 }, 500);
@@ -4048,7 +4143,7 @@ setTimeout(function() {
     fetchInbox();
     setInterval(function() {
         if (!document.hidden) fetchInbox();
-    }, 30000);
+    }, 15000);
 }, 3000);
 /* ===== END BATCH 3 JS ===== */
 
@@ -4217,7 +4312,7 @@ async function openAdminPanel() {
         if (m && m.classList.contains('show')) {
             refreshAdminDashboard(false);
         }
-    }, 30000);
+    }, 15000);
     await refreshAdminDashboard(true);
 }
 
@@ -4226,69 +4321,116 @@ async function refreshAdminDashboard(showLoading) {
     if (!content || !_adminToken) return;
     if (showLoading) content.innerHTML = '<div class="admin-empty">⏳ Loading...</div>';
     try {
-        // Fetch stats + pending paralel
-        var [rStat, rPend] = await Promise.all([
-            safeFetch(API_URL + '/api/admin/stats', { headers: { 'X-Admin-Token': _adminToken } }),
-            safeFetch(API_URL + '/api/admin/pending-orders', { headers: { 'X-Admin-Token': _adminToken } })
-        ]);
-        var jStat = await safeJson(rStat);
-        var jPend = await safeJson(rPend);
-
-        if (jStat && jStat.status === 'UNAUTHORIZED') { _adminToken = null; openAdminLogin(); return; }
-        if (jPend && jPend.status === 'UNAUTHORIZED') { _adminToken = null; openAdminLogin(); return; }
-
-        var html = '';
-        // Stats
-        if (jStat && jStat.status === 'OK') {
-            html += '<div class="admin-section-title">📊 HARI INI</div>';
-            html += '<div class="admin-stat-grid">';
-            html += '<div class="admin-stat-box"><div class="admin-stat-label">TOTAL ORDER</div><div class="admin-stat-value cyan">' + (jStat.total_order || 0) + '</div></div>';
-            html += '<div class="admin-stat-box"><div class="admin-stat-label">PENDING</div><div class="admin-stat-value">' + (jStat.pending || 0) + '</div></div>';
-            html += '<div class="admin-stat-box"><div class="admin-stat-label">SUKSES</div><div class="admin-stat-value green">' + (jStat.sukses || 0) + '</div></div>';
-            html += '<div class="admin-stat-box"><div class="admin-stat-label">DITOLAK</div><div class="admin-stat-value red">' + (jStat.ditolak || 0) + '</div></div>';
-            html += '</div>';
-            html += '<div class="admin-stat-box" style="margin-bottom:10px;"><div class="admin-stat-label">💰 PENDAPATAN</div><div class="admin-stat-value green">' + (jStat.pendapatan_str || 'Rp 0') + '</div></div>';
-        }
-
-        // Refresh
-        html += '<button class="admin-refresh" onclick="refreshAdminDashboard(true)">🔄 Refresh Data</button>';
-
-        // Pending orders
-        html += '<div class="admin-section-title">📦 ORDER PENDING (' + (jPend && jPend.count ? jPend.count : 0) + ')</div>';
-        if (jPend && jPend.pending && jPend.pending.length > 0) {
-            for (var i = 0; i < jPend.pending.length; i++) {
-                var o = jPend.pending[i];
-                html += '<div class="admin-order-card">' +
-                    '<div class="admin-order-resi">🔑 ' + escapeHtml(o.resi) + '</div>' +
-                    '<div class="admin-order-info">👤 <b>' + escapeHtml(o.chat_id) + '</b></div>' +
-                    '<div class="admin-order-info">📦 <b>' + escapeHtml(o.paket) + '</b></div>' +
-                    '<div class="admin-order-info">💰 <b>' + escapeHtml(o.harga) + '</b> · 💳 ' + escapeHtml(o.metode) + '</div>' +
-                    '<div class="admin-order-info" style="font-size:10.5px; color:#6B7280;">📅 ' + escapeHtml(o.hari) + ', ' + escapeHtml(o.tanggal) + ' · ' + escapeHtml(o.jam) + '</div>' +
-                    '<div class="admin-order-actions">' +
-                    '<button class="admin-btn-acc" onclick="adminAccOrder(\'' + escapeHtml(o.resi) + '\')">✅ ACC</button>' +
-                    '<button class="admin-btn-reject" onclick="adminRejectOrder(\'' + escapeHtml(o.resi) + '\')">❌ TOLAK</button>' +
-                    '</div>' +
-                    '</div>';
+        // Tampilkan tab selector
+        var tabsHtml = renderAdminTabs();
+        
+        // Render tab aktif
+        if (_adminTab === 'orders') {
+            var [rStat, rPend] = await Promise.all([
+                safeFetch(API_URL + '/api/admin/stats', { headers: { 'X-Admin-Token': _adminToken } }),
+                safeFetch(API_URL + '/api/admin/pending-orders', { headers: { 'X-Admin-Token': _adminToken } })
+            ]);
+            var jStat = await safeJson(rStat);
+            var jPend = await safeJson(rPend);
+            if (jStat && jStat.status === 'UNAUTHORIZED') { _adminToken = null; openAdminLogin(); return; }
+            if (jPend && jPend.status === 'UNAUTHORIZED') { _adminToken = null; openAdminLogin(); return; }
+            var html = tabsHtml;
+            if (jStat && jStat.status === 'OK') {
+                html += '<div class="admin-section-title">📊 HARI INI</div>';
+                html += '<div class="admin-stat-grid">';
+                html += '<div class="admin-stat-box"><div class="admin-stat-label">TOTAL ORDER</div><div class="admin-stat-value cyan">' + (jStat.total_order || 0) + '</div></div>';
+                html += '<div class="admin-stat-box"><div class="admin-stat-label">PENDING</div><div class="admin-stat-value">' + (jStat.pending || 0) + '</div></div>';
+                html += '<div class="admin-stat-box"><div class="admin-stat-label">SUKSES</div><div class="admin-stat-value green">' + (jStat.sukses || 0) + '</div></div>';
+                html += '<div class="admin-stat-box"><div class="admin-stat-label">DITOLAK</div><div class="admin-stat-value red">' + (jStat.ditolak || 0) + '</div></div>';
+                html += '</div>';
+                html += '<div class="admin-stat-box" style="margin-bottom:10px;"><div class="admin-stat-label">💰 PENDAPATAN</div><div class="admin-stat-value green">' + (jStat.pendapatan_str || 'Rp 0') + '</div></div>';
             }
-        } else {
-            html += '<div class="admin-empty">✅ Tidak ada order pending</div>';
+            html += '<button class="admin-refresh" onclick="refreshAdminDashboard(true)">🔄 Refresh Data</button>';
+            html += '<div class="admin-section-title">📦 ORDER PENDING (' + (jPend && jPend.count ? jPend.count : 0) + ')</div>';
+            if (jPend && jPend.pending && jPend.pending.length > 0) {
+                for (var i = 0; i < jPend.pending.length; i++) {
+                    var o = jPend.pending[i];
+                    html += '<div class="admin-order-card">' +
+                        '<div class="admin-order-resi">🔑 ' + escapeHtml(o.resi) + '</div>' +
+                        '<div class="admin-order-info">👤 <b>' + escapeHtml(o.chat_id) + '</b></div>' +
+                        '<div class="admin-order-info">📦 <b>' + escapeHtml(o.paket) + '</b></div>' +
+                        '<div class="admin-order-info">💰 <b>' + escapeHtml(o.harga) + '</b> · 💳 ' + escapeHtml(o.metode) + '</div>' +
+                        '<div class="admin-order-info" style="font-size:10.5px; color:#6B7280;">📅 ' + escapeHtml(o.hari) + ', ' + escapeHtml(o.tanggal) + ' · ' + escapeHtml(o.jam) + '</div>' +
+                        '<div class="admin-order-actions">' +
+                        '<button class="admin-btn-acc" data-acc="' + escapeHtml(o.resi) + '">✅ ACC</button>' +
+                        '<button class="admin-btn-reject" data-reject="' + escapeHtml(o.resi) + '">❌ TOLAK</button>' +
+                        '</div></div>';
+                }
+            } else {
+                html += '<div class="admin-empty">✅ Tidak ada order pending</div>';
+            }
+            html += '<div class="admin-section-title">📢 BROADCAST</div>';
+            html += '<textarea class="admin-bc-input" id="adminBcInput" placeholder="Ketik pesan broadcast..."></textarea>';
+            html += '<div class="admin-bc-btns">';
+            html += '<button class="admin-bc-all" data-bc-target="all">📢 SEMUA</button>';
+            html += '<button class="admin-bc-buyer" data-bc-target="buyer">💎 BUYER</button>';
+            html += '</div>';
+            html += '<button class="admin-logout" onclick="adminLogout()">🚪 LOGOUT ADMIN</button>';
+            content.innerHTML = html;
+            bindAdminEvents();
+        } else if (_adminTab === 'flash') {
+            content.innerHTML = tabsHtml + '<div id="adminTabBody"></div>';
+            bindAdminEvents();
+            await renderFlashsaleTab(document.getElementById('adminTabBody'));
+        } else if (_adminTab === 'voucher') {
+            content.innerHTML = tabsHtml + '<div id="adminTabBody"></div>';
+            bindAdminEvents();
+            await renderVoucherTab(document.getElementById('adminTabBody'));
+        } else if (_adminTab === 'restock') {
+            content.innerHTML = tabsHtml + '<div id="adminTabBody"></div>';
+            bindAdminEvents();
+            await renderRestockTab(document.getElementById('adminTabBody'));
+        } else if (_adminTab === 'user') {
+            content.innerHTML = tabsHtml + '<div id="adminTabBody"></div>';
+            bindAdminEvents();
+            await renderUserTab(document.getElementById('adminTabBody'));
+        } else if (_adminTab === 'paket') {
+            content.innerHTML = tabsHtml + '<div id="adminTabBody"></div>';
+            bindAdminEvents();
+            await renderPaketTab(document.getElementById('adminTabBody'));
         }
-
-        // Broadcast
-        html += '<div class="admin-section-title">📢 BROADCAST</div>';
-        html += '<textarea class="admin-bc-input" id="adminBcInput" placeholder="Ketik pesan broadcast..."></textarea>';
-        html += '<div class="admin-bc-btns">';
-        html += '<button class="admin-bc-all" onclick="adminBroadcast(\'all\')">📢 SEMUA USER</button>';
-        html += '<button class="admin-bc-buyer" onclick="adminBroadcast(\'buyer\')">💎 BUYER</button>';
-        html += '</div>';
-
-        // Logout
-        html += '<button class="admin-logout" onclick="adminLogout()">🚪 LOGOUT ADMIN</button>';
-
-        content.innerHTML = html;
     } catch(e) {
         content.innerHTML = '<div class="admin-empty">❌ Error: ' + escapeHtml(e.message || 'Koneksi') + '</div>';
     }
+}
+
+function bindAdminEvents() {
+    setTimeout(function() {
+        // Tab buttons
+        var tabs = document.querySelectorAll('.admin-tab-btn');
+        for (var i = 0; i < tabs.length; i++) {
+            tabs[i].addEventListener('click', function() {
+                var t = this.getAttribute('data-tab');
+                switchAdminTab(t);
+            });
+        }
+        // ACC buttons
+        var accBtns = document.querySelectorAll('[data-acc]');
+        for (var i = 0; i < accBtns.length; i++) {
+            accBtns[i].addEventListener('click', function() {
+                adminAccOrder(this.getAttribute('data-acc'));
+            });
+        }
+        // Reject buttons
+        var rejBtns = document.querySelectorAll('[data-reject]');
+        for (var i = 0; i < rejBtns.length; i++) {
+            rejBtns[i].addEventListener('click', function() {
+                adminRejectOrder(this.getAttribute('data-reject'));
+            });
+        }
+        // BC buttons
+        var bcBtns = document.querySelectorAll('[data-bc-target]');
+        for (var i = 0; i < bcBtns.length; i++) {
+            bcBtns[i].addEventListener('click', function() {
+                adminBroadcast(this.getAttribute('data-bc-target'));
+            });
+        }
+    }, 100);
 }
 
 async function adminAccOrder(resi) {
@@ -4401,6 +4543,655 @@ setTimeout(function() {
     setInterval(checkAdminBtn, 3000);
 }, 1500);
 /* ===== END ADMIN PANEL JS ===== */
+
+
+/* ===== BATCH 2: FLASHSALE + VOUCHER + RESTOCK ===== */
+var _adminTab = 'orders';
+
+function renderAdminTabs() {
+    var html = '';
+    html += '<div class="admin-panel-tab">';
+    html += '<button class="admin-tab-btn ' + (_adminTab === 'orders' ? 'active' : '') + '" data-tab="orders">📦 ORDER</button>';
+    html += '<button class="admin-tab-btn ' + (_adminTab === 'flash' ? 'active' : '') + '" data-tab="flash">⚡ FLASH</button>';
+    html += '<button class="admin-tab-btn ' + (_adminTab === 'voucher' ? 'active' : '') + '" data-tab="voucher">🎫 VOUCHER</button>';
+    html += '<button class="admin-tab-btn ' + (_adminTab === 'restock' ? 'active' : '') + '" data-tab="restock">📦 STOK</button>';
+    html += '<button class="admin-tab-btn ' + (_adminTab === 'user' ? 'active' : '') + '" data-tab="user">👥 USER</button>';
+    html += '<button class="admin-tab-btn ' + (_adminTab === 'paket' ? 'active' : '') + '" data-tab="paket">🛒 PAKET</button>';
+    html += '<button class="admin-tab-btn ' + (_adminTab === 'laporan' ? 'active' : '') + '" data-tab="laporan">📊 LAPORAN</button>';
+    html += '</div>';
+    return html;
+}
+
+function switchAdminTab(tab) {
+    _adminTab = tab;
+    refreshAdminDashboard(false);
+}
+
+async function renderFlashsaleTab(content) {
+    if (!_adminToken) return;
+    // Cek status flashsale
+    var status = { aktif: false, diskon: 0, sisa: 0 };
+    try {
+        var r = await safeFetch(API_URL + '/api/admin/flashsale', { headers: { 'X-Admin-Token': _adminToken } });
+        var j = await safeJson(r);
+        if (j && j.status === 'OK') status = j;
+    } catch(e) {}
+    var html = '<div class="admin-section-title">⚡ FLASHSALE</div>';
+    if (status.aktif) {
+        var jam = Math.floor(status.sisa / 3600);
+        var mnt = Math.floor((status.sisa % 3600) / 60);
+        var dtk = status.sisa % 60;
+        var timerStr = (jam < 10 ? '0' : '') + jam + ':' + (mnt < 10 ? '0' : '') + mnt + ':' + (dtk < 10 ? '0' : '') + dtk;
+        html += '<div class="admin-active-box">';
+        html += '<div class="admin-active-title">⚡ FLASHSALE AKTIF</div>';
+        html += '<div class="admin-active-value">-' + status.diskon + '%</div>';
+        html += '<div class="admin-active-timer" id="fsTimer">' + timerStr + '</div>';
+        html += '</div>';
+        html += '<button class="admin-stop-btn" onclick="adminStopFlashsale()">🛑 STOP FLASHSALE</button>';
+    } else {
+        html += '<div class="admin-form-row">';
+        html += '<input class="admin-input" id="fsDiskon" type="number" placeholder="Diskon % (1-90)" min="1" max="90">';
+        html += '<input class="admin-input" id="fsDurasi" type="number" placeholder="Durasi (jam)" min="1" max="24">';
+        html += '</div>';
+        html += '<button class="admin-execute-btn" onclick="adminExecuteFlashsale()">⚡ EXECUTE FLASHSALE</button>';
+    }
+    content.innerHTML = html;
+    if (status.aktif && status.sisa > 0) {
+        window._fsTimerData = { sisa: status.sisa, start: Date.now() };
+        if (window._fsTimerInt) clearInterval(window._fsTimerInt);
+        window._fsTimerInt = setInterval(function() {
+            if (!window._fsTimerData) return;
+            var elapsed = Math.floor((Date.now() - window._fsTimerData.start) / 1000);
+            var remaining = window._fsTimerData.sisa - elapsed;
+            var el = document.getElementById('fsTimer');
+            if (!el) { clearInterval(window._fsTimerInt); return; }
+            if (remaining <= 0) { clearInterval(window._fsTimerInt); renderFlashsaleTab(document.getElementById('adminContent')); return; }
+            var h = Math.floor(remaining / 3600);
+            var m = Math.floor((remaining % 3600) / 60);
+            var s = remaining % 60;
+            el.textContent = (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+        }, 1000);
+    }
+}
+
+async function adminExecuteFlashsale() {
+    if (!_adminToken) return;
+    var diskon = parseInt(document.getElementById('fsDiskon').value || '0');
+    var durasi = parseInt(document.getElementById('fsDurasi').value || '0');
+    if (diskon < 1 || diskon > 90) { showToast('⚠️ Diskon 1-90%', 'warning', 3000); return; }
+    if (durasi < 1 || durasi > 24) { showToast('⚠️ Durasi 1-24 jam', 'warning', 3000); return; }
+    var konf = await showConfirmModal({
+        title: '⚡ Aktifkan Flashsale?',
+        desc: 'Diskon <b>' + diskon + '%</b> selama <b>' + durasi + ' jam</b>.<br><br>Otomatis broadcast ke semua user.',
+        okText: '⚡ YA, EXECUTE', cancelText: '❌ BATAL'
+    });
+    if (!konf) return;
+    try {
+        var r = await safeFetch(API_URL + '/api/admin/flashsale', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken },
+            body: JSON.stringify({ diskon: diskon, durasi: durasi })
+        });
+        var j = await safeJson(r);
+        if (j && j.status === 'OK') {
+            if (typeof soundVoucher === 'function') soundVoucher();
+            showToast('✅ Flashsale aktif: ' + diskon + '%', 'success', 3000);
+            setTimeout(function() { renderFlashsaleTab(document.getElementById('adminContent')); }, 800);
+        } else {
+            showToast('❌ ' + (j && j.message ? j.message : 'Gagal'), 'error', 3000);
+        }
+    } catch(e) { showToast('⚠️ Koneksi error', 'error', 3000); }
+}
+
+async function adminStopFlashsale() {
+    if (!_adminToken) return;
+    var konf = await showConfirmModal({
+        title: '🛑 Stop Flashsale?',
+        desc: 'Flashsale akan langsung dihentikan.<br>Harga balik normal.',
+        okText: '🛑 YA, STOP', cancelText: '❌ BATAL', okColor: 'red'
+    });
+    if (!konf) return;
+    try {
+        var r = await safeFetch(API_URL + '/api/admin/flashsale/stop', {
+            method: 'POST',
+            headers: { 'X-Admin-Token': _adminToken }
+        });
+        var j = await safeJson(r);
+        if (j && j.status === 'OK') {
+            if (window._fsTimerInt) clearInterval(window._fsTimerInt);
+            showToast('🛑 Flashsale dihentikan', 'info', 3000);
+            setTimeout(function() { renderFlashsaleTab(document.getElementById('adminContent')); }, 500);
+        }
+    } catch(e) { showToast('⚠️ Koneksi error', 'error', 3000); }
+}
+
+async function renderVoucherTab(content) {
+    if (!_adminToken) return;
+    var html = '<div class="admin-section-title">🎫 BUAT VOUCHER</div>';
+    html += '<div class="admin-form-row"><input class="admin-input" id="vcKode" placeholder="Kode (contoh: PROMO10)" style="text-transform:uppercase;"></div>';
+    html += '<div class="admin-form-row">';
+    html += '<input class="admin-input" id="vcDiskon" type="number" placeholder="Diskon Rp" min="1000">';
+    html += '<input class="admin-input" id="vcMax" type="number" placeholder="Max pakai" min="1">';
+    html += '<input class="admin-input" id="vcDurasi" type="number" placeholder="Jam" min="1" max="168">';
+    html += '</div>';
+    html += '<button class="admin-execute-btn" onclick="adminBuatVoucher()">🎫 BUAT + BROADCAST</button>';
+    html += '<div class="admin-section-title" style="margin-top:20px;">📋 VOUCHER AKTIF</div>';
+    // Load voucher list
+    try {
+        var r = await safeFetch(API_URL + '/api/admin/voucher', { headers: { 'X-Admin-Token': _adminToken } });
+        var j = await safeJson(r);
+        if (j && j.status === 'OK' && j.vouchers && j.vouchers.length > 0) {
+            for (var i = 0; i < j.vouchers.length; i++) {
+                var v = j.vouchers[i];
+                html += '<div class="admin-voucher-item">';
+                html += '<div class="admin-voucher-info">';
+                html += '<div class="admin-voucher-kode">🎫 ' + escapeHtml(v.kode) + '</div>';
+                html += '<div class="admin-voucher-detail">Rp ' + format(v.diskon, ',').replace(/,/g, '.') + ' · Sisa ' + v.sisa + '/' + v.max + '</div>';
+                html += '</div>';
+                html += '<div class="admin-voucher-del" onclick="adminHapusVoucher(\'' + escapeHtml(v.kode) + '\')">🗑️</div>';
+                html += '</div>';
+            }
+        } else {
+            html += '<div class="admin-empty">Belum ada voucher aktif</div>';
+        }
+    } catch(e) {}
+    content.innerHTML = html;
+}
+
+async function adminBuatVoucher() {
+    if (!_adminToken) return;
+    var kode = (document.getElementById('vcKode').value || '').trim().toUpperCase();
+    var diskon = parseInt(document.getElementById('vcDiskon').value || '0');
+    var max_pakai = parseInt(document.getElementById('vcMax').value || '0');
+    var durasi = parseInt(document.getElementById('vcDurasi').value || '24');
+    if (!kode || kode.length < 3) { showToast('⚠️ Kode minimal 3 karakter', 'warning', 3000); return; }
+    if (diskon < 1000) { showToast('⚠️ Diskon minimal Rp 1.000', 'warning', 3000); return; }
+    if (max_pakai < 1) { showToast('⚠️ Max pakai minimal 1', 'warning', 3000); return; }
+    var konf = await showConfirmModal({
+        title: '🎫 Buat Voucher?',
+        desc: 'Kode: <b>' + kode + '</b><br>Diskon: <b>Rp ' + format(diskon, ',').replace(/,/g, '.') + '</b><br>Max: <b>' + max_pakai + ' user</b><br>Durasi: <b>' + durasi + ' jam</b><br><br>Otomatis broadcast ke semua user.',
+        okText: '🎫 YA, BUAT', cancelText: '❌ BATAL'
+    });
+    if (!konf) return;
+    try {
+        var r = await safeFetch(API_URL + '/api/admin/voucher', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken },
+            body: JSON.stringify({ kode: kode, diskon: diskon, max_pakai: max_pakai, durasi: durasi })
+        });
+        var j = await safeJson(r);
+        if (j && j.status === 'OK') {
+            if (typeof soundVoucher === 'function') soundVoucher();
+            showToast('✅ Voucher ' + kode + ' dibuat + BC ke ' + j.sent + '/' + j.total, 'success', 5000);
+            setTimeout(function() { renderVoucherTab(document.getElementById('adminContent')); }, 800);
+        } else {
+            showToast('❌ ' + (j && j.message ? j.message : 'Gagal'), 'error', 3000);
+        }
+    } catch(e) { showToast('⚠️ Koneksi error', 'error', 3000); }
+}
+
+async function adminHapusVoucher(kode) {
+    if (!_adminToken) return;
+    var konf = await showConfirmModal({
+        title: '🗑️ Hapus Voucher?',
+        desc: 'Kode: <b>' + kode + '</b>',
+        okText: '🗑️ YA, HAPUS', cancelText: '❌ BATAL', okColor: 'red'
+    });
+    if (!konf) return;
+    try {
+        var r = await safeFetch(API_URL + '/api/admin/voucher/delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken },
+            body: JSON.stringify({ kode: kode })
+        });
+        var j = await safeJson(r);
+        if (j && j.status === 'OK') {
+            showToast('✅ Voucher dihapus', 'success', 3000);
+            setTimeout(function() { renderVoucherTab(document.getElementById('adminContent')); }, 500);
+        } else {
+            showToast('❌ ' + (j && j.message ? j.message : 'Gagal'), 'error', 3000);
+        }
+    } catch(e) { showToast('⚠️ Koneksi error', 'error', 3000); }
+}
+
+async function renderRestockTab(content) {
+    var html = '<div class="admin-section-title">📦 RESTOCK PAKET</div>';
+    html += '<div class="admin-form-row">';
+    html += '<input class="admin-input" id="rsKode" placeholder="Kode paket (buy_sultan)">';
+    html += '<input class="admin-input" id="rsJumlah" type="number" placeholder="Jumlah" min="0">';
+    html += '</div>';
+    html += '<button class="admin-execute-btn" onclick="adminRestock()">📦 RESTOCK PAKET</button>';
+    html += '<button class="admin-execute-btn" onclick="adminRestockAll()" style="margin-top:8px;background:linear-gradient(135deg,#FBBF24,#F59E0B);color:#1A1F2E;">🔄 RESTOCK SEMUA + BC</button>';
+    content.innerHTML = html;
+}
+
+async function adminRestock() {
+    if (!_adminToken) return;
+    var kode = (document.getElementById('rsKode').value || '').trim();
+    var jumlah = parseInt(document.getElementById('rsJumlah').value || '0');
+    if (!kode) { showToast('⚠️ Kode wajib', 'warning', 3000); return; }
+    if (jumlah < 0) { showToast('⚠️ Jumlah minimal 0', 'warning', 3000); return; }
+    try {
+        var r = await safeFetch(API_URL + '/api/admin/restock', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken },
+            body: JSON.stringify({ kode: kode, jumlah: jumlah })
+        });
+        var j = await safeJson(r);
+        if (j && j.status === 'OK') {
+            showToast('✅ Stok ' + kode + ': ' + j.old + ' → ' + j.new, 'success', 3000);
+        } else {
+            showToast('❌ ' + (j && j.message ? j.message : 'Gagal'), 'error', 3000);
+        }
+    } catch(e) { showToast('⚠️ Koneksi error', 'error', 3000); }
+}
+
+async function adminRestockAll() {
+    if (!_adminToken) return;
+    var konf = await showConfirmModal({
+        title: '🔄 Restock Semua?',
+        desc: 'Random restock semua paket + broadcast ke semua user.',
+        okText: '🔄 YA, RESTOCK', cancelText: '❌ BATAL'
+    });
+    if (!konf) return;
+    showToast('⏳ Restock semua...', 'info', 3000);
+    try {
+        var r = await safeFetch(API_URL + '/api/admin/restock', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken },
+            body: JSON.stringify({ kode: 'ALL' })
+        });
+        var j = await safeJson(r);
+        if (j && j.status === 'OK') {
+            showToast('✅ ' + j.count + ' paket di-restock + BC', 'success', 4000);
+        }
+    } catch(e) { showToast('⚠️ Koneksi error', 'error', 3000); }
+}
+/* ===== END BATCH 2 JS ===== */
+
+
+/* ===== BATCH 3: USER + PAKET MANAGEMENT ===== */
+var _userListCache = [];
+var _paketListCache = [];
+
+async function renderUserTab(content) {
+    if (!_adminToken) return;
+    var html = '<div class="admin-section-title">👥 USER MANAGEMENT</div>';
+    html += '<input class="admin-search-box" id="userSearch" placeholder="🔍 Cari chat_id...">';
+    html += '<div id="userListBox"><div class="admin-empty">⏳ Loading...</div></div>';
+    content.innerHTML = html;
+    await loadUserList();
+    var inp = document.getElementById('userSearch');
+    if (inp) {
+        inp.addEventListener('input', function() {
+            filterUserList(this.value.trim());
+        });
+    }
+}
+
+async function loadUserList() {
+    if (!_adminToken) return;
+    try {
+        var r = await safeFetch(API_URL + '/api/admin/users', { headers: { 'X-Admin-Token': _adminToken } });
+        var j = await safeJson(r);
+        if (j && j.status === 'UNAUTHORIZED') { _adminToken = null; openAdminLogin(); return; }
+        if (j && j.status === 'OK') {
+            _userListCache = j.users || [];
+            renderUserList(_userListCache);
+        }
+    } catch(e) {
+        var box = document.getElementById('userListBox');
+        if (box) box.innerHTML = '<div class="admin-empty">❌ Gagal load</div>';
+    }
+}
+
+function filterUserList(q) {
+    if (!q) { renderUserList(_userListCache); return; }
+    var filtered = _userListCache.filter(function(u) {
+        return String(u.chat_id).indexOf(q) !== -1;
+    });
+    renderUserList(filtered);
+}
+
+function renderUserList(list) {
+    var box = document.getElementById('userListBox');
+    if (!box) return;
+    if (!list || list.length === 0) {
+        box.innerHTML = '<div class="admin-empty">Tidak ada user</div>';
+        return;
+    }
+    var html = '<div style="font-size:10.5px; color:#6B7280; margin-bottom:8px;">Total: ' + list.length + ' user</div>';
+    for (var i = 0; i < list.length; i++) {
+        var u = list[i];
+        html += '<div class="admin-user-item">';
+        html += '<div class="admin-user-info">';
+        html += '<div class="admin-user-id">🆔 ' + escapeHtml(String(u.chat_id)) + '</div>';
+        html += '<div class="admin-user-stats">🪙 ' + (u.poin || 0) + ' poin · 📦 ' + (u.total_order || 0) + ' order</div>';
+        html += '</div>';
+        html += '<div class="admin-user-actions">';
+        html += '<button class="admin-user-btn edit" data-edit-poin="' + escapeHtml(String(u.chat_id)) + '" data-poin="' + (u.poin || 0) + '">✏️</button>';
+        html += '<button class="admin-user-btn block" data-block="' + escapeHtml(String(u.chat_id)) + '">🚫</button>';
+        html += '</div>';
+        html += '</div>';
+    }
+    box.innerHTML = html;
+    bindUserEvents();
+}
+
+function bindUserEvents() {
+    setTimeout(function() {
+        var editBtns = document.querySelectorAll('[data-edit-poin]');
+        for (var i = 0; i < editBtns.length; i++) {
+            editBtns[i].addEventListener('click', function() {
+                var uid = this.getAttribute('data-edit-poin');
+                var poin = this.getAttribute('data-poin');
+                adminEditPoin(uid, poin);
+            });
+        }
+        var blockBtns = document.querySelectorAll('[data-block]');
+        for (var i = 0; i < blockBtns.length; i++) {
+            blockBtns[i].addEventListener('click', function() {
+                adminBlockUser(this.getAttribute('data-block'));
+            });
+        }
+    }, 100);
+}
+
+async function adminEditPoin(uid, oldPoin) {
+    var input = prompt('Set poin untuk ' + uid + '\n\nPoin sekarang: ' + oldPoin + '\n\nMasukkan poin baru (0 = kosongkan):', oldPoin);
+    if (input === null) return;
+    var poin = parseInt(input);
+    if (isNaN(poin) || poin < 0) { showToast('⚠️ Poin harus angka >= 0', 'warning', 3000); return; }
+    try {
+        var r = await safeFetch(API_URL + '/api/admin/edit-poin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken },
+            body: JSON.stringify({ chat_id: uid, poin: poin })
+        });
+        var j = await safeJson(r);
+        if (j && j.status === 'OK') {
+            if (typeof soundVoucher === 'function') soundVoucher();
+            showToast('✅ Poin diubah: ' + j.old + ' → ' + j.new, 'success', 3000);
+            setTimeout(function() { loadUserList(); }, 500);
+        } else {
+            showToast('❌ ' + (j && j.message ? j.message : 'Gagal'), 'error', 3000);
+        }
+    } catch(e) { showToast('⚠️ Koneksi error', 'error', 3000); }
+}
+
+async function adminBlockUser(uid) {
+    var konf = await showConfirmModal({
+        title: '🚫 Block User?',
+        desc: 'Chat ID: <b>' + escapeHtml(uid) + '</b><br><br>User tidak bisa pakai bot sampai di-unblock.',
+        okText: '🚫 YA, BLOCK', cancelText: '❌ BATAL', okColor: 'red'
+    });
+    if (!konf) return;
+    try {
+        var r = await safeFetch(API_URL + '/api/admin/block-user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken },
+            body: JSON.stringify({ chat_id: uid, action: 'block' })
+        });
+        var j = await safeJson(r);
+        if (j && j.status === 'OK') {
+            showToast('🚫 User di-block: ' + uid, 'warning', 3000);
+        } else {
+            showToast('❌ ' + (j && j.message ? j.message : 'Gagal'), 'error', 3000);
+        }
+    } catch(e) { showToast('⚠️ Koneksi error', 'error', 3000); }
+}
+
+async function renderPaketTab(content) {
+    if (!_adminToken) return;
+    var html = '<div class="admin-section-title">🛒 PAKET MANAGEMENT</div>';
+    html += '<input class="admin-search-box" id="paketSearch" placeholder="🔍 Cari paket...">';
+    html += '<div id="paketListBox"><div class="admin-empty">⏳ Loading...</div></div>';
+    content.innerHTML = html;
+    await loadPaketList();
+    var inp = document.getElementById('paketSearch');
+    if (inp) {
+        inp.addEventListener('input', function() {
+            filterPaketList(this.value.trim().toLowerCase());
+        });
+    }
+}
+
+async function loadPaketList() {
+    if (!_adminToken) return;
+    try {
+        var r = await safeFetch(API_URL + '/api/admin/paket', { headers: { 'X-Admin-Token': _adminToken } });
+        var j = await safeJson(r);
+        if (j && j.status === 'UNAUTHORIZED') { _adminToken = null; openAdminLogin(); return; }
+        if (j && j.status === 'OK') {
+            _paketListCache = j.paket || [];
+            renderPaketList(_paketListCache);
+        }
+    } catch(e) {
+        var box = document.getElementById('paketListBox');
+        if (box) box.innerHTML = '<div class="admin-empty">❌ Gagal load</div>';
+    }
+}
+
+function filterPaketList(q) {
+    if (!q) { renderPaketList(_paketListCache); return; }
+    var filtered = _paketListCache.filter(function(p) {
+        return String(p.nama || '').toLowerCase().indexOf(q) !== -1 || String(p.kode || '').toLowerCase().indexOf(q) !== -1;
+    });
+    renderPaketList(filtered);
+}
+
+function renderPaketList(list) {
+    var box = document.getElementById('paketListBox');
+    if (!box) return;
+    if (!list || list.length === 0) {
+        box.innerHTML = '<div class="admin-empty">Tidak ada paket</div>';
+        return;
+    }
+    var html = '<div style="font-size:10.5px; color:#6B7280; margin-bottom:8px;">Total: ' + list.length + ' paket</div>';
+    for (var i = 0; i < list.length; i++) {
+        var p = list[i];
+        var badge = p.is_custom ? 'custom' : 'default';
+        var badgeText = p.is_custom ? 'CUSTOM' : 'DEFAULT';
+        var ov = p.has_override ? ' ✏️' : '';
+        html += '<div class="admin-paket-item">';
+        html += '<div class="admin-paket-head">';
+        html += '<div class="admin-paket-nama">' + escapeHtml(p.nama) + '</div>';
+        html += '<div class="admin-paket-badge ' + badge + '">' + badgeText + ov + '</div>';
+        html += '</div>';
+        html += '<div class="admin-paket-detail">📦 Kode: <b>' + escapeHtml(p.kode) + '</b></div>';
+        html += '<div class="admin-paket-detail">💰 Harga: <b>' + escapeHtml(p.harga_str) + '</b> · 🪙 <b>' + p.poin + ' Poin</b></div>';
+        html += '<div class="admin-paket-detail">📊 Stok: <b>' + p.stok + '</b> · 📁 ' + escapeHtml(p.kategori) + '</div>';
+        html += '<div class="admin-paket-actions">';
+        html += '<button class="admin-paket-btn harga" data-edit-harga="' + escapeHtml(p.kode) + '" data-val="' + p.harga + '">💰 Harga</button>';
+        html += '<button class="admin-paket-btn poin" data-edit-poin-paket="' + escapeHtml(p.kode) + '" data-val="' + p.poin + '">🪙 Poin</button>';
+        html += '<button class="admin-paket-btn hapus" data-hapus-paket="' + escapeHtml(p.kode) + '">🗑️</button>';
+        html += '</div>';
+        html += '</div>';
+    }
+    box.innerHTML = html;
+    bindPaketEvents();
+}
+
+function bindPaketEvents() {
+    setTimeout(function() {
+        var hargaBtns = document.querySelectorAll('[data-edit-harga]');
+        for (var i = 0; i < hargaBtns.length; i++) {
+            hargaBtns[i].addEventListener('click', function() {
+                adminEditPaket(this.getAttribute('data-edit-harga'), 'harga', this.getAttribute('data-val'));
+            });
+        }
+        var poinBtns = document.querySelectorAll('[data-edit-poin-paket]');
+        for (var i = 0; i < poinBtns.length; i++) {
+            poinBtns[i].addEventListener('click', function() {
+                adminEditPaket(this.getAttribute('data-edit-poin-paket'), 'poin', this.getAttribute('data-val'));
+            });
+        }
+        var hapusBtns = document.querySelectorAll('[data-hapus-paket]');
+        for (var i = 0; i < hapusBtns.length; i++) {
+            hapusBtns[i].addEventListener('click', function() {
+                adminHapusPaket(this.getAttribute('data-hapus-paket'));
+            });
+        }
+    }, 100);
+}
+
+async function adminEditPaket(kode, field, oldVal) {
+    var label = field === 'harga' ? 'Harga (Rp)' : 'Poin';
+    var input = prompt('Edit ' + label + ' paket:\n' + kode + '\n\nNilai sekarang: ' + oldVal, oldVal);
+    if (input === null) return;
+    var val = parseInt(input);
+    if (isNaN(val) || val < 0) { showToast('⚠️ Harus angka >= 0', 'warning', 3000); return; }
+    try {
+        var r = await safeFetch(API_URL + '/api/admin/edit-paket', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken },
+            body: JSON.stringify({ kode: kode, field: field, value: val })
+        });
+        var j = await safeJson(r);
+        if (j && j.status === 'OK') {
+            if (typeof soundVoucher === 'function') soundVoucher();
+            showToast('✅ ' + field + ' ' + kode + ': ' + j.old + ' → ' + j.new, 'success', 3000);
+            setTimeout(function() { loadPaketList(); }, 500);
+        } else {
+            showToast('❌ ' + (j && j.message ? j.message : 'Gagal'), 'error', 3000);
+        }
+    } catch(e) { showToast('⚠️ Koneksi error', 'error', 3000); }
+}
+
+async function adminHapusPaket(kode) {
+    var konf = await showConfirmModal({
+        title: '🗑️ Hapus Paket?',
+        desc: 'Kode: <b>' + kode + '</b><br><br>Custom → hapus permanen<br>Default → di-blacklist (bisa dibalikin)',
+        okText: '🗑️ YA, HAPUS', cancelText: '❌ BATAL', okColor: 'red'
+    });
+    if (!konf) return;
+    try {
+        var r = await safeFetch(API_URL + '/api/admin/delete-paket', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken },
+            body: JSON.stringify({ kode: kode })
+        });
+        var j = await safeJson(r);
+        if (j && j.status === 'OK') {
+            showToast('✅ Paket dihapus (' + j.tipe + ')', 'success', 3000);
+            setTimeout(function() { loadPaketList(); }, 500);
+        } else {
+            showToast('❌ ' + (j && j.message ? j.message : 'Gagal'), 'error', 3000);
+        }
+    } catch(e) { showToast('⚠️ Koneksi error', 'error', 3000); }
+}
+/* ===== END BATCH 3 JS ===== */
+
+
+/* ===== BATCH 4: LAPORAN + STATS JS ===== */
+async function renderLaporanTab(content) {
+    if (!_adminToken) return;
+    content.innerHTML = '<div class="admin-empty">⏳ Loading laporan...</div>';
+    try {
+        var r = await safeFetch(API_URL + '/api/admin/laporan', { headers: { 'X-Admin-Token': _adminToken } });
+        var j = await safeJson(r);
+        if (j && j.status === 'UNAUTHORIZED') { _adminToken = null; openAdminLogin(); return; }
+        if (!j || j.status !== 'OK') {
+            content.innerHTML = '<div class="admin-empty">❌ Gagal load laporan</div>';
+            return;
+        }
+        renderLaporanContent(content, j);
+    } catch(e) {
+        content.innerHTML = '<div class="admin-empty">❌ Koneksi error</div>';
+    }
+}
+
+function renderLaporanContent(content, j) {
+    var html = '';
+    html += '<div class="admin-section-title">📊 GRAFIK 7 HARI</div>';
+    var graph = j.graph_7 || [];
+    var maxOrder = 1;
+    for (var i = 0; i < graph.length; i++) { if (graph[i].order > maxOrder) maxOrder = graph[i].order; }
+    html += '<div class="admin-graph">';
+    for (var i = 0; i < graph.length; i++) {
+        var g = graph[i];
+        var height = Math.max(4, Math.floor((g.order / maxOrder) * 100));
+        var tglShort = (g.tanggal || '').split('-').slice(0, 2).join('/');
+        html += '<div class="admin-graph-bar" style="height:' + height + '%;" title="' + escapeHtml(g.tanggal) + ': ' + g.order + ' order">';
+        if (g.order > 0) html += '<div class="admin-graph-bar-label">' + g.order + '</div>';
+        html += '<div class="admin-graph-bar-date">' + escapeHtml(tglShort) + '</div>';
+        html += '</div>';
+    }
+    html += '</div>';
+    html += '<div style="height:20px;"></div>';
+
+    var t7 = j.hari_ini_7 || {};
+    html += '<div class="admin-section-title">📅 LAPORAN 7 HARI</div>';
+    html += '<div class="admin-report-box">';
+    html += '<div class="admin-report-row"><span class="admin-report-label">📦 Total Order</span><span class="admin-report-value cyan">' + (t7.order || 0) + '</span></div>';
+    html += '<div class="admin-report-row"><span class="admin-report-label">✅ Sukses</span><span class="admin-report-value green">' + (t7.sukses || 0) + '</span></div>';
+    html += '<div class="admin-report-row"><span class="admin-report-label">⏳ Pending</span><span class="admin-report-value gold">' + (t7.pending || 0) + '</span></div>';
+    html += '<div class="admin-report-row"><span class="admin-report-label">❌ Ditolak</span><span class="admin-report-value" style="color:#EF4444;">' + (t7.ditolak || 0) + '</span></div>';
+    html += '<div class="admin-report-row"><span class="admin-report-label">💰 Total Revenue</span><span class="admin-report-value green">' + (j.hari_ini_7_str || 'Rp 0') + '</span></div>';
+    html += '</div>';
+
+    var t30 = j.hari_ini_30 || {};
+    html += '<div class="admin-section-title">📆 LAPORAN 30 HARI</div>';
+    html += '<div class="admin-report-box">';
+    html += '<div class="admin-report-row"><span class="admin-report-label">📦 Total Order</span><span class="admin-report-value cyan">' + (t30.order || 0) + '</span></div>';
+    html += '<div class="admin-report-row"><span class="admin-report-label">✅ Sukses</span><span class="admin-report-value green">' + (t30.sukses || 0) + '</span></div>';
+    html += '<div class="admin-report-row"><span class="admin-report-label">💰 Total Revenue</span><span class="admin-report-value green">' + (j.hari_ini_30_str || 'Rp 0') + '</span></div>';
+    html += '</div>';
+
+    html += '<div class="admin-section-title">🏆 TOP BUYER (ALL-TIME)</div>';
+    var top = j.top_buyer || [];
+    if (top.length === 0) {
+        html += '<div class="admin-empty">Belum ada data</div>';
+    } else {
+        html += '<div class="admin-report-box">';
+        for (var i = 0; i < top.length; i++) {
+            var u = top[i];
+            var rankClass = i === 0 ? 'gold' : (i === 1 ? 'silver' : (i === 2 ? 'bronze' : ''));
+            var rankLabel = i < 3 ? ['🥇', '🥈', '🥉'][i] : (i + 1);
+            html += '<div class="admin-top-item">';
+            html += '<div class="admin-top-rank ' + rankClass + '">' + rankLabel + '</div>';
+            html += '<div class="admin-top-info">';
+            html += '<div class="admin-top-name">' + escapeHtml(u.masked || '-') + '</div>';
+            html += '<div class="admin-top-stats">📦 ' + u.order + 'x transaksi</div>';
+            html += '</div>';
+            html += '<div class="admin-top-value">Rp ' + format(u.belanja || 0, ',').replace(/,/g, '.') + '</div>';
+            html += '</div>';
+        }
+        html += '</div>';
+    }
+
+    html += '<div class="admin-section-title">🔥 PAKET TERLARIS</div>';
+    var paket = j.paket_terlaris || [];
+    if (paket.length === 0) {
+        html += '<div class="admin-empty">Belum ada data</div>';
+    } else {
+        html += '<div class="admin-report-box">';
+        for (var i = 0; i < paket.length; i++) {
+            var p = paket[i];
+            html += '<div class="admin-report-row"><span class="admin-report-label">' + (i + 1) + '. ' + escapeHtml(p.nama) + '</span><span class="admin-report-value gold">' + p.count + 'x</span></div>';
+        }
+        html += '</div>';
+    }
+
+    html += '<div class="admin-section-title">💳 METODE BAYAR</div>';
+    var metode = j.metode || [];
+    if (metode.length === 0) {
+        html += '<div class="admin-empty">Belum ada data</div>';
+    } else {
+        html += '<div class="admin-report-box">';
+        for (var i = 0; i < metode.length; i++) {
+            var m = metode[i];
+            var icon = m.metode === 'POIN' ? '🪙' : (m.metode === 'QRIS' ? '📱' : '💳');
+            html += '<div class="admin-report-row"><span class="admin-report-label">' + icon + ' ' + escapeHtml(m.metode) + '</span><span class="admin-report-value cyan">' + m.count + 'x</span></div>';
+        }
+        html += '</div>';
+    }
+
+    html += '<button class="admin-refresh" onclick="renderLaporanTab(document.getElementById(\'adminTabBody\'))">🔄 Refresh Laporan</button>';
+
+    content.innerHTML = html;
+}
+/* ===== END BATCH 4 JS ===== */
 
 </script>
 
