@@ -422,6 +422,48 @@ body.light-mode .chat-option { background: rgba(139,92,246,0.06); }
 }
 /* END FIX 3 */
 
+
+/* ===== ADMIN PANEL ===== */
+#adminBtn { display: none; }
+#adminBtn.show { display: flex; }
+#adminModal { z-index: 999999; }
+.admin-panel { padding: 4px 0; }
+.admin-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.admin-stat-box { background: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(6,182,212,0.08)); border: 1px solid rgba(139,92,246,0.3); border-radius: 12px; padding: 14px 12px; text-align: center; }
+.admin-stat-label { font-size: 10px; color: #9CA3AF; letter-spacing: 1px; font-weight: 700; margin-bottom: 6px; }
+.admin-stat-value { font-size: 20px; font-weight: 900; color: #FBBF24; font-family: 'Courier New', monospace; }
+.admin-stat-value.green { color: #10B981; }
+.admin-stat-value.cyan { color: #06B6D4; }
+.admin-stat-value.red { color: #EF4444; }
+.admin-section-title { font-size: 12px; font-weight: 900; color: #A78BFA; letter-spacing: 2px; margin: 18px 0 10px; display: flex; align-items: center; gap: 8px; }
+.admin-section-title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(139,92,246,0.5), transparent); }
+.admin-order-card { background: linear-gradient(135deg, rgba(26,31,46,0.95), rgba(15,20,32,0.95)); border: 1px solid rgba(139,92,246,0.3); border-radius: 12px; padding: 14px; margin-bottom: 10px; position: relative; }
+.admin-order-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: linear-gradient(180deg,#FBBF24,#F59E0B); border-radius: 12px 0 0 12px; }
+.admin-order-resi { font-family: 'Courier New', monospace; font-size: 12px; color: #06B6D4; font-weight: 800; margin-bottom: 6px; }
+.admin-order-info { font-size: 12px; color: #B0B7C3; margin-bottom: 3px; line-height: 1.5; }
+.admin-order-info b { color: #FFF; }
+.admin-order-actions { display: flex; gap: 8px; margin-top: 12px; }
+.admin-btn-acc { flex: 1; padding: 10px; border: none; border-radius: 10px; background: linear-gradient(135deg,#10B981,#059669); color: #FFF; font-size: 12px; font-weight: 900; cursor: pointer; letter-spacing: 0.5px; }
+.admin-btn-acc:active { transform: scale(0.97); }
+.admin-btn-reject { flex: 1; padding: 10px; border: none; border-radius: 10px; background: linear-gradient(135deg,#EF4444,#DC2626); color: #FFF; font-size: 12px; font-weight: 900; cursor: pointer; letter-spacing: 0.5px; }
+.admin-btn-reject:active { transform: scale(0.97); }
+.admin-empty { text-align: center; padding: 30px 20px; color: #6B7280; font-size: 12.5px; }
+.admin-bc-input { width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(139,92,246,0.3); border-radius: 10px; color: #FFF; font-size: 12.5px; font-family: inherit; resize: vertical; min-height: 80px; outline: none; }
+.admin-bc-input:focus { border-color: #8B5CF6; }
+.admin-bc-btns { display: flex; gap: 8px; margin-top: 10px; }
+.admin-bc-btns button { flex: 1; padding: 11px; border: none; border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer; }
+.admin-bc-all { background: linear-gradient(135deg,#8B5CF6,#06B6D4); color: #FFF; }
+.admin-bc-buyer { background: linear-gradient(135deg,#FBBF24,#F59E0B); color: #1A1F2E; }
+.admin-refresh { width: 100%; padding: 10px; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.4); border-radius: 10px; color: #A78BFA; font-size: 12px; font-weight: 800; cursor: pointer; margin-bottom: 12px; }
+.admin-refresh:active { transform: scale(0.98); }
+.admin-logout { width: 100%; padding: 12px; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.4); border-radius: 10px; color: #EF4444; font-size: 13px; font-weight: 900; cursor: pointer; margin-top: 20px; letter-spacing: 0.5px; }
+body.light-mode .admin-stat-box { background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(6,182,212,0.05)); }
+body.light-mode .admin-order-card { background: #FFF; }
+body.light-mode .admin-order-info { color: #475569; }
+body.light-mode .admin-order-info b { color: #1E293B; }
+body.light-mode .admin-bc-input { background: #FFF; color: #1E293B; }
+/* ===== END ADMIN PANEL ===== */
+
 </style>
 
 </head><body>
@@ -518,6 +560,7 @@ body.light-mode .chat-option { background: rgba(139,92,246,0.06); }
         <div class="header-menu" onclick="openInbox()" style="width:42px; height:42px; border-radius:12px; background:rgba(139,92,246,0.1); border:1px solid rgba(139,92,246,0.3); display:flex; align-items:center; justify-content:center; font-size:18px; cursor:pointer; color:#A78BFA;">📬</div>
         <div id="inboxBadge">0</div>
     </div>
+    <div class="header-menu" id="adminBtn" onclick="openAdminLogin()" style="width:42px; height:42px; border-radius:12px; background:rgba(251,191,36,0.15); border:1px solid rgba(251,191,36,0.4); display:none; align-items:center; justify-content:center; font-size:18px; cursor:pointer; color:#FBBF24; animation:pulseStatus 2s infinite;">👑</div>
     <div class="header-menu" id="themeToggleBtn" onclick="toggleTheme()" style="width:42px; height:42px; border-radius:12px; background:rgba(139,92,246,0.1); border:1px solid rgba(139,92,246,0.3); display:flex; align-items:center; justify-content:center; font-size:18px; cursor:pointer; color:#A78BFA;">🌙</div>
     <div class="header-menu" id="soundToggleBtn" onclick="toggleSound()" style="width:42px; height:42px; border-radius:12px; background:rgba(139,92,246,0.1); border:1px solid rgba(139,92,246,0.3); display:flex; align-items:center; justify-content:center; font-size:18px; cursor:pointer; color:#A78BFA;">🔊</div>
     <div class="header-menu" onclick="openMenu()">☰</div>
@@ -2470,6 +2513,28 @@ async function loadAkun() {
 /* ==================== TESTIMONI ==================== */
 /* TESTI_NAMES — pindah ke backend */
 /* TESTI_PAKET — pindah ke backend */
+/* ===== FORMAT WAKTU RELATIF ===== */
+function formatWaktuRelatif(ts) {
+    if (!ts) return '-';
+    try {
+        var detik = Math.floor((Date.now() - ts) / 1000);
+        if (detik < 5) return 'baru saja';
+        if (detik < 60) return detik + ' detik lalu';
+        var menit = Math.floor(detik / 60);
+        if (menit < 60) return menit + ' menit lalu';
+        var jam = Math.floor(menit / 60);
+        if (jam < 24) return jam + ' jam lalu';
+        var hari = Math.floor(jam / 24);
+        if (hari < 7) return hari + ' hari lalu';
+        var d = new Date(ts);
+        var pad = function(x) { return x < 10 ? '0' + x : String(x); };
+        return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+    } catch(e) {
+        return '-';
+    }
+}
+/* ===== END FORMAT WAKTU ===== */
+
 /* ===== TESTIMONI (REAL + FAKE dari BACKEND) ===== */
 var _testiCache = [];
 
@@ -4044,6 +4109,299 @@ setTimeout(function() {
 })();
 /* ===== END SECURITY GUARD ===== */
 
+
+/* ===== ADMIN PANEL JS ===== */
+var _adminToken = null;
+var _adminTimer = null;
+var ADMIN_CHAT_ID = '8772023108';
+
+function isAdminUser() {
+    try {
+        var cid = localStorage.getItem('chat_id_apk') || localStorage.getItem('chat_id') || '';
+        return cid === ADMIN_CHAT_ID;
+    } catch(e) { return false; }
+}
+
+function checkAdminBtn() {
+    var btn = document.getElementById('adminBtn');
+    if (!btn) return;
+    if (isAdminUser()) {
+        btn.classList.add('show');
+        btn.style.display = 'flex';
+    } else {
+        btn.classList.remove('show');
+        btn.style.display = 'none';
+    }
+}
+
+function openAdminLogin() {
+    if (typeof soundClick === 'function') soundClick();
+    // Kalau udah login (token ada + valid) → langsung buka panel
+    if (_adminToken) {
+        openAdminPanel();
+        return;
+    }
+    var modal = document.getElementById('adminModal');
+    var content = document.getElementById('adminContent');
+    if (!modal || !content) return;
+    content.innerHTML = '' +
+        '<div class="admin-empty" style="padding:20px 0 10px;">🔒 Masukkan Password Admin</div>' +
+        '<div class="form-group">' +
+        '<label class="form-label">🔐 PASSWORD</label>' +
+        '<input type="password" class="form-input" id="adminPwdInput" placeholder="Masukkan password admin" autocomplete="off">' +
+        '<div id="adminLoginStatus" style="margin-top:10px; font-size:11px;"></div>' +
+        '</div>' +
+        '<div class="modal-actions">' +
+        '<button class="btn-modal-primary" onclick="submitAdminLogin()">🔓 LOGIN</button>' +
+        '<button class="btn-modal-secondary" onclick="closeAdminModal()">BATAL</button>' +
+        '</div>';
+    modal.classList.add('show');
+    setTimeout(function() {
+        var inp = document.getElementById('adminPwdInput');
+        if (inp) inp.focus();
+    }, 300);
+}
+
+function closeAdminModal() {
+    var modal = document.getElementById('adminModal');
+    if (modal) modal.classList.remove('show');
+    if (_adminTimer) { clearInterval(_adminTimer); _adminTimer = null; }
+    if (typeof soundClick === 'function') soundClick();
+}
+
+async function submitAdminLogin() {
+    var input = document.getElementById('adminPwdInput');
+    var status = document.getElementById('adminLoginStatus');
+    if (!input || !status) return;
+    var pwd = input.value || '';
+    if (!pwd) {
+        status.innerHTML = '<span style="color:#EF4444;">⚠️ Masukkan password!</span>';
+        return;
+    }
+    status.innerHTML = '<span style="color:#FBBF24;">⏳ Verifikasi...</span>';
+    try {
+        var cid = localStorage.getItem('chat_id_apk') || localStorage.getItem('chat_id') || '';
+        var r = await safeFetch(API_URL + '/api/admin/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: pwd, chat_id: cid })
+        });
+        var j = await safeJson(r);
+        if (j && j.status === 'OK' && j.token) {
+            _adminToken = j.token;
+            status.innerHTML = '<span style="color:#10B981;">✅ Login berhasil!</span>';
+            if (typeof soundVoucher === 'function') soundVoucher();
+            setTimeout(function() { openAdminPanel(); }, 500);
+        } else if (j && j.status === 'BLOCKED') {
+            status.innerHTML = '<span style="color:#EF4444;">🚫 ' + (j.message || 'Diblokir') + '</span>';
+        } else {
+            status.innerHTML = '<span style="color:#EF4444;">❌ ' + (j && j.message ? j.message : 'Gagal login') + '</span>';
+            if (typeof soundError === 'function') soundError();
+        }
+    } catch(e) {
+        status.innerHTML = '<span style="color:#EF4444;">⚠️ Koneksi error!</span>';
+    }
+}
+
+async function openAdminPanel() {
+    var modal = document.getElementById('adminModal');
+    var content = document.getElementById('adminContent');
+    if (!modal || !content) return;
+    modal.classList.add('show');
+    content.innerHTML = '<div class="admin-empty">⏳ Loading dashboard...</div>';
+    // Auto refresh tiap 30 detik
+    if (_adminTimer) clearInterval(_adminTimer);
+    _adminTimer = setInterval(function() {
+        if (document.hidden) return;
+        var m = document.getElementById('adminModal');
+        if (m && m.classList.contains('show')) {
+            refreshAdminDashboard(false);
+        }
+    }, 30000);
+    await refreshAdminDashboard(true);
+}
+
+async function refreshAdminDashboard(showLoading) {
+    var content = document.getElementById('adminContent');
+    if (!content || !_adminToken) return;
+    if (showLoading) content.innerHTML = '<div class="admin-empty">⏳ Loading...</div>';
+    try {
+        // Fetch stats + pending paralel
+        var [rStat, rPend] = await Promise.all([
+            safeFetch(API_URL + '/api/admin/stats', { headers: { 'X-Admin-Token': _adminToken } }),
+            safeFetch(API_URL + '/api/admin/pending-orders', { headers: { 'X-Admin-Token': _adminToken } })
+        ]);
+        var jStat = await safeJson(rStat);
+        var jPend = await safeJson(rPend);
+
+        if (jStat && jStat.status === 'UNAUTHORIZED') { _adminToken = null; openAdminLogin(); return; }
+        if (jPend && jPend.status === 'UNAUTHORIZED') { _adminToken = null; openAdminLogin(); return; }
+
+        var html = '';
+        // Stats
+        if (jStat && jStat.status === 'OK') {
+            html += '<div class="admin-section-title">📊 HARI INI</div>';
+            html += '<div class="admin-stat-grid">';
+            html += '<div class="admin-stat-box"><div class="admin-stat-label">TOTAL ORDER</div><div class="admin-stat-value cyan">' + (jStat.total_order || 0) + '</div></div>';
+            html += '<div class="admin-stat-box"><div class="admin-stat-label">PENDING</div><div class="admin-stat-value">' + (jStat.pending || 0) + '</div></div>';
+            html += '<div class="admin-stat-box"><div class="admin-stat-label">SUKSES</div><div class="admin-stat-value green">' + (jStat.sukses || 0) + '</div></div>';
+            html += '<div class="admin-stat-box"><div class="admin-stat-label">DITOLAK</div><div class="admin-stat-value red">' + (jStat.ditolak || 0) + '</div></div>';
+            html += '</div>';
+            html += '<div class="admin-stat-box" style="margin-bottom:10px;"><div class="admin-stat-label">💰 PENDAPATAN</div><div class="admin-stat-value green">' + (jStat.pendapatan_str || 'Rp 0') + '</div></div>';
+        }
+
+        // Refresh
+        html += '<button class="admin-refresh" onclick="refreshAdminDashboard(true)">🔄 Refresh Data</button>';
+
+        // Pending orders
+        html += '<div class="admin-section-title">📦 ORDER PENDING (' + (jPend && jPend.count ? jPend.count : 0) + ')</div>';
+        if (jPend && jPend.pending && jPend.pending.length > 0) {
+            for (var i = 0; i < jPend.pending.length; i++) {
+                var o = jPend.pending[i];
+                html += '<div class="admin-order-card">' +
+                    '<div class="admin-order-resi">🔑 ' + escapeHtml(o.resi) + '</div>' +
+                    '<div class="admin-order-info">👤 <b>' + escapeHtml(o.chat_id) + '</b></div>' +
+                    '<div class="admin-order-info">📦 <b>' + escapeHtml(o.paket) + '</b></div>' +
+                    '<div class="admin-order-info">💰 <b>' + escapeHtml(o.harga) + '</b> · 💳 ' + escapeHtml(o.metode) + '</div>' +
+                    '<div class="admin-order-info" style="font-size:10.5px; color:#6B7280;">📅 ' + escapeHtml(o.hari) + ', ' + escapeHtml(o.tanggal) + ' · ' + escapeHtml(o.jam) + '</div>' +
+                    '<div class="admin-order-actions">' +
+                    '<button class="admin-btn-acc" onclick="adminAccOrder(\'' + escapeHtml(o.resi) + '\')">✅ ACC</button>' +
+                    '<button class="admin-btn-reject" onclick="adminRejectOrder(\'' + escapeHtml(o.resi) + '\')">❌ TOLAK</button>' +
+                    '</div>' +
+                    '</div>';
+            }
+        } else {
+            html += '<div class="admin-empty">✅ Tidak ada order pending</div>';
+        }
+
+        // Broadcast
+        html += '<div class="admin-section-title">📢 BROADCAST</div>';
+        html += '<textarea class="admin-bc-input" id="adminBcInput" placeholder="Ketik pesan broadcast..."></textarea>';
+        html += '<div class="admin-bc-btns">';
+        html += '<button class="admin-bc-all" onclick="adminBroadcast(\'all\')">📢 SEMUA USER</button>';
+        html += '<button class="admin-bc-buyer" onclick="adminBroadcast(\'buyer\')">💎 BUYER</button>';
+        html += '</div>';
+
+        // Logout
+        html += '<button class="admin-logout" onclick="adminLogout()">🚪 LOGOUT ADMIN</button>';
+
+        content.innerHTML = html;
+    } catch(e) {
+        content.innerHTML = '<div class="admin-empty">❌ Error: ' + escapeHtml(e.message || 'Koneksi') + '</div>';
+    }
+}
+
+async function adminAccOrder(resi) {
+    if (!_adminToken) return;
+    var konf = await showConfirmModal({
+        title: '✅ ACC Order?',
+        desc: 'Resi: <b>' + escapeHtml(resi) + '</b><br><br>User bakal dapet notif Telegram.',
+        okText: '✅ YA, ACC',
+        cancelText: '❌ BATAL',
+        okColor: 'purple'
+    });
+    if (!konf) return;
+    try {
+        var r = await safeFetch(API_URL + '/api/admin/acc-order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken },
+            body: JSON.stringify({ resi: resi })
+        });
+        var j = await safeJson(r);
+        if (j && j.status === 'OK') {
+            if (typeof soundVoucher === 'function') soundVoucher();
+            showToast('✅ Order di-ACC: ' + resi, 'success', 3000);
+            setTimeout(function() { refreshAdminDashboard(false); }, 1000);
+        } else {
+            showToast('❌ ' + (j && j.message ? j.message : 'Gagal'), 'error', 3000);
+        }
+    } catch(e) {
+        showToast('⚠️ Koneksi error', 'error', 3000);
+    }
+}
+
+async function adminRejectOrder(resi) {
+    if (!_adminToken) return;
+    var konf = await showConfirmModal({
+        title: '❌ Tolak Order?',
+        desc: 'Resi: <b>' + escapeHtml(resi) + '</b><br><br>User bakal dapet notif penolakan.',
+        okText: '❌ YA, TOLAK',
+        cancelText: '⬅️ BATAL',
+        okColor: 'red'
+    });
+    if (!konf) return;
+    try {
+        var r = await safeFetch(API_URL + '/api/admin/reject-order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken },
+            body: JSON.stringify({ resi: resi })
+        });
+        var j = await safeJson(r);
+        if (j && j.status === 'OK') {
+            if (typeof soundError === 'function') soundError();
+            showToast('❌ Order ditolak: ' + resi, 'warning', 3000);
+            setTimeout(function() { refreshAdminDashboard(false); }, 1000);
+        } else {
+            showToast('❌ ' + (j && j.message ? j.message : 'Gagal'), 'error', 3000);
+        }
+    } catch(e) {
+        showToast('⚠️ Koneksi error', 'error', 3000);
+    }
+}
+
+async function adminBroadcast(target) {
+    if (!_adminToken) return;
+    var input = document.getElementById('adminBcInput');
+    if (!input) return;
+    var pesan = (input.value || '').trim();
+    if (!pesan || pesan.length < 3) {
+        showToast('⚠️ Pesan minimal 3 karakter', 'warning', 3000);
+        return;
+    }
+    var targetLabel = target === 'buyer' ? 'BUYER (yang pernah beli)' : 'SEMUA USER';
+    var konf = await showConfirmModal({
+        title: '📢 Broadcast?',
+        desc: 'Kirim ke: <b>' + targetLabel + '</b><br><br>Pesan:<br><i>' + escapeHtml(pesan.substring(0, 100)) + '</i>',
+        okText: '📢 KIRIM',
+        cancelText: '❌ BATAL',
+        okColor: 'purple'
+    });
+    if (!konf) return;
+    input.value = '';
+    showToast('⏳ Mengirim broadcast...', 'info', 3000);
+    try {
+        var r = await safeFetch(API_URL + '/api/admin/broadcast', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken },
+            body: JSON.stringify({ pesan: pesan, target: target })
+        });
+        var j = await safeJson(r);
+        if (j && j.status === 'OK') {
+            if (typeof soundVoucher === 'function') soundVoucher();
+            showToast('✅ Broadcast terkirim ke ' + j.sent + '/' + j.total + ' user', 'success', 5000);
+            setTimeout(function() { refreshAdminDashboard(false); }, 1000);
+        } else {
+            showToast('❌ ' + (j && j.message ? j.message : 'Gagal'), 'error', 3000);
+        }
+    } catch(e) {
+        showToast('⚠️ Koneksi error', 'error', 3000);
+    }
+}
+
+function adminLogout() {
+    _adminToken = null;
+    if (_adminTimer) { clearInterval(_adminTimer); _adminTimer = null; }
+    closeAdminModal();
+    showToast('🚪 Logout dari admin panel', 'info', 3000);
+}
+
+// Auto check admin status tiap 3 detik (karena chat_id bisa berubah pas login)
+setTimeout(function() {
+    checkAdminBtn();
+    setInterval(checkAdminBtn, 3000);
+}, 1500);
+/* ===== END ADMIN PANEL JS ===== */
+
 </script>
 
 <div id="liveChatBtn" onclick="openLiveChat()">💬</div>
@@ -4069,6 +4427,17 @@ setTimeout(function() {
         <div class="chat-option" onclick="chatViaTelegram()">
             <div class="chat-icon tg">✈️</div>
             <div class="chat-info"><h4>Telegram</h4><p>@PakelMlbbOfficial - chat langsung</p></div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal-overlay" id="adminModal">
+    <div class="modal-sheet" onclick="event.stopPropagation()" style="max-height:90vh;">
+        <div class="modal-close" onclick="closeAdminModal()">✕</div>
+        <div class="modal-title" style="text-align:center;">👑 ADMIN PANEL</div>
+        <div id="adminContent">
+            <div class="admin-empty">⏳ Loading...</div>
         </div>
     </div>
 </div>
