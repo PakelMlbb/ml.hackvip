@@ -4688,7 +4688,7 @@ async function renderVoucherTab(content) {
                 html += '<div class="admin-voucher-kode">🎫 ' + escapeHtml(v.kode) + '</div>';
                 html += '<div class="admin-voucher-detail">Rp ' + format(v.diskon, ',').replace(/,/g, '.') + ' · Sisa ' + v.sisa + '/' + v.max + '</div>';
                 html += '</div>';
-                html += '<div class="admin-voucher-del" onclick="adminHapusVoucher(\'' + escapeHtml(v.kode) + '\')">🗑️</div>';
+                html += '<div class="admin-voucher-del" data-hapus-voucher="' + escapeHtml(v.kode) + '">🗑️</div>';
                 html += '</div>';
             }
         } else {
