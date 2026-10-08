@@ -60,7 +60,7 @@ body { background: radial-gradient(circle at 20% 0%, rgba(139, 92, 246, 0.15) 0%
 .menu-item-label { font-size: 13px; font-weight: 700; color: #FFF; flex: 1; }
 .menu-item-sub { font-size: 10px; color: #6B7280; display: block; margin-top: 2px; font-weight: 500; }
 .menu-section-title { font-size: 10px; font-weight: 800; color: #A78BFA; letter-spacing: 2px; margin: 16px 0 8px; padding-left: 4px; text-transform: uppercase; }
-.header { position: sticky; top: 0; z-index: 100; background: rgba(10,14,26,0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(139,92,246,0.2); padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; }
+.header { position: sticky; top: 0; z-index: 100; background: rgba(10,14,26,0.99); border-bottom: 1px solid rgba(139,92,246,0.2); padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; }
 .header::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, #8B5CF6, #06B6D4, transparent); animation: scanLine 3s linear infinite; }
 .header-brand { display: flex; align-items: center; gap: 10px; }
 .header-logo { width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg,#8B5CF6,#06B6D4); display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 0 20px rgba(139,92,246,0.5); animation: logoFloat 3s infinite ease-in-out; }
@@ -268,6 +268,15 @@ body { background: radial-gradient(circle at 20% 0%, rgba(139, 92, 246, 0.15) 0%
 @keyframes toastIn { from { transform: translate(-50%, -30px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
 @keyframes toastInSlide { from { transform: translateY(-50px); opacity: 0; } 60% { transform: translateY(5px); opacity: 1; } to { transform: translateY(0); opacity: 1; } }
 @keyframes toastOut { to { transform: translateY(-30px); opacity: 0; } }
+@keyframes pakelToastInBottom {
+    0% { opacity: 0; transform: translateY(30px) scale(0.9); }
+    60% { opacity: 1; transform: translateY(-3px) scale(1.02); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes pakelToastOutBottom {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(30px) scale(0.9); }
+}
 @keyframes hackerLineIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
 @keyframes liveTickerIn { from { transform: translate(-50%, -20px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
 </style>
@@ -315,16 +324,37 @@ body.logged-in .login-indicator { display: flex !important; }
 }
 
 /* ===== BATCH 1: ANTI-SCAM + THEME + COUNTDOWN + SOUND ===== */
-#antiScamBanner { position: sticky; top: 70px; z-index: 99; margin: 12px 16px 0; padding: 12px 40px 12px 14px; background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(251,191,36,0.15)); border: 1px solid rgba(239,68,68,0.4); border-radius: 12px; display: flex; align-items: center; gap: 10px; animation: fadeIn 0.4s ease; }
+/* FIX: banner jadi TOAST-style — fixed di atas, gak ketutup, auto-dismiss */
+#antiScamBanner {
+    position: fixed;
+    top: calc(var(--header-h, 78px) + 8px);
+    left: 16px;
+    right: 16px;
+    z-index: 2147483639;
+    padding: 12px 42px 12px 14px;
+    background: linear-gradient(135deg, #EF4444, #F59E0B);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 14px;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 30px rgba(239,68,68,0.5), 0 0 20px rgba(251,191,36,0.3);
+    transition: transform 0.4s ease, opacity 0.4s ease;
+}
+#antiScamBanner.show {
+    display: flex;
+    animation: liveTickerIn 0.5s cubic-bezier(0.68,-0.55,0.27,1.55);
+}
+#antiScamBanner.slide-out { transform: translateY(-30px); opacity: 0; }
 #antiScamBanner.hide { display: none; }
 #antiScamBanner .asb-icon { font-size: 22px; flex-shrink: 0; }
-#antiScamBanner .asb-text { font-size: 11px; color: #FBBF24; font-weight: 700; line-height: 1.5; flex: 1; }
-#antiScamBanner .asb-text b { color: #FFF; }
-#antiScamBanner .asb-close { position: absolute; right: 8px; top: 8px; width: 24px; height: 24px; border-radius: 50%; background: rgba(239,68,68,0.3); color: #FFF; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; }
+#antiScamBanner .asb-text { font-size: 11.5px; color: #FFF; font-weight: 700; line-height: 1.5; flex: 1; text-shadow: 0 1px 2px rgba(0,0,0,0.35); }
+#antiScamBanner .asb-text b { color: #FFEE00; font-weight: 900; }
+/* FIX v2.1: .asb-close dihapus — banner anti-scam auto-dismiss, no X */
 .slot-badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 6px; background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(251,191,36,0.15)); border: 1px solid rgba(239,68,68,0.4); font-size: 10.5px; font-weight: 800; color: #FBBF24; margin-bottom: 10px; letter-spacing: 0.3px; }
 .slot-badge.urgent { animation: pulseStatus 1.2s infinite; border-color: rgba(239,68,68,0.8); }
 body.light-mode { background: linear-gradient(180deg, #F8FAFC 0%, #E2E8F0 100%) !important; color: #1E293B; }
-body.light-mode .header { background: rgba(248,250,252,0.95); border-bottom-color: rgba(139,92,246,0.3); }
+body.light-mode .header { background: rgba(248,250,252,0.99); border-bottom-color: rgba(139,92,246,0.3); }
 body.light-mode .header-info h1 { background: linear-gradient(135deg,#1E293B,#8B5CF6); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 body.light-mode .section-title { color: #1E293B; }
 body.light-mode .paket-card { background: linear-gradient(135deg,#FFFFFF,#F1F5F9); border-color: rgba(139,92,246,0.3); }
@@ -624,7 +654,6 @@ body.light-mode .admin-graph { background: rgba(139,92,246,0.05); }
 <div id="antiScamBanner">
     <div class="asb-icon">🛡️</div>
     <div class="asb-text"><b>PAKEL MLBBSTORE 100% AMAN.</b> Kami <b>TIDAK PERNAH</b> minta password/OTP/data pribadi. Waspada penipu yang mengaku dari kami!</div>
-    <div class="asb-close" onclick="dismissBanner()">✕</div>
 </div>
 <div id="splash">
     <div class="splash-logo"><div class="splash-logo-icon">🎮</div></div>
@@ -1067,7 +1096,7 @@ body.light-mode .admin-graph { background: rgba(139,92,246,0.05); }
     </div>
 </div>
 
-<div id="toast-container"></div>
+
 <div class="bottom-nav">
     <div class="nav-item active" data-page="home" onclick="goPage('home')"><div class="nav-icon">🏠</div><div class="nav-label">HOME</div></div>
     <div class="nav-item" data-page="katalog" onclick="goPage('katalog')"><div class="nav-icon">💎</div><div class="nav-label">KATALOG</div></div>
@@ -1143,6 +1172,19 @@ function checkAutoLoginAPK() {
         console.log('[AUTH] ✅ AUTO-LOGIN: ' + savedID);
         // Refresh session timestamp
         try { localStorage.setItem('pakel_session_start', String(now)); } catch(e) {}
+        // FIX v2.0: Toast welcome-back + sound khusus untuk returning user
+        setTimeout(function() {
+            var namaUser = safeGetStorage('user_name') || 'Player';
+            try {
+                if (typeof showToast === 'function') {
+                    showToast('👋 Halo, <b>' + escapeHtml(namaUser) + '</b>!<br>Selamat datang kembali 🎮', 'welcome-back', 3500);
+                }
+            } catch(e) { console.warn('[welcome-back]', e); }
+        }, 2200);
+        // FIX v2.2: panggil setelah toast welcome-back muncul (guard yang urus timing)
+        setTimeout(function() {
+            if (typeof showAntiScamBanner === 'function') showAntiScamBanner();
+        }, 6000);
         return true;
     }
     
@@ -1225,22 +1267,45 @@ function submitLoginAPK() {
             var nameEl = document.getElementById('welcomeName');
             if (nameEl && res.nama) nameEl.textContent = res.nama;
             if (status) status.innerHTML = '<span style="color:#10B981;">✅ Login berhasil!</span>';
-            sSuccess(); haptic([80, 40, 80]);
+            // FIX v3.0: sound login success di momen ini
+            if (typeof soundLoginSuccess === 'function') soundLoginSuccess();
+            haptic([80, 40, 80]);
+
+            // FIX v2.0: Flow notif berurutan
+            // [1] Tutup modal login (0.7s)
+            // [2] Toast welcome-first + sound ceria (0.9s)
+            // [3] Modal Welcome
+            // [4] Modal Disclaimer
+            // [5] Banner anti-scam
+
+            // STEP 1: Tutup modal login
             setTimeout(function() {
                 var m = document.getElementById('modalLoginAPK');
                 if (m) m.classList.remove('show');
-                showToast('✓ Login berhasil, ' + (res.nama || 'Kak') + '!');
-                // ===== P1: welcome tunggu login modal ketutup =====
-                var _p1_showWelcomeAfterLogin = function() {
+            }, 700);
+
+            // STEP 2: Toast welcome-first + sound (dari showToast type 'welcome')
+            setTimeout(function() {
+                var namaUser = res.nama || 'Player';
+                try {
+                    if (typeof showToast === 'function') {
+                        showToast('👋 Selamat datang, <b>' + escapeHtml(namaUser) + '</b>!', 'welcome', 2800);
+                    }
+                } catch(e) {}
+            }, 900);
+
+            // STEP 3: Modal welcome — tunggu toast hilang
+            setTimeout(function() {
+                var _waitLoginClose = function() {
                     var lm = document.getElementById('modalLoginAPK');
                     if (lm && lm.classList.contains('show')) {
-                        setTimeout(_p1_showWelcomeAfterLogin, 500);
+                        setTimeout(_waitLoginClose, 400);
                         return;
                     }
                     if (typeof showWelcomeModal === 'function') showWelcomeModal();
                 };
-                setTimeout(_p1_showWelcomeAfterLogin, 800);
-            }, 800);
+                _waitLoginClose();
+            }, 3800);
         } else {
             if (status) status.innerHTML = '<span style="color:#EF4444;">❌ ' + (res.reason || 'ID tidak terdaftar') + '<br>Mulai bot @Pakel_Mlbb_Store_bot dulu ya!</span>';
             sError();
@@ -1254,7 +1319,7 @@ function submitLoginAPK() {
         setTimeout(function() {
             var m = document.getElementById('modalLoginAPK');
             if (m) m.classList.remove('show');
-            showToast('✓ Login tersimpan!');
+            /* login toast removed */
         }, 800);
     });
 }
@@ -1274,6 +1339,12 @@ function logoutAPK() {
                 localStorage.removeItem('pakel_session_start');
                 localStorage.removeItem('pakel_welcome_shown');
             } catch(e) {}
+            // FIX #7: clear verify cache biar gak memory leak
+            try {
+                if (typeof _verifyCache !== 'undefined' && _verifyCache) {
+                    Object.keys(_verifyCache).forEach(function(k) { delete _verifyCache[k]; });
+                }
+            } catch(e) {}
             location.reload();
         }
     });
@@ -1288,6 +1359,21 @@ function initAudio() {
     try { _audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
     catch(e) { _soundEnabled = false; }
 }
+
+/* FIX v3.0: auto-unlock AudioContext — Chrome blokir sampai user gesture */
+function _unlockAudio() {
+    try {
+        initAudio();
+        if (_audioCtx && _audioCtx.state === 'suspended') {
+            _audioCtx.resume().then(function() {
+                console.log('[SOUND] AudioContext unlocked');
+            }).catch(function(){});
+        }
+    } catch(e) {}
+}
+document.addEventListener('touchstart', _unlockAudio, { once: true, passive: true });
+document.addEventListener('click', _unlockAudio, { once: true, passive: true });
+document.addEventListener('keydown', _unlockAudio, { once: true, passive: true });
 
 function playTone(freq, duration, type, volume) {
     if (!_soundEnabled) return;
@@ -1329,6 +1415,105 @@ function soundSpin() {
         playTone(500 + (i * 30), 0.03, 'triangle', 0.05);
         i++;
     }, 100);
+}
+
+/* ============================================================
+   SOUND LIBRARY v2 — semua nada UNIK per event
+   ============================================================ */
+
+/* SOUND: Welcome FIRST-TIME (login baru) — ceremonial, ceria */
+function soundWelcomeFirst() {
+    playTone(523, 0.1, 'sine', 0.14);
+    setTimeout(function() { playTone(659, 0.1, 'sine', 0.14); }, 100);
+    setTimeout(function() { playTone(784, 0.1, 'sine', 0.14); }, 200);
+    setTimeout(function() { playTone(1047, 0.22, 'sine', 0.16); }, 300);
+}
+
+/* SOUND: Welcome BACK (returning user) — warm, singkat */
+function soundWelcomeBack() {
+    playTone(880, 0.08, 'sine', 0.13);
+    setTimeout(function() { playTone(1047, 0.08, 'sine', 0.13); }, 80);
+    setTimeout(function() { playTone(1319, 0.18, 'sine', 0.15); }, 160);
+}
+
+/* SOUND: Login SUCCESS — punchy */
+function soundLoginSuccess() {
+    playTone(659, 0.07, 'triangle', 0.13);
+    setTimeout(function() { playTone(880, 0.07, 'triangle', 0.13); }, 70);
+    setTimeout(function() { playTone(1175, 0.14, 'triangle', 0.14); }, 140);
+}
+
+/* SOUND: UPLOAD SUKSES — ala DANA "ting ting ting ting" ceria */
+function soundUploadSuccess() {
+    playTone(1047, 0.06, 'sine', 0.13);
+    setTimeout(function() { playTone(1319, 0.06, 'sine', 0.13); }, 80);
+    setTimeout(function() { playTone(1568, 0.06, 'sine', 0.13); }, 160);
+    setTimeout(function() { playTone(2093, 0.2, 'sine', 0.15); }, 240);
+}
+
+/* SOUND: UPLOAD GAGAL — descending, jelas */
+function soundUploadError() {
+    /* FIX v3.0: double buzz — beda dari soundError & soundRejected */
+    playTone(220, 0.08, 'square', 0.12);
+    playTone(330, 0.08, 'square', 0.1);      // dissonant
+    setTimeout(function() { playTone(220, 0.08, 'square', 0.12); }, 150);
+    setTimeout(function() { playTone(330, 0.08, 'square', 0.1); }, 150);
+    setTimeout(function() { playTone(180, 0.25, 'sawtooth', 0.13); }, 320);
+}
+
+/* SOUND: ACC oleh admin — MEGAH, panjang, congratulation */
+function soundAccByAdmin() {
+    /* FIX v3.0: fanfare triumphant — beda total dari welcome */
+    playTone(392, 0.08, 'triangle', 0.13);   // G4
+    setTimeout(function() { playTone(523, 0.08, 'triangle', 0.13); }, 80);   // C5
+    setTimeout(function() { playTone(659, 0.08, 'triangle', 0.13); }, 160);  // E5
+    setTimeout(function() { playTone(784, 0.08, 'triangle', 0.14); }, 240);  // G5
+    setTimeout(function() { playTone(659, 0.06, 'triangle', 0.13); }, 340);  // E5
+    setTimeout(function() { playTone(784, 0.06, 'triangle', 0.14); }, 400);  // G5
+    setTimeout(function() { playTone(1047, 0.3, 'sine', 0.16); }, 470);      // C6 hold
+}
+
+/* SOUND: DITOLAK admin — turun tegas, minor feel */
+function soundRejected() {
+    /* FIX v3.0: minor chord descending — jelas "gagal" */
+    playTone(523, 0.1, 'square', 0.11);      // C5
+    setTimeout(function() { playTone(466, 0.1, 'square', 0.11); }, 120);   // Bb4
+    setTimeout(function() { playTone(392, 0.1, 'square', 0.12); }, 240);   // G4
+    setTimeout(function() { playTone(349, 0.35, 'sawtooth', 0.13); }, 360); // F4 hold
+}
+
+/* SOUND: Voucher redeem — bright, double ting */
+function soundVoucherRedeem() {
+    playTone(1318, 0.06, 'square', 0.1);
+    setTimeout(function() { playTone(1568, 0.06, 'square', 0.1); }, 70);
+    setTimeout(function() { playTone(2093, 0.1, 'square', 0.1); }, 140);
+    setTimeout(function() { playTone(1568, 0.05, 'square', 0.1); }, 260);
+    setTimeout(function() { playTone(2093, 0.18, 'square', 0.11); }, 320);
+}
+
+/* SOUND: Coin / poin reward — high pitch, ceria */
+function soundCoinReward() {
+    playTone(1568, 0.05, 'square', 0.1);
+    setTimeout(function() { playTone(2093, 0.06, 'square', 0.1); }, 60);
+    setTimeout(function() { playTone(2637, 0.12, 'square', 0.1); }, 130);
+}
+
+/* SOUND: Copy berhasil — singkat */
+function soundCopy() {
+    playTone(1568, 0.05, 'sine', 0.1);
+    setTimeout(function() { playTone(2093, 0.08, 'sine', 0.11); }, 60);
+}
+
+/* SOUND: Modal open — swoosh naik */
+function soundModalOpen() {
+    playTone(880, 0.05, 'sine', 0.08);
+    setTimeout(function() { playTone(1175, 0.07, 'sine', 0.09); }, 50);
+}
+
+/* SOUND: Modal close — swoosh turun */
+function soundModalClose() {
+    playTone(1175, 0.05, 'sine', 0.08);
+    setTimeout(function() { playTone(880, 0.07, 'sine', 0.09); }, 50);
 }
 
 function toggleSound() {
@@ -1640,6 +1825,8 @@ async function fetchPaketFromAPI() {
             if (Number(j.flashsale_sisa) > 0) FLASH_SALE_END = Date.now() + (Number(j.flashsale_sisa) * 1000);
             else FLASH_SALE_END = 0;
             API_ONLINE = true;
+            // FIX #6: re-render flash banner setelah data dari backend
+            if (typeof startFlashTimer === 'function') startFlashTimer();
         }
     } catch(e) {
         FLASH_SALE_DISKON = 0; FLASH_SALE_END = 0; API_ONLINE = false;
@@ -1792,7 +1979,7 @@ function initApp() {
         loadFAQ();
         setupSearch();
         setupRipple();
-        // Auto-refresh paket tiap 60 detik
+        // FIX #11: Konsolidasi polling jadi 1 interval 30s (hemat request Railway)
         setInterval(async () => {
             try {
                 if (document.hidden) return;
@@ -1800,17 +1987,10 @@ function initApp() {
                 await fetchPaketFromAPI();
                 renderHomePaket();
                 renderKatalogPaket();
-            } catch(e) {}
-        }, 60000);
-        // Auto-refresh promo + restock tiap 30 detik
-        setInterval(async () => {
-            try {
-                if (document.hidden) return;
-                if (!API_ONLINE) return;
                 await autoRefreshPromos();
                 await fetchRestockFromAPI();
             } catch(e) {}
-        }, 15000);
+        }, 30000);
         // Initial restock fetch
         setTimeout(() => { fetchRestockFromAPI(); }, 5000);
     } catch(e) { console.error('initApp error:', e); }
@@ -1822,13 +2002,29 @@ function setupRipple() {
             document.addEventListener('click', (e) => {
                 const t = e.target.closest('button, .menu-item, .quick-item, .nav-item, .chip, .paket-card, .faq-q, .btn-order, .btn-modal-primary, .btn-modal-secondary, .btn-modal-poin, .btn-submit, .flash-btn, .spin-btn, .header-menu');
                 if (!t) return;
-                // Skip spin button — udah ada sound sendiri
-                if (t.id === 'btnSpinNow') return;
-                // Efek ripple
+                // FIX v3.0: skip soundClick di button yang punya sound sendiri
+                var skipSoundIds = [
+                    'btnSpinNow', 'btnAutoWA', 'btnOrderTransfer', 'btnOrderQRIS',
+                    'btnOrderPoinModal', 'btnRedeemVoucher', 'btnCekPoin',
+                    'btnLoadAkun', 'btnLoadLeaderboard', 'btnCheckSpin',
+                    'btnLoadReferral', 'btnLoadRiwayat', 'btnCekResi',
+                    'btnSubmitLogin', 'btnModalOk', 'btnModalCancel',
+                    'pakelConfirmOk', 'pakelConfirmCancel'
+                ];
+                var skipSoundClass = ['btn-modal-primary', 'btn-modal-poin', 'btn-modal-secondary', 'btn-submit', 'btn-order', 'btn-upload'];
+                var skip = false;
+                if (t.id && skipSoundIds.indexOf(t.id) !== -1) skip = true;
+                if (!skip && t.className) {
+                    var cls = (typeof t.className === 'string') ? t.className : '';
+                    for (var i = 0; i < skipSoundClass.length; i++) {
+                        if (cls.indexOf(skipSoundClass[i]) !== -1) { skip = true; break; }
+                    }
+                }
+                // Efek ripple selalu
                 addRipple({ currentTarget: t, clientX: e.clientX, clientY: e.clientY });
-                // Sound klik
-                soundClick();
-                // Haptic
+                // Sound klik HANYA kalau bukan button penting
+                if (!skip) soundClick();
+                // Haptic selalu
                 haptic(20);
             });
         }, 500);
@@ -1987,6 +2183,11 @@ function getHargaFinal(p) {
 }
 
 function renderPaketCard(p) {
+    // FIX #12: defensive guard — kalau paket undefined, skip
+    if (!p || !p.kode) {
+        console.warn('[renderPaketCard] paket invalid, skip:', p);
+        return '';
+    }
     const hf = getHargaFinal(p);
     const isHot = p.stok < 20 && p.stok > 0;
     const isOut = p.stok <= 0;
@@ -2205,7 +2406,14 @@ async function _orderInternal(kode, method) {
     }
     if (hasPending && pendingData) {
         document.getElementById('modalPaket').classList.remove('show');
-        showPendingOrderModal(pendingData);
+        // FIX #8: guard kalau showPendingOrderModal belum ke-load (defensif)
+        if (typeof showPendingOrderModal === 'function') {
+            showPendingOrderModal(pendingData);
+        } else if (typeof showPendingWarningModal === 'function') {
+            showPendingWarningModal(pendingData);
+        } else {
+            showToast('⚠️ Kamu punya order pending. Cek menu Riwayat.', 'warning', 6000);
+        }
         return;
     }
 
@@ -2281,7 +2489,12 @@ async function _orderPoinInternal(kode) {
         const jPending = await safeJson(rPending);
         if (jPending && jPending.status === 'OK' && jPending.count > 0) {
             document.getElementById('modalPaket').classList.remove('show');
-            showPendingOrderModal(jPending.pending[0]);
+            // FIX #9: guard showPendingOrderModal
+            if (typeof showPendingOrderModal === 'function') {
+                showPendingOrderModal(jPending.pending[0]);
+            } else if (typeof showPendingWarningModal === 'function') {
+                showPendingWarningModal(jPending.pending[0]);
+            }
             return;
         }
     } catch(e) {}
@@ -2602,7 +2815,8 @@ function showUploadSuccess(data) {
     title.style.color = '#10B981';
     desc.innerHTML = 'Bukti transfer kamu <b>berhasil terkirim</b>.<br><br>⏱️ Tunggu admin ACC order dalam <b>~10 menit</b>.<br><br>Kamu akan dapat notifikasi otomatis begitu di-ACC.';
     actions.style.display = 'none';
-    if (typeof soundSuccess === 'function') soundSuccess();
+    // FIX v2.0: sound ala DANA untuk upload sukses
+    if (typeof soundUploadSuccess === 'function') soundUploadSuccess();
     if (typeof haptic === 'function') haptic([80, 50, 80]);
     setTimeout(function() {
         closeUploadLoading();
@@ -2621,7 +2835,8 @@ function showUploadError(reason) {
     title.style.color = '#EF4444';
     desc.innerHTML = '<b style="color:#EF4444;">' + (reason || 'Koneksi bermasalah') + '</b><br><br>Jangan khawatir, pesananmu masih tersimpan. Coba upload lagi ya.';
     actions.style.display = 'flex';
-    if (typeof soundError === 'function') soundError();
+    // FIX v2.0: sound upload error khusus
+    if (typeof soundUploadError === 'function') soundUploadError();
     if (typeof haptic === 'function') haptic([100, 80, 100]);
 }
 
@@ -2784,26 +2999,21 @@ function showSuccessModal(order) {
     launchConfetti();
     if (typeof soundOrderSuccess === 'function') soundOrderSuccess(); else soundSuccess();
 
-    // === AUTO-BUKA WA 1.5 DETIK SETELAH MODAL MUNCUL ===
+    // FIX #4: Auto-WA gak pakai setTimeout window.open (diblokir Chrome Android).
+    // Modal gak auto-open — user klik tombol biar pasti kebuka.
     var resiKey = order.resi;
-    var autoWaTimer = setTimeout(function() {
-        var templateText = buildWATemplate(order);
-        var waUrl = 'https://wa.me/6285188371150?text=' + encodeURIComponent(templateText);
-        console.log('[AUTO-WA] Opening: ' + waUrl);
-        try {
-            window.open(waUrl, '_blank');
-        } catch(e) {
-            try { window.location.href = waUrl; } catch(e2) {}
-        }
-        // Tombol tetap ada buat manual fallback
+    var templateText = buildWATemplate(order);
+    var waUrl = 'https://wa.me/6285188371150?text=' + encodeURIComponent(templateText);
+    setTimeout(function() {
         var btnAuto = document.getElementById('btnAutoWA_' + resiKey);
         if (btnAuto) {
             btnAuto.onclick = function() {
+                console.log('[WA] Opening:', waUrl);
                 try { window.open(waUrl, '_blank'); }
                 catch(e) { window.location.href = waUrl; }
             };
         }
-    }, 1500);
+    }, 100);
 }
 
 function buildWATemplate(order) {
@@ -2838,7 +3048,9 @@ async function copyWhatsAppTemplate(resi) {
 function copyText(text, label) {
     try {
         if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(text).then(() => showToast('✅ ' + (label || 'Teks') + ' dicopy!', 'success')).catch(() => fallbackCopy(text, label));
+            navigator.clipboard.writeText(text)
+                .then(() => showToast('✅ ' + (label || 'Teks') + ' dicopy!', 'copy', 2500))
+                .catch(() => fallbackCopy(text, label));
         } else fallbackCopy(text, label);
     } catch(e) { fallbackCopy(text, label); }
 }
@@ -2850,7 +3062,7 @@ function fallbackCopy(text, label) {
         document.body.appendChild(ta); ta.select();
         document.execCommand('copy');
         document.body.removeChild(ta);
-        showToast('✅ ' + (label || 'Teks') + ' dicopy!', 'success');
+        showToast('✅ ' + (label || 'Teks') + ' dicopy!', 'copy', 2500);
     } catch(e) { showToast('⚠️ Gagal copy', 'warning'); }
 }
 
@@ -2897,8 +3109,8 @@ async function redeemVoucher() {
         });
         const j = await safeJson(r);
         if (j && j.status === 'OK') {
-            if (typeof soundVoucher === 'function') soundVoucher();
-            showToast('✅ Voucher ' + escapeHtml(kode) + ' berhasil! Diskon ' + Number(j.diskon) + '%', 'success', 4000);
+            // FIX v2.0: sound voucher redeem khusus
+            showToast('✅ Voucher ' + escapeHtml(kode) + ' berhasil! Diskon ' + Number(j.diskon) + '%', 'voucher', 4000);
             inputKode.value = '';
             safeSetStorage('chat_id', chatId);
         } else showToast('❌ ' + (j && j.message ? j.message : 'Voucher gagal'), 'error');
@@ -2922,8 +3134,8 @@ async function cekPoin() {
             document.getElementById('resultTier').textContent = j.data.tier || 'Bronze';
             document.getElementById('resultOrder').textContent = j.data.total_order != null ? j.data.total_order : 0;
             document.getElementById('poinResult').style.display = 'block';
-            if (typeof soundCoin === 'function') soundCoin();
-            showToast('✅ Data ditemukan!', 'success');
+            // FIX v2.0: sound coin reward khusus
+            showToast('✅ Data ditemukan!', 'coin', 3000);
             setTimeout(() => document.getElementById('poinResult').scrollIntoView({ behavior:'smooth' }), 300);
         } else showToast('❌ ' + (j && j.message ? j.message : 'Data tidak ditemukan'), 'error');
     } catch (err) { showToast('⚠️ API offline!', 'error'); }
@@ -2983,8 +3195,8 @@ async function loadAkun() {
 }
 
 /* ==================== TESTIMONI ==================== */
-/* TESTI_NAMES — pindah ke backend */
-/* TESTI_PAKET — pindah ke backend */
+/* legacy var removed */
+/* legacy var removed */
 /* ===== FORMAT WAKTU RELATIF ===== */
 function formatWaktuRelatif(ts) {
     if (!ts) return '-';
@@ -3118,10 +3330,22 @@ function showWelcomeModal() {
     soundSuccess();
 }
 function closeWelcome() {
-    const m = document.getElementById('modalWelcome');
+    /* SMART PATCH v3.1 */
+    var m = document.getElementById('modalWelcome');
     if (m) m.classList.remove('show');
-    soundClick();
+    try { if (typeof soundClick === 'function') soundClick(); } catch(e) {}
     try { safeSetStorage('pakel_welcome_shown', '1'); } catch(e) {}
+    setTimeout(function() {
+        try {
+            if (localStorage.getItem('pakel_disclaimer_shown') !== '1') {
+                if (typeof showDisclaimer === 'function') showDisclaimer();
+            } else {
+                if (typeof showAntiScamBanner === 'function') showAntiScamBanner();
+            }
+        } catch(e) {
+            if (typeof showAntiScamBanner === 'function') showAntiScamBanner();
+        }
+    }, 700);
 }
 function checkWelcome() {
     try {
@@ -3168,11 +3392,39 @@ function checkWelcome() {
 }
 
 /* ==================== DISCLAIMER ==================== */
+var _disclaimerWaiting = false;
 function showDisclaimer() {
-    const m = document.getElementById('modalDisclaimer');
-    if (!m) return;
-    m.classList.add('show');
-    soundSuccess();
+    /* SMART PATCH v3.1: guard anti-overlap */
+    try {
+        var m = document.getElementById('modalDisclaimer');
+        if (!m) return;
+        if (m.classList.contains('show')) return;
+        if (window._disclaimerWaiting) return;
+
+        if (typeof window.isAnyOverlayActive === 'function' && window.isAnyOverlayActive()) {
+            window._disclaimerWaiting = true;
+            var tries = 0;
+            var _waitInt2 = setInterval(function() {
+                tries++;
+                if (!window.isAnyOverlayActive()) {
+                    clearInterval(_waitInt2);
+                    window._disclaimerWaiting = false;
+                    setTimeout(function() { showDisclaimer(); }, 400);
+                    return;
+                }
+                if (tries > 120) {
+                    clearInterval(_waitInt2);
+                    window._disclaimerWaiting = false;
+                    console.warn('[disclaimer] timeout nunggu overlay');
+                }
+            }, 500);
+            return;
+        }
+
+        console.log('[disclaimer] show disclaimer');
+        m.classList.add('show');
+        if (typeof soundSuccess === 'function') soundSuccess();
+    } catch(e) { console.warn('[disclaimer]', e); }
 }
 function closeDisclaimer() {
     const m = document.getElementById('modalDisclaimer');
@@ -3736,42 +3988,96 @@ function showLiveTicker() {
         const ticker = document.getElementById('liveTicker');
         const textEl = document.getElementById('liveTickerText');
         if (!ticker || !textEl) return;
-        const nama = TESTI_NAMES[Math.floor(Math.random() * TESTI_NAMES.length)];
-        const pkt = TESTI_PAKET[Math.floor(Math.random() * TESTI_PAKET.length)];
-        const isPoin = Math.random() < 0.3;
-        const harga = isPoin ? pkt[2] : pkt[1];
-        const menit = Math.floor(Math.random() * 10) + 1;
-        textEl.innerHTML = `<b>${nama}</b> baru beli <b>${pkt[0]}</b> — ${harga} (${menit} menit lalu)`;
+        // [legacy removed]
+        if (!_testiCache || _testiCache.length === 0) return;
+        const t = _testiCache[Math.floor(Math.random() * _testiCache.length)];
+        const nama = t.chat_id_masked || 'User***';
+        const pkt = t.paket || '-';
+        const harga = t.harga || '-';
+        const tsMs = (t.timestamp || 0) * 1000;
+        const waktu = formatWaktuRelatif(tsMs);
+        textEl.innerHTML = `<b>${escapeHtml(nama)}</b> baru beli <b>${escapeHtml(pkt)}</b> — ${escapeHtml(harga)} (${escapeHtml(waktu)})`;
         ticker.classList.add('show');
         setTimeout(() => ticker.classList.remove('show'), 6000);
     } catch(e) {}
 }
 setTimeout(() => { showLiveTicker(); setInterval(showLiveTicker, 15000); }, 8000);
 
-/* ==================== TOAST ==================== */
+/* ==================== TOAST (fixed atas, gak ikut scroll) ==================== */
 function showToast(msg, type, duration) {
     type = type || 'info';
     duration = duration || 5000;
-    // P4: Batasi stack toast max 3 (biar gak numpuk nutup modal)
+    // FIX v2.0: sound berbeda per type
     try {
-        var _tc = document.getElementById('toast-container');
-        if (_tc && _tc.children.length >= 3) {
-            _tc.removeChild(_tc.firstChild);
+        switch (type) {
+            case 'success': soundSuccess(); break;
+            case 'error': soundError(); break;
+            case 'warning': soundWarning(); break;
+            case 'restock': soundRestock(); break;
+            case 'welcome': soundWelcomeFirst(); break;
+            case 'welcome-back': soundWelcomeBack(); break;
+            case 'login': soundLoginSuccess(); break;
+            case 'upload-success': soundUploadSuccess(); break;
+            case 'upload-error': soundUploadError(); break;
+            case 'acc': soundAccByAdmin(); break;
+            case 'reject': soundRejected(); break;
+            case 'voucher': soundVoucherRedeem(); break;
+            case 'coin': soundCoinReward(); break;
+            case 'copy': soundCopy(); break;
+            case 'info': soundClick(); break;
         }
     } catch(e) {}
-    if (type === 'success') soundSuccess();
-    else if (type === 'error') soundError();
-    else if (type === 'warning') soundWarning();
-    else if (type === 'restock') soundRestock();
     try {
-        const c = document.getElementById('toast-container');
-        if (!c) return;
-        const t = document.createElement('div');
-        t.className = 'toast ' + type;
+        var c = document.getElementById('pakel-toast-root');
+        if (!c) {
+            c = document.createElement('div');
+            c.id = 'pakel-toast-root';
+            c.setAttribute('style',
+                'position:fixed!important;' +
+                'top:78px!important;' +
+                'left:0!important;' +
+                'right:0!important;' +
+                'bottom:auto!important;' +
+                'width:100vw!important;' +
+                'height:auto!important;' +
+                'max-height:none!important;' +
+                'z-index:2147483647!important;' +
+                'pointer-events:none!important;' +
+                'display:flex!important;' +
+                'flex-direction:column!important;' +
+                'align-items:center!important;' +
+                'justify-content:flex-start!important;' +
+                'gap:10px!important;' +
+                'padding:0 20px!important;' +
+                'box-sizing:border-box!important;' +
+                'overflow:visible!important;' +
+                'transform:none!important;' +
+                'will-change:auto!important;'
+            );
+            // WAJIB: append ke documentElement (bukan body) — biar gak ikut scroll body
+            document.documentElement.appendChild(c);
+        }
+        while (c.children.length >= 3) c.removeChild(c.firstChild);
+        var t = document.createElement('div');
+        // FIX v2.0: map type baru ke class CSS yang ada
+        var _cssMap = {
+            'welcome': 'success', 'welcome-back': 'success', 'login': 'success',
+            'upload-success': 'success', 'acc': 'success', 'voucher': 'success',
+            'coin': 'success', 'copy': 'success',
+            'upload-error': 'error', 'reject': 'error',
+            'info': ''
+        };
+        var _cssClass = (_cssMap[type] !== undefined) ? _cssMap[type] : type;
+        t.className = 'toast' + (_cssClass ? ' ' + _cssClass : '');
         t.innerHTML = msg;
+        t.style.pointerEvents = 'auto';
+        t.style.maxWidth = '100%';
         c.appendChild(t);
-        setTimeout(() => { t.classList.add('hide'); setTimeout(() => { if (t.parentNode) t.parentNode.removeChild(t); }, 300); }, duration);
-    } catch(e) {}
+        setTimeout(function() {
+            t.classList.add('hide');
+            setTimeout(function() { try { t.parentNode.removeChild(t); } catch(e) {} }, 320);
+        }, duration);
+    } catch(e) { console.warn('[TOAST] err:', e); }
 }
 
 /* ==================== CONNECTION MONITOR ==================== */
@@ -4153,6 +4459,10 @@ document.addEventListener('keydown', (e) => {
 
 
 /* ===== BATCH 1: SOUND + THEME + BANNER + SLOT ===== */
+/* FIX v3.0: alias biar sSuccess()/sError() gak undefined lagi */
+function sSuccess() { if (typeof soundSuccess === 'function') soundSuccess(); }
+function sError() { if (typeof soundError === 'function') soundError(); }
+
 function soundOrderSuccess() {
     playTone(523, 0.12, 'sine', 0.14);
     setTimeout(function() { playTone(659, 0.12, 'sine', 0.14); }, 120);
@@ -4191,18 +4501,12 @@ function toggleTheme() {
     if (typeof showToast === 'function') showToast((next === 'light') ? '☀️ Mode Terang' : '🌙 Mode Gelap', 'info', 2000);
 }
 
-function checkBanner() {
-    try {
-        var hidden = localStorage.getItem('pakel_banner_hidden');
-        if (hidden === '1') {
-            var el = document.getElementById('antiScamBanner');
-            if (el) el.classList.add('hide');
-        }
-    } catch(e) {}
-}
+/* v3.3: duplicate checkBanner dihapus */
 function dismissBanner() {
     var el = document.getElementById('antiScamBanner');
-    if (el) el.classList.add('hide');
+    if (!el) return;
+    el.classList.add('slide-out');
+    setTimeout(function() { el.classList.add('hide'); }, 400);
     try { localStorage.setItem('pakel_banner_hidden', '1'); } catch(e) {}
     if (typeof soundClick === 'function') soundClick();
 }
@@ -4237,6 +4541,37 @@ setTimeout(function() {
     applyTheme(getSavedTheme());
     checkBanner();
 }, 200);
+
+/* FIX v3.0: helper untuk test semua sound via console */
+window.testAllSounds = function() {
+    var list = [
+        ['soundClick', soundClick],
+        ['soundSuccess', soundSuccess],
+        ['soundError', soundError],
+        ['soundWarning', soundWarning],
+        ['soundRestock', soundRestock],
+        ['soundWelcomeFirst', soundWelcomeFirst],
+        ['soundWelcomeBack', soundWelcomeBack],
+        ['soundLoginSuccess', soundLoginSuccess],
+        ['soundUploadSuccess', soundUploadSuccess],
+        ['soundUploadError', soundUploadError],
+        ['soundAccByAdmin', soundAccByAdmin],
+        ['soundRejected', soundRejected],
+        ['soundVoucherRedeem', soundVoucherRedeem],
+        ['soundCoinReward', soundCoinReward],
+        ['soundCopy', soundCopy],
+        ['soundModalOpen', soundModalOpen],
+        ['soundModalClose', soundModalClose]
+    ];
+    console.log('[TEST] Playing ' + list.length + ' sounds, ~1s gap tiap sound...');
+    list.forEach(function(item, idx) {
+        setTimeout(function() {
+            console.log('  🎵 [' + (idx + 1) + '/' + list.length + '] ' + item[0]);
+            if (typeof item[1] === 'function') item[1]();
+        }, idx * 1200);
+    });
+};
+console.log('[SOUND] Test semua sound: ketik testAllSounds() di console');
 /* ===== END BATCH 1 JS ===== */
 
 
@@ -4364,30 +4699,8 @@ async function shareSertifikat(dataUrl, resi) {
     }
 }
 
-setTimeout(function() {
-    if (typeof refreshTestimoni === 'function') {
-        window.loadTestimoni = async function() {
-            await refreshTestimoni();
-            // Update waktu relatif tiap 5 detik
-            if (window._testiTickInterval) clearInterval(window._testiTickInterval);
-            window._testiTickInterval = setInterval(function() {
-                if (!_testiCache) return;
-                document.querySelectorAll('#testiList .testi-time').forEach(function(el) {
-                    var ts = Number(el.dataset.ts);
-                    if (ts) el.textContent = formatWaktuRelatif(ts);
-                });
-            }, 5000);
-            // AUTO-REFRESH: ganti testimoni tiap 30 detik
-            if (window._testiAutoRefresh) clearInterval(window._testiAutoRefresh);
-            window._testiAutoRefresh = setInterval(async function() {
-                if (document.hidden) return;
-                try {
-                    await refreshTestimoni();
-                } catch(e) {}
-            }, 15000);
-        };
-    }
-}, 500);
+// FIX #2: Duplikasi loadTestimoni DIHAPUS — fungsi asli di atas sudah handle
+// interval _testiTickInterval + _testiAutoRefresh. Kalau ini tetap ada, jadi dobel fetch.
 /* ===== END BATCH 2 JS ===== */
 
 
@@ -4643,6 +4956,8 @@ setTimeout(function() {
         } catch(e) {}
     }, 60000);
 
+    // FIX #5: expose reportError ke window biar Security Layer v3 bisa panggil
+    window.reportError = reportError;
     console.log('%c🔒 PAKEL SECURITY GUARD v2 — ACTIVE', 'color:#10B981; font-weight:900; font-size:13px;');
 })();
 /* ===== END SECURITY GUARD ===== */
@@ -4652,6 +4967,7 @@ setTimeout(function() {
 var _adminToken = null;
 var _adminTimer = null;
 var ADMIN_CHAT_ID = '8772023108';
+var _adminTab = 'orders';  // FIX #3: dipindah ke atas biar gak undefined saat render pertama
 
 function isAdminUser() {
     try {
@@ -4893,6 +5209,22 @@ async function refreshAdminDashboard(showLoading) {
             content.innerHTML = tabsHtml + '<div id="adminTabBody"></div>';
             bindAdminEvents();
             await renderPaketTab(document.getElementById('adminTabBody'));
+        } else if (_adminTab === 'laporan') {
+            content.innerHTML = tabsHtml + '<div id="adminTabBody"></div>';
+            bindAdminEvents();
+            await renderLaporanTab(document.getElementById('adminTabBody'));
+        } else if (_adminTab === 'cmd') {
+            content.innerHTML = tabsHtml + '<div id="adminTabBody"></div>';
+            bindAdminEvents();
+            renderCmdTab(document.getElementById('adminTabBody'));
+        } else if (_adminTab === 'security') {
+            content.innerHTML = tabsHtml + '<div id="adminTabBody"></div>';
+            bindAdminEvents();
+            await renderSecurityTab(document.getElementById('adminTabBody'));
+        } else if (_adminTab === 'buatpaket') {
+            content.innerHTML = tabsHtml + '<div id="adminTabBody"></div>';
+            bindAdminEvents();
+            renderBuatPaketTab(document.getElementById('adminTabBody'));
         }
     } catch(e) {
         content.innerHTML = '<div class="admin-empty">❌ Error: ' + escapeHtml(e.message || 'Koneksi') + '</div>';
@@ -5022,7 +5354,7 @@ setTimeout(function() {
 
 
 /* ===== BATCH 2: FLASHSALE + VOUCHER + RESTOCK ===== */
-var _adminTab = 'orders';
+// FIX #3: _adminTab dipindah ke ADMIN PANEL JS (biar gak undefined saat first render)
 
 function renderAdminTabs() {
     var html = '';
@@ -5033,6 +5365,9 @@ function renderAdminTabs() {
     html += '<button class="admin-tab-btn ' + (_adminTab === 'restock' ? 'active' : '') + '" data-tab="restock">📦 STOK</button>';
     html += '<button class="admin-tab-btn ' + (_adminTab === 'user' ? 'active' : '') + '" data-tab="user">👥 USER</button>';
     html += '<button class="admin-tab-btn ' + (_adminTab === 'paket' ? 'active' : '') + '" data-tab="paket">🛒 PAKET</button>';
+    html += '<button class="admin-tab-btn ' + (_adminTab === 'buatpaket' ? 'active' : '') + '" data-tab="buatpaket">➕ BUAT</button>';
+    html += '<button class="admin-tab-btn ' + (_adminTab === 'cmd' ? 'active' : '') + '" data-tab="cmd">⌨️ CMD</button>';
+    html += '<button class="admin-tab-btn ' + (_adminTab === 'security' ? 'active' : '') + '" data-tab="security">🛡️ SEC</button>';
     html += '<button class="admin-tab-btn ' + (_adminTab === 'laporan' ? 'active' : '') + '" data-tab="laporan">📊 LAPORAN</button>';
     html += '</div>';
     return html;
@@ -5648,47 +5983,97 @@ function _saveOrdersNotifMap(map) {
     try { safeSetStorage(_lastSeenOrdersKey, JSON.stringify(map)); } catch(e) {}
 }
 
+/* FIX v4.1: race lock — biar gak double fetch */
+var _orderNotifChecking = false;
+
+/* FIX v4.1: key baru — array resi yang udah pernah di-notif */
+var ORDER_NOTIF_SEEN_KEY = 'pakel_order_notif_seen_v2';
+
+function _getSeenOrderResi() {
+    try {
+        var raw = localStorage.getItem(ORDER_NOTIF_SEEN_KEY);
+        if (!raw) return {};
+        var arr = JSON.parse(raw);
+        if (!Array.isArray(arr)) return {};
+        var map = {};
+        for (var i = 0; i < arr.length; i++) map[arr[i]] = 1;
+        return map;
+    } catch(e) { return {}; }
+}
+
+function _markOrderResiAsSeen(resi) {
+    if (!resi) return false;
+    try {
+        var map = _getSeenOrderResi();
+        if (map[resi]) return true;
+        map[resi] = 1;
+        var arr = Object.keys(map);
+        /* Cap max 500 resi biar gak numpuk */
+        if (arr.length > 500) arr = arr.slice(-500);
+        localStorage.setItem(ORDER_NOTIF_SEEN_KEY, JSON.stringify(arr));
+        return true;
+    } catch(e) {
+        console.warn('[ORDER-NOTIF] Save seen gagal:', e);
+        return false;
+    }
+}
+
 async function checkOrderNotifOnStart() {
-    // Cek order yang udah diproses tapi belum di-lihat
+    /* FIX v4.1: race lock — biar gak double call paralel */
+    if (_orderNotifChecking) {
+        console.log('[ORDER-NOTIF] Skip — masih checking');
+        return;
+    }
     var cid = safeGetStorage('chat_id_apk') || safeGetStorage('chat_id');
     if (!cid) return;
-    var map = _getOrdersNotifMap();
-    var unseenAcc = null;
-    var unseenReject = null;
+    _orderNotifChecking = true;
     try {
+        var seenMap = _getSeenOrderResi();
         var r = await safeFetch(API_URL + '/api/riwayat?chat_id=' + encodeURIComponent(cid));
         var j = await safeJson(r);
-        if (!j || j.status !== 'OK' || !Array.isArray(j.orders)) return;
-        // Iterasi terbaru → lama
+        if (!j || j.status !== 'OK' || !Array.isArray(j.orders)) {
+            _orderNotifChecking = false;
+            return;
+        }
+        /* Cari order terbaru BERHASIL/DITOLAK yang BELUM di-notif */
         var sorted = j.orders.slice().reverse();
+        var target = null;
         for (var i = 0; i < sorted.length; i++) {
             var o = sorted[i];
-            var key = o.resi;
-            if (map[key]) continue;  // udah pernah di-lihat
-            if (o.status === 'BERHASIL' && !unseenAcc) {
-                unseenAcc = o;
-            } else if (o.status === 'DITOLAK' && !unseenReject) {
-                unseenReject = o;
+            if (!o.resi) continue;
+            if (seenMap[o.resi]) continue;
+            if (o.status === 'BERHASIL' || o.status === 'DITOLAK') {
+                target = o;
+                break;
             }
-            // Ambil 1 terbaru aja per status
-            if (unseenAcc && unseenReject) break;
         }
-    } catch(e) { return; }
-    
-    if (unseenAcc) {
-        // Tandai udah di-lihat
-        map[unseenAcc.resi] = 1;
-        _saveOrdersNotifMap(map);
-        showOrderNotif('acc', unseenAcc);
-        try {
-            var pendingList = JSON.parse(safeGetStorage('pending_upload_list') || '[]');
-            pendingList = pendingList.filter(function(x) { return x !== unseenAcc.resi; });
-            safeSetStorage('pending_upload_list', JSON.stringify(pendingList));
-        } catch(e) {}
-    } else if (unseenReject) {
-        map[unseenReject.resi] = 1;
-        _saveOrdersNotifMap(map);
-        showOrderNotif('reject', unseenReject);
+
+        if (!target) {
+            _orderNotifChecking = false;
+            return;
+        }
+
+        /* CRITICAL: save SEBELUM show — biar kalau user tutup/keluar APK/crash,
+           notif gak muncul lagi */
+        var saveOk = _markOrderResiAsSeen(target.resi);
+        console.log('[ORDER-NOTIF] Mark seen: ' + target.resi + ' — save=' + saveOk);
+
+        _orderNotifChecking = false;
+
+        /* Delay dikit biar UI ready */
+        setTimeout(function() {
+            try {
+                if (typeof showOrderNotif === 'function') {
+                    showOrderNotif(target.status === 'BERHASIL' ? 'acc' : 'reject', target);
+                }
+            } catch(e) { console.warn('[ORDER-NOTIF] Show error:', e); }
+        }, 500);
+
+        /* Hapus key legacy biar gak konflik */
+        try { localStorage.removeItem('pakel_last_seen_orders'); } catch(e) {}
+    } catch(e) {
+        console.error('[ORDER-NOTIF] Error:', e);
+        _orderNotifChecking = false;
     }
 }
 
@@ -5743,11 +6128,13 @@ function showOrderNotif(type, order) {
     
     modal.classList.add('show');
     if (type === 'acc') {
-        if (typeof soundSuccess === 'function') soundSuccess();
+        // FIX v2.0: sound ACC MEGAH (beda dari sound generic)
+        if (typeof soundAccByAdmin === 'function') soundAccByAdmin();
         if (typeof haptic === 'function') haptic([80, 50, 80]);
         if (typeof launchConfetti === 'function') launchConfetti();
     } else {
-        if (typeof soundError === 'function') soundError();
+        // FIX v2.0: sound DITOLAK (turun tegas)
+        if (typeof soundRejected === 'function') soundRejected();
         if (typeof haptic === 'function') haptic([100, 80, 100]);
     }
     window._lastOrderNotifData = order;
@@ -5864,6 +6251,15 @@ function _initAdminEventDelegation() {
         // Admin panel tabs
         var tb = t.closest('.admin-tab-btn');
         if (tb) { e.preventDefault(); e.stopPropagation(); switchAdminTab(tb.getAttribute('data-tab')); return; }
+        // CMD run
+        var cb = t.closest('[data-admin-cmd]');
+        if (cb) { e.preventDefault(); e.stopPropagation(); execAdminCmd(cb.getAttribute('data-admin-cmd')); return; }
+        // Buat paket
+        var bp = t.closest('[data-admin-createpaket]');
+        if (bp) { e.preventDefault(); e.stopPropagation(); adminCreatePaket(); return; }
+        // Unblock user
+        var ub = t.closest('[data-admin-unblock]');
+        if (ub) { e.preventDefault(); e.stopPropagation(); adminUnblockUser(ub.getAttribute('data-admin-unblock')); return; }
     }, true);  // capture phase
     console.log('[ADMIN-DELEG] Event delegation active');
 }
@@ -5884,6 +6280,17 @@ function forceLoginNow() {
         localStorage.removeItem('chat_id');
         localStorage.removeItem('pakel_session_start');
         localStorage.removeItem('pakel_welcome_shown');
+        // FIX #10: clear pending order biar gak nyasar ke sesi lama
+        Object.keys(localStorage).forEach(function(k) {
+            if (k.indexOf('pending_order_') === 0) localStorage.removeItem(k);
+        });
+        localStorage.removeItem('pakel_pending_orders');
+        localStorage.removeItem('pakel_open_invoice');
+        localStorage.removeItem('pakel_open_detail');
+        localStorage.removeItem('pakel_open_poin_modal');
+        /* FIX v4.1: cleanup key notif legacy */
+        localStorage.removeItem('pakel_last_seen_orders');
+        localStorage.removeItem('pakel_order_notif_seen_v2');
     } catch(e) {}
     console.log('[AUTH] Force login — reload');
     location.reload();
@@ -5993,7 +6400,8 @@ function showPendingOrderModal(order) {
 function lanjutBayarPending(resi) {
   var m = document.getElementById('pendingOrderModal');
   if (m) m.remove();
-  // Panggil showInvoice lagi kalau ada data, atau redirect ke halaman riwayat
+  var cid = safeGetStorage('chat_id');
+  // 1. Dari localStorage pakel_pending_orders
   try {
     var p = JSON.parse(localStorage.getItem('pakel_pending_orders') || '{}');
     var found = null;
@@ -6001,12 +6409,45 @@ function lanjutBayarPending(resi) {
       if ((p[k].resi === resi) || (k === resi)) found = p[k];
     });
     if (found && typeof showInvoice === 'function') {
-      showInvoice({ resi: found.resi, paket: found.paket, harga_final_str: found.harga, harga: found.harga });
+      showInvoice({ resi: found.resi, paket: found.paket, harga_final_str: found.harga, harga: found.harga, payment_method: found.payment_method || 'TRANSFER' });
+      if (typeof startOrderPolling === 'function') startOrderPolling(found.resi);
       return;
     }
   } catch(e) {}
-  if (typeof goPage === 'function') goPage('riwayat');
-  if (typeof showToast === 'function') showToast('Cek menu Riwayat buat lanjut bayar', 'info', 4000);
+  // 2. Fetch dari API pakai resi
+  if (resi && typeof safeFetch === 'function') {
+    safeFetch(API_URL + '/api/cek-resi?resi=' + encodeURIComponent(resi))
+      .then(function(r) { return r.json(); })
+      .then(function(j) {
+        if (j && j.order && j.order.status === 'PENDING' && typeof showInvoice === 'function') {
+          showInvoice({ resi: j.order.resi, paket: j.order.paket, harga_final_str: j.order.harga, harga: j.order.harga, payment_method: j.order.metode || 'TRANSFER' });
+          if (typeof startOrderPolling === 'function') startOrderPolling(j.order.resi);
+        } else if (j && j.order && (j.order.status === 'BERHASIL' || j.order.status === 'DITOLAK')) {
+          if (typeof showOrderNotif === 'function') showOrderNotif(j.order.status === 'BERHASIL' ? 'acc' : 'reject', j.order);
+        } else {
+          if (typeof showToast === 'function') showToast('Pesanan tidak ditemukan', 'warning', 3000);
+        }
+      })
+      .catch(function() {
+        if (typeof showToast === 'function') showToast('Gagal memuat invoice', 'error', 3000);
+      });
+    return;
+  }
+  // 3. Fallback: cek-pending pakai chat_id
+  if (cid && typeof safeFetch === 'function') {
+    safeFetch(API_URL + '/api/cek-pending?chat_id=' + encodeURIComponent(cid))
+      .then(function(r) { return r.json(); })
+      .then(function(j) {
+        if (j && j.pending && j.pending.length > 0) {
+          var pd = j.pending[0];
+          if (typeof showInvoice === 'function') {
+            showInvoice({ resi: pd.resi, paket: pd.paket, harga_final_str: pd.harga, harga: pd.harga, payment_method: 'TRANSFER' });
+            if (typeof startOrderPolling === 'function') startOrderPolling(pd.resi);
+          }
+        }
+      })
+      .catch(function() {});
+  }
 }
 
 async function _recoverPendingOrder() {
@@ -6149,7 +6590,16 @@ function showPendingPoinModal(order) {
             if (!t || !t.closest) return;
             var btn = t.closest('button, .btn-order, .btn-submit, .btn-modal-primary, .btn-modal-poin, .btn-modal-secondary, .admin-execute-btn, .admin-btn-acc, .admin-btn-reject');
             if (!btn) return;
-            var id = btn.id || btn.className || 'btn';
+            // FIX v6: SKIP rate limit di admin panel + modal konfirmasi
+            if (btn.closest('#adminModal') || btn.closest('#pakelConfirmModal') ||
+                btn.closest('#orderNotifModal') || btn.closest('[data-admin-action]') ||
+                btn.closest('[data-admin-cmd]') || btn.closest('.admin-tab-btn')) {
+                return;
+            }
+            // FIX v6: unique key
+            var id = (btn.id || '') + '|' +
+                     (btn.getAttribute('onclick') || '') + '|' +
+                     (btn.getAttribute('data-admin-action') || btn.className || 'btn');
             var now = Date.now();
             if (_lastClick[id] && (now - _lastClick[id]) < _CLICK_GAP_MS) {
                 e.preventDefault();
@@ -6360,6 +6810,571 @@ function showPendingPoinModal(order) {
 
 })();
 /* ============ END SECURITY LAYER v3 ============ */
+
+
+/* ═══════════════════════════════════════════════════════════
+   INJECT v3.3 — FRESH COPY FUNCTIONS
+   Dipasang di akhir script biar menang hoisting
+   ═══════════════════════════════════════════════════════════ */
+
+/* Helper: cek ada overlay aktif */
+function isAnyOverlayActive() {
+    try {
+        var splash = document.getElementById('splash');
+        if (splash && !splash.classList.contains('hide') && splash.style.display !== 'none') return true;
+        var hacker = document.getElementById('hackerLoad');
+        if (hacker && hacker.classList.contains('show')) return true;
+        var login = document.getElementById('modalLoginAPK');
+        if (login && login.classList.contains('show')) return true;
+        var welcome = document.getElementById('modalWelcome');
+        if (welcome && welcome.classList.contains('show')) return true;
+        var disclaimer = document.getElementById('modalDisclaimer');
+        if (disclaimer && disclaimer.classList.contains('show')) return true;
+        var upload = document.getElementById('uploadLoadingModal');
+        if (upload && upload.classList.contains('show')) return true;
+        var orderNotif = document.getElementById('orderNotifModal');
+        if (orderNotif && orderNotif.classList.contains('show')) return true;
+        var pendingOrder = document.getElementById('pendingOrderModal');
+        if (pendingOrder) return true;
+        var pendingPoin = document.getElementById('pendingPoinModal');
+        if (pendingPoin) return true;
+        var pendingWarn = document.getElementById('pendingWarnModal');
+        if (pendingWarn) return true;
+        var confirmM = document.getElementById('pakelConfirmModal');
+        if (confirmM) return true;
+        var modalPaket = document.getElementById('modalPaket');
+        if (modalPaket && modalPaket.classList.contains('show')) return true;
+        var modalInbox = document.getElementById('modalInbox');
+        if (modalInbox && modalInbox.classList.contains('show')) return true;
+        var modalLiveChat = document.getElementById('modalLiveChat');
+        if (modalLiveChat && modalLiveChat.classList.contains('show')) return true;
+        return false;
+    } catch(e) { return false; }
+}
+window.isAnyOverlayActive = isAnyOverlayActive;
+
+/* Banner anti-scam — auto-dismiss, tunggu overlay selesai, sessionStorage */
+var _bannerWaiting = false;
+function showAntiScamBanner() {
+    try {
+        var el = document.getElementById('antiScamBanner');
+        if (!el) { console.warn('[banner] element gak ada'); return; }
+        if (el.classList.contains('show')) return;
+        try { if (sessionStorage.getItem('pakel_banner_hidden')) { console.log('[banner] skip — udah tampil sesi ini'); return; } } catch(e) {}
+        if (_bannerWaiting) { console.log('[banner] skip — masih nunggu'); return; }
+
+        if (isAnyOverlayActive()) {
+            _bannerWaiting = true;
+            var tries = 0;
+            var _waitInt = setInterval(function() {
+                tries++;
+                if (!isAnyOverlayActive()) {
+                    clearInterval(_waitInt);
+                    _bannerWaiting = false;
+                    setTimeout(function() { showAntiScamBanner(); }, 400);
+                    return;
+                }
+                if (tries > 120) {
+                    clearInterval(_waitInt);
+                    _bannerWaiting = false;
+                    console.warn('[banner] timeout nunggu overlay, cancel');
+                }
+            }, 500);
+            return;
+        }
+
+        console.log('[banner] ✅ show anti-scam banner');
+        el.classList.add('show');
+        setTimeout(function() {
+            el.classList.add('slide-out');
+            setTimeout(function() {
+                el.classList.remove('show');
+                el.classList.remove('slide-out');
+                try { sessionStorage.setItem('pakel_banner_hidden', '1'); } catch(e) {}
+            }, 450);
+        }, 7000);
+    } catch(e) { console.warn('[banner]', e); }
+}
+window.showAntiScamBanner = showAntiScamBanner;
+
+/* Override checkBanner — pastikan pakai sessionStorage */
+function checkBanner() {
+    try {
+        var el = document.getElementById('antiScamBanner');
+        if (!el) return;
+        try {
+            if (sessionStorage.getItem('pakel_banner_hidden')) {
+                el.classList.remove('show');
+                el.classList.remove('slide-out');
+            }
+        } catch(e) {}
+        try { localStorage.removeItem('pakel_banner_hidden'); } catch(e) {}
+    } catch(e) {}
+}
+window.checkBanner = checkBanner;
+
+console.log('[INJECT v3.3] ✅ isAnyOverlayActive + showAntiScamBanner + checkBanner LOADED');
+/* ═══════════════════════════════════════════════════════════ */
+
+
+
+/* ═══════════════════════════════════════════════════════════
+   ADMIN PANEL v6.0 — CMD + BUAT PAKET + SECURITY + TIER
+   ═══════════════════════════════════════════════════════════ */
+
+var _cmdHistory = [];
+
+function renderCmdTab(content) {
+    if (!content) return;
+    var html = '';
+    html += '<div class="admin-section-title">⌨️ CMD EXECUTOR</div>';
+    html += '<div style="background:rgba(0,0,0,0.3); border:1px solid rgba(139,92,246,0.3); border-radius:12px; padding:14px; margin-bottom:14px; font-size:11px; color:#B0B7C3; line-height:1.7;">';
+    html += '<b style="color:#A78BFA;">📋 COMMAND:</b><br>';
+    html += '<code style="color:#06B6D4;">/acc RESI</code> · <code style="color:#06B6D4;">/reject RESI</code> · <code style="color:#06B6D4;">/bc PESAN</code><br>';
+    html += '<code style="color:#06B6D4;">/flash DISKON DURASI</code> · <code style="color:#06B6D4;">/stopflash</code><br>';
+    html += '<code style="color:#06B6D4;">/voucher KODE DISKON MAX DURASI</code> · <code style="color:#06B6D4;">/setstok KODE JUMLAH</code><br>';
+    html += '<code style="color:#06B6D4;">/buatpaket kode|nama|harga|poin|desk|kat|stok</code><br>';
+    html += '<code style="color:#06B6D4;">/hapuspaket KODE</code> · <code style="color:#06B6D4;">/unblacklist KODE</code><br>';
+    html += '<code style="color:#06B6D4;">/poin USERID JUMLAH</code> · <code style="color:#06B6D4;">/block USERID</code> · <code style="color:#06B6D4;">/unblock USERID</code><br>';
+    html += '<code style="color:#06B6D4;">/stats</code> · <code style="color:#06B6D4;">/laporan</code> · <code style="color:#06B6D4;">/help</code>';
+    html += '</div>';
+    html += '<div style="display:flex; gap:8px; margin-bottom:12px;">';
+    html += '<input class="admin-input" id="cmdInput" placeholder="Ketik command... ex: /stats" style="flex:1; font-family:monospace;">';
+    html += '<button class="admin-execute-btn" data-admin-cmd="__FROM_INPUT__" style="width:auto; padding:11px 20px; white-space:nowrap;">▶️ RUN</button>';
+    html += '</div>';
+    html += '<div class="admin-section-title">📜 OUTPUT</div>';
+    html += '<div id="cmdOutput" style="background:#0A0E1A; border:1px solid rgba(139,92,246,0.3); border-radius:12px; padding:14px; font-family:monospace; font-size:11px; color:#10B981; min-height:180px; max-height:400px; overflow-y:auto; white-space:pre-wrap; word-break:break-word;">';
+    if (_cmdHistory.length === 0) {
+        html += '<div style="color:#4B5563;">$ Ketik command di atas, tekan Enter atau klik RUN...</div>';
+    }
+    html += '</div>';
+    content.innerHTML = html;
+    // Enter key handler
+    setTimeout(function() {
+        var inp = document.getElementById('cmdInput');
+        if (inp) inp.addEventListener('keydown', function(ev) {
+            if (ev.key === 'Enter') { ev.preventDefault(); execAdminCmdFromInput(); }
+        });
+    }, 100);
+}
+
+function cmdLog(text, color) {
+    var c = color || '#10B981';
+    var time = new Date().toLocaleTimeString('id-ID');
+    var line = { text: '[' + time + '] ' + text, color: c };
+    _cmdHistory.push(line);
+    if (_cmdHistory.length > 100) _cmdHistory = _cmdHistory.slice(-100);
+    var el = document.getElementById('cmdOutput');
+    if (el) {
+        var clean = el.querySelector('div[style*="4B5563"]');
+        if (clean) clean.remove();
+        var newLine = document.createElement('div');
+        newLine.style.color = c;
+        newLine.textContent = line.text;
+        el.appendChild(newLine);
+        el.scrollTop = el.scrollHeight;
+    }
+    console.log('[CMD]', text);
+}
+
+function execAdminCmdFromInput() {
+    var input = document.getElementById('cmdInput');
+    if (!input) return;
+    var cmd = (input.value || '').trim();
+    if (!cmd) return;
+    input.value = '';
+    execAdminCmd(cmd);
+}
+
+async function execAdminCmd(cmdArg) {
+    var cmd = String(cmdArg || '').trim();
+    if (cmd === '__FROM_INPUT__') { execAdminCmdFromInput(); return; }
+    if (!cmd) return;
+    if (cmd.charAt(0) !== '/') cmd = '/' + cmd;
+
+    cmdLog('$ ' + cmd, '#8B5CF6');
+    var parts = cmd.split(' ');
+    var head = parts[0].toLowerCase();
+
+    try {
+        if (head === '/acc') {
+            var resi = (parts[1] || '').toUpperCase();
+            if (!resi) { cmdLog('❌ Format: /acc RESI', '#EF4444'); return; }
+            var r = await safeFetch(API_URL + '/api/admin/acc-order', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ resi: resi }) });
+            var j = await safeJson(r);
+            if (j && j.status === 'OK') { cmdLog('✅ Order ' + resi + ' di-ACC', '#10B981'); if (typeof soundVoucher === 'function') soundVoucher(); }
+            else cmdLog('❌ ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            return;
+        }
+        if (head === '/reject') {
+            var resi = (parts[1] || '').toUpperCase();
+            if (!resi) { cmdLog('❌ Format: /reject RESI', '#EF4444'); return; }
+            var r = await safeFetch(API_URL + '/api/admin/reject-order', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ resi: resi }) });
+            var j = await safeJson(r);
+            if (j && j.status === 'OK') cmdLog('❌ Order ' + resi + ' ditolak', '#FBBF24');
+            else cmdLog('❌ ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            return;
+        }
+        if (head === '/bc') {
+            var pesan = cmd.replace('/bc', '').trim();
+            if (!pesan) { cmdLog('❌ Format: /bc PESAN', '#EF4444'); return; }
+            cmdLog('⏳ Mengirim broadcast...', '#FBBF24');
+            var r = await safeFetch(API_URL + '/api/admin/broadcast', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ pesan: pesan, target: 'all' }) });
+            var j = await safeJson(r);
+            if (j && j.status === 'OK') cmdLog('✅ BC terkirim ' + j.sent + '/' + j.total + ' user', '#10B981');
+            else cmdLog('❌ ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            return;
+        }
+        if (head === '/flash') {
+            var diskon = parseInt(parts[1] || '0');
+            var durasi = parseInt(parts[2] || '0');
+            if (diskon < 1 || diskon > 90 || durasi < 1 || durasi > 24) { cmdLog('❌ Format: /flash DISKON(1-90) DURASI(1-24)', '#EF4444'); return; }
+            var r = await safeFetch(API_URL + '/api/admin/flashsale', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ diskon: diskon, durasi: durasi }) });
+            var j = await safeJson(r);
+            if (j && j.status === 'OK') cmdLog('✅ Flash sale aktif: ' + diskon + '% / ' + durasi + ' jam', '#10B981');
+            else cmdLog('❌ ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            return;
+        }
+        if (head === '/stopflash') {
+            var r = await safeFetch(API_URL + '/api/admin/flashsale/stop', { method: 'POST', headers: { 'X-Admin-Token': _adminToken } });
+            var j = await safeJson(r);
+            if (j && j.status === 'OK') cmdLog('✅ Flash sale dihentikan', '#10B981');
+            else cmdLog('❌ Gagal', '#EF4444');
+            return;
+        }
+        if (head === '/voucher') {
+            var kode = (parts[1] || '').toUpperCase();
+            var diskon = parseInt(parts[2] || '0');
+            var mx = parseInt(parts[3] || '1');
+            var dr = parseInt(parts[4] || '24');
+            if (!kode || diskon < 1000) { cmdLog('❌ Format: /voucher KODE DISKON MAX DURASI', '#EF4444'); return; }
+            var r = await safeFetch(API_URL + '/api/admin/voucher', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ kode: kode, diskon: diskon, max_pakai: mx, durasi: dr }) });
+            var j = await safeJson(r);
+            if (j && j.status === 'OK') cmdLog('✅ Voucher ' + kode + ' + BC ' + j.sent + '/' + j.total, '#10B981');
+            else cmdLog('❌ ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            return;
+        }
+        if (head === '/setstok') {
+            var kode = (parts[1] || '').trim();
+            var jumlah = parseInt(parts[2] || '0');
+            if (!kode || jumlah < 0) { cmdLog('❌ Format: /setstok KODE JUMLAH', '#EF4444'); return; }
+            var r = await safeFetch(API_URL + '/api/admin/restock', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ kode: kode, jumlah: jumlah }) });
+            var j = await safeJson(r);
+            if (j && j.status === 'OK') cmdLog('✅ Stok ' + kode + ': ' + j.old + ' → ' + j.new, '#10B981');
+            else cmdLog('❌ ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            return;
+        }
+        if (head === '/buatpaket') {
+            var args = cmd.substring(10).trim();
+            var p = args.split('|').map(function(x) { return x.trim(); });
+            if (p.length < 7) { cmdLog('❌ Format: /buatpaket kode|nama|harga|poin|desk|kat|stok', '#EF4444'); return; }
+            cmdLog('⏳ Membuat paket ' + p[0] + '...', '#FBBF24');
+            var r = await safeFetch(API_URL + '/api/admin/create-paket', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ kode: p[0], nama: p[1], harga: parseInt(p[2]), poin: parseInt(p[3]), deskripsi: p[4], kategori: p[5], stok: parseInt(p[6]) }) });
+            var j = await safeJson(r);
+            if (j && j.status === 'OK') { cmdLog('✅ Paket ' + p[0] + ' dibuat!', '#10B981'); if (typeof fetchPaketFromAPI === 'function') fetchPaketFromAPI(); }
+            else cmdLog('❌ ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            return;
+        }
+        if (head === '/hapuspaket') {
+            var kode = (parts[1] || '').trim();
+            if (!kode) { cmdLog('❌ Format: /hapuspaket KODE', '#EF4444'); return; }
+            var r = await safeFetch(API_URL + '/api/admin/delete-paket', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ kode: kode }) });
+            var j = await safeJson(r);
+            if (j && j.status === 'OK') cmdLog('✅ Paket ' + kode + ' dihapus (' + j.tipe + ')', '#10B981');
+            else cmdLog('❌ ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            return;
+        }
+        if (head === '/unblacklist') {
+            var kode = (parts[1] || '').trim();
+            if (!kode) { cmdLog('❌ Format: /unblacklist KODE', '#EF4444'); return; }
+            var r = await safeFetch(API_URL + '/api/admin/unblacklist-paket', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ kode: kode }) });
+            var j = await safeJson(r);
+            if (j && j.status === 'OK') cmdLog('✅ Paket ' + kode + ' dibalikin', '#10B981');
+            else cmdLog('❌ ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            return;
+        }
+        if (head === '/poin') {
+            var uid = (parts[1] || '').trim();
+            var poin = parseInt(parts[2] || '0');
+            if (!uid || isNaN(poin) || poin < 0) { cmdLog('❌ Format: /poin USERID JUMLAH', '#EF4444'); return; }
+            var r = await safeFetch(API_URL + '/api/admin/edit-poin', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ chat_id: uid, poin: poin }) });
+            var j = await safeJson(r);
+            if (j && j.status === 'OK') cmdLog('✅ Poin ' + uid + ': ' + j.old + ' → ' + j.new, '#10B981');
+            else cmdLog('❌ ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            return;
+        }
+        if (head === '/block') {
+            var uid = (parts[1] || '').trim();
+            if (!uid) { cmdLog('❌ Format: /block USERID', '#EF4444'); return; }
+            var r = await safeFetch(API_URL + '/api/admin/block-user', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ chat_id: uid, action: 'block' }) });
+            var j = await safeJson(r);
+            if (j && j.status === 'OK') cmdLog('🚫 User ' + uid + ' di-block', '#FBBF24');
+            else cmdLog('❌ ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            return;
+        }
+        if (head === '/unblock') {
+            var uid = (parts[1] || '').trim();
+            if (!uid) { cmdLog('❌ Format: /unblock USERID', '#EF4444'); return; }
+            var r = await safeFetch(API_URL + '/api/admin/block-user', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ chat_id: uid, action: 'unblock' }) });
+            var j = await safeJson(r);
+            if (j && j.status === 'OK') cmdLog('✅ User ' + uid + ' di-unblock', '#10B981');
+            else cmdLog('❌ ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            return;
+        }
+        if (head === '/stats') {
+            var r = await safeFetch(API_URL + '/api/admin/stats', { headers: { 'X-Admin-Token': _adminToken } });
+            var j = await safeJson(r);
+            if (j && j.status === 'OK') {
+                cmdLog('📊 STATS HARI INI', '#06B6D4');
+                cmdLog('  • Total Order: ' + (j.total_order || 0), '#B0B7C3');
+                cmdLog('  • Pending: ' + (j.pending || 0), '#FBBF24');
+                cmdLog('  • Sukses: ' + (j.sukses || 0), '#10B981');
+                cmdLog('  • Ditolak: ' + (j.ditolak || 0), '#EF4444');
+                cmdLog('  • Pendapatan: ' + (j.pendapatan_str || 'Rp 0'), '#FBBF24');
+            } else cmdLog('❌ Gagal ambil stats', '#EF4444');
+            return;
+        }
+        if (head === '/laporan') {
+            var r = await safeFetch(API_URL + '/api/admin/laporan', { headers: { 'X-Admin-Token': _adminToken } });
+            var j = await safeJson(r);
+            if (j && j.status === 'OK') {
+                cmdLog('📊 7 HARI: ' + (j.hari_ini_7.order || 0) + ' order, ' + (j.hari_ini_7_str || 'Rp 0'), '#06B6D4');
+                cmdLog('📊 30 HARI: ' + (j.hari_ini_30.order || 0) + ' order, ' + (j.hari_ini_30_str || 'Rp 0'), '#06B6D4');
+            } else cmdLog('❌ Gagal ambil laporan', '#EF4444');
+            return;
+        }
+        if (head === '/help' || head === '/cmds') {
+            cmdLog('💡 Daftar command ada di atas form input', '#06B6D4');
+            return;
+        }
+        cmdLog('❌ Command tidak dikenal: ' + head, '#EF4444');
+        cmdLog('💡 Ketik /help buat daftar command', '#FBBF24');
+    } catch(e) {
+        cmdLog('❌ Error: ' + (e.message || e), '#EF4444');
+    }
+}
+window.execAdminCmd = execAdminCmd;
+window.execAdminCmdFromInput = execAdminCmdFromInput;
+
+/* ===== TAB BUAT PAKET ===== */
+function renderBuatPaketTab(content) {
+    if (!content) return;
+    var html = '';
+    html += '<div class="admin-section-title">➕ BUAT PAKET BARU</div>';
+    html += '<div style="background:rgba(139,92,246,0.05); border-left:3px solid #8B5CF6; border-radius:10px; padding:12px; margin-bottom:14px; font-size:11.5px; color:#B0B7C3; line-height:1.6;">';
+    html += '<b style="color:#A78BFA;">💡 TIPS:</b> Kode: <code style="color:#06B6D4;">buy_xxx</code> (a-z, 0-9, _). Kategori: sultan/pro/safe/murah. Paket langsung muncul di katalog user.';
+    html += '</div>';
+    html += '<div class="admin-form-row"><input class="admin-input" id="bpKode" placeholder="Kode (buy_mega)" style="font-family:monospace;"><input class="admin-input" id="bpNama" placeholder="Nama Paket"></div>';
+    html += '<div class="admin-form-row"><input class="admin-input" id="bpHarga" type="number" placeholder="Harga (Rp)"><input class="admin-input" id="bpPoin" type="number" placeholder="Poin (tukar)"></div>';
+    html += '<div class="admin-form-row"><input class="admin-input" id="bpKategori" placeholder="Kategori (sultan/pro/safe/murah)"><input class="admin-input" id="bpStok" type="number" placeholder="Stok awal"></div>';
+    html += '<textarea class="admin-bc-input" id="bpDesk" placeholder="Deskripsi paket..." style="min-height:70px; margin-bottom:10px;"></textarea>';
+    html += '<button class="admin-execute-btn" data-admin-createpaket="1">➕ BUAT PAKET</button>';
+    content.innerHTML = html;
+}
+
+async function adminCreatePaket() {
+    if (!_adminToken) return;
+    var kode = (document.getElementById('bpKode').value || '').trim().toLowerCase();
+    var nama = (document.getElementById('bpNama').value || '').trim();
+    var harga = parseInt(document.getElementById('bpHarga').value || '0');
+    var poin = parseInt(document.getElementById('bpPoin').value || '0');
+    var kategori = (document.getElementById('bpKategori').value || '').trim().toLowerCase();
+    var stok = parseInt(document.getElementById('bpStok').value || '0');
+    var desk = (document.getElementById('bpDesk').value || '').trim() || '🎯 Paket custom';
+
+    if (!kode || !/^[a-z0-9_]+$/.test(kode) || kode.length < 3) { showToast('❌ Kode 3+ char (a-z, 0-9, _)', 'error', 4000); return; }
+    if (!nama || nama.length < 3) { showToast('❌ Nama minimal 3 karakter', 'error'); return; }
+    if (harga <= 0) { showToast('❌ Harga harus > 0', 'error'); return; }
+    if (kategori && ['sultan','pro','safe','murah'].indexOf(kategori) === -1) { showToast('❌ Kategori: sultan/pro/safe/murah', 'error'); return; }
+
+    var konf = await showConfirmModal({
+        title: '➕ Buat Paket Baru?',
+        desc: 'Kode: <b>' + escapeHtml(kode) + '</b><br>Nama: <b>' + escapeHtml(nama) + '</b><br>Harga: <b>Rp ' + format(harga, ',').replace(/,/g, '.') + '</b><br>Poin: <b>' + poin + '</b><br>Kategori: <b>' + (kategori || 'default') + '</b><br>Stok: <b>' + stok + '</b>',
+        okText: '➕ YA, BUAT', cancelText: '❌ BATAL'
+    });
+    if (!konf) return;
+
+    showToast('⏳ Membuat paket...', 'info', 2000);
+    try {
+        var r = await safeFetch(API_URL + '/api/admin/create-paket', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ kode: kode, nama: nama, harga: harga, poin: poin, deskripsi: desk, kategori: kategori || 'murah', stok: stok }) });
+        var j = await safeJson(r);
+        if (j && j.status === 'OK') {
+            if (typeof soundVoucher === 'function') soundVoucher();
+            showToast('✅ Paket ' + escapeHtml(kode) + ' berhasil dibuat!', 'success', 4000);
+            ['bpKode','bpNama','bpHarga','bpPoin','bpKategori','bpStok','bpDesk'].forEach(function(id) {
+                var el = document.getElementById(id); if (el) el.value = '';
+            });
+            if (typeof fetchPaketFromAPI === 'function') {
+                fetchPaketFromAPI().then(function() {
+                    if (typeof renderHomePaket === 'function') renderHomePaket();
+                    if (typeof renderKatalogPaket === 'function') renderKatalogPaket();
+                }).catch(function(){});
+            }
+        } else showToast('❌ ' + (j && j.message ? j.message : 'Gagal'), 'error', 6000);
+    } catch(e) { showToast('⚠️ Koneksi error', 'error', 4000); }
+}
+window.adminCreatePaket = adminCreatePaket;
+
+/* ===== TAB SECURITY ===== */
+async function renderSecurityTab(content) {
+    if (!content || !_adminToken) return;
+    content.innerHTML = '<div class="admin-empty">⏳ Loading security data...</div>';
+    var blocked = [];
+    try {
+        var r = await safeFetch(API_URL + '/api/admin/blocked-users', { headers: { 'X-Admin-Token': _adminToken } });
+        var j = await safeJson(r);
+        if (j && j.status === 'OK' && Array.isArray(j.users)) blocked = j.users;
+    } catch(e) {}
+
+    var html = '';
+    html += '<div class="admin-section-title">🛡️ SECURITY DASHBOARD</div>';
+    html += '<div class="admin-stat-grid">';
+    html += '<div class="admin-stat-box"><div class="admin-stat-label">USER DI-BLOCK</div><div class="admin-stat-value red">' + blocked.length + '</div></div>';
+    html += '<div class="admin-stat-box"><div class="admin-stat-label">STATUS</div><div class="admin-stat-value green">✅ AKTIF</div></div>';
+    html += '</div>';
+    html += '<div class="admin-section-title">🚫 USER TER-BLOCK (' + blocked.length + ')</div>';
+    if (blocked.length === 0) {
+        html += '<div class="admin-empty">✅ Tidak ada user ter-block</div>';
+    } else {
+        for (var i = 0; i < blocked.length; i++) {
+            var u = blocked[i];
+            html += '<div class="admin-user-item">';
+            html += '<div class="admin-user-info"><div class="admin-user-id">🆔 ' + escapeHtml(String(u)) + '</div></div>';
+            html += '<div class="admin-user-actions">';
+            html += '<button class="admin-user-btn" data-admin-unblock="' + escapeHtml(String(u)) + '" style="background:linear-gradient(135deg,#10B981,#059669); color:#FFF; padding:8px 12px; border:none; border-radius:8px; font-size:11px; font-weight:800; cursor:pointer;">🔓 UNBLOCK</button>';
+            html += '</div></div>';
+        }
+    }
+    html += '<button class="admin-refresh" onclick="renderSecurityTab(document.getElementById(\'adminTabBody\'))" style="margin-top:16px;">🔄 Refresh</button>';
+    content.innerHTML = html;
+}
+window.renderSecurityTab = renderSecurityTab;
+
+async function adminUnblockUser(uid) {
+    if (!_adminToken) return;
+    var konf = await showConfirmModal({
+        title: '🔓 Unblock User?',
+        desc: 'Chat ID: <b>' + escapeHtml(uid) + '</b><br><br>User bisa pakai bot lagi.',
+        okText: '🔓 YA, UNBLOCK', cancelText: '❌ BATAL'
+    });
+    if (!konf) return;
+    try {
+        var r = await safeFetch(API_URL + '/api/admin/block-user', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ chat_id: uid, action: 'unblock' }) });
+        var j = await safeJson(r);
+        if (j && j.status === 'OK') {
+            showToast('✅ User ' + uid + ' di-unblock', 'success', 3000);
+            renderSecurityTab(document.getElementById('adminTabBody'));
+        } else showToast('❌ ' + (j && j.message ? j.message : 'Gagal'), 'error');
+    } catch(e) { showToast('⚠️ Koneksi error', 'error'); }
+}
+window.adminUnblockUser = adminUnblockUser;
+
+/* ===== TIER PROGRESS HELPER ===== */
+function getTierProgressDetail(totalOrder) {
+    if (totalOrder >= 30) return { next: null, need: 0, current: 'Platinum', progress: 100 };
+    if (totalOrder >= 15) return { next: 'Platinum', need: 30 - totalOrder, current: 'Gold', progress: Math.round(((totalOrder - 15) / 15) * 100) };
+    if (totalOrder >= 5) return { next: 'Gold', need: 15 - totalOrder, current: 'Silver', progress: Math.round(((totalOrder - 5) / 10) * 100) };
+    return { next: 'Silver', need: 5 - totalOrder, current: 'Bronze', progress: Math.round((totalOrder / 5) * 100) };
+}
+
+(function() {
+    if (window._loadAkunPatched) return;
+    window._loadAkunPatched = true;
+    var _orig = window.loadAkun;
+    window.loadAkun = async function() {
+        if (typeof _orig === 'function') await _orig.apply(this, arguments);
+        setTimeout(function() {
+            try {
+                var info = document.getElementById('akunInfo');
+                if (!info || info.querySelector('.tier-progress-extra')) return;
+                var totalOrder = 0;
+                info.querySelectorAll('.info-row').forEach(function(row) {
+                    if (row.textContent.indexOf('Total Order') !== -1) {
+                        var v = row.querySelector('.info-value');
+                        if (v) totalOrder = parseInt(v.textContent) || 0;
+                    }
+                });
+                var prog = getTierProgressDetail(totalOrder);
+                var extra = document.createElement('div');
+                extra.className = 'info-row tier-progress-extra';
+                extra.style.flexDirection = 'column';
+                extra.style.alignItems = 'stretch';
+                var nextText = prog.next ? ('Kurang <b>' + prog.need + '</b> transaksi lagi buat <b>' + prog.next + '</b>') : '🎉 Udah di tier tertinggi!';
+                extra.innerHTML = '<div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span class="info-label">📈 Progress Tier</span><span style="font-size:11px; color:#A78BFA; font-weight:800;">' + prog.progress + '%</span></div>' +
+                    '<div style="height:8px; background:rgba(139,92,246,0.2); border-radius:4px; overflow:hidden; margin-bottom:8px;"><div style="height:100%; width:' + prog.progress + '%; background:linear-gradient(90deg,#8B5CF6,#06B6D4); transition:width 0.5s;"></div></div>' +
+                    '<div style="font-size:11px; color:#9CA3AF; text-align:center;">' + nextText + '</div>';
+                info.appendChild(extra);
+            } catch(e) {}
+        }, 500);
+    };
+})();
+
+/* ===== KUPON NEW USER BANNER ===== */
+function showKuponBannerIfAvailable() {
+    try {
+        var cid = safeGetStorage('chat_id') || safeGetStorage('chat_id_apk');
+        if (!cid) return;
+        if (document.getElementById('kuponBanner')) return;
+        safeFetch(API_URL + '/api/cek-poin?chat_id=' + encodeURIComponent(cid))
+            .then(function(r) { return r.json(); })
+            .then(function(j) {
+                if (!j || j.status !== 'OK') return;
+                if (j.data && (j.data.total_order === 0 || j.data.total_order == null)) {
+                    if (document.getElementById('kuponBanner')) return;
+                    var home = document.getElementById('page-home');
+                    if (!home) return;
+                    var banner = document.createElement('div');
+                    banner.id = 'kuponBanner';
+                    banner.style.cssText = 'background:linear-gradient(135deg,#FBBF24,#F59E0B); border-radius:14px; padding:14px; margin-bottom:16px; display:flex; align-items:center; gap:12px; box-shadow:0 8px 30px rgba(251,191,36,0.4);';
+                    banner.innerHTML = '<div style="font-size:32px;">🎁</div>' +
+                        '<div style="flex:1;">' +
+                        '<div style="font-size:13px; font-weight:900; color:#1A1F2E; margin-bottom:3px;">KUPON MEMBER BARU!</div>' +
+                        '<div style="font-size:11px; color:#1A1F2E; opacity:0.85;">Diskon <b>Rp 10.000</b> otomatis kepakai di checkout pertama!</div>' +
+                        '</div>';
+                    var fb = home.querySelector('.flash-banner');
+                    if (fb && fb.parentNode) fb.parentNode.insertBefore(banner, fb.nextSibling);
+                    else home.insertBefore(banner, home.firstChild);
+                }
+            }).catch(function(){});
+    } catch(e) {}
+}
+window.showKuponBannerIfAvailable = showKuponBannerIfAvailable;
+setTimeout(showKuponBannerIfAvailable, 4000);
+
+/* ===== TIER UPGRADE NOTIF PATCH ===== */
+(function() {
+    if (window._tierNotifPatched) return;
+    window._tierNotifPatched = true;
+    var _orig = window.checkOrderNotifOnStart;
+    if (typeof _orig === 'function') {
+        window.checkOrderNotifOnStart = async function() {
+            await _orig.apply(this, arguments);
+            try {
+                var cid = safeGetStorage('chat_id_apk') || safeGetStorage('chat_id');
+                if (!cid) return;
+                var r = await safeFetch(API_URL + '/api/cek-poin?chat_id=' + encodeURIComponent(cid));
+                var j = await safeJson(r);
+                if (!j || j.status !== 'OK' || !j.data) return;
+                var cur = (j.data.tier || '').replace(/[^a-zA-Z]/g, '').trim() || 'Bronze';
+                var last = safeGetStorage('pakel_last_tier_' + cid) || '';
+                if (last && cur && last !== cur) {
+                    var diskon = j.data.diskon || 0;
+                    setTimeout(function() {
+                        if (typeof showToast === 'function') {
+                            showToast('🎉 <b>TIER UPGRADE!</b><br>' + last + ' → <b>' + cur + '</b><br>Diskon ' + diskon + '% aktif!', 'success', 8000);
+                        }
+                        if (typeof soundAccByAdmin === 'function') soundAccByAdmin();
+                        if (typeof launchConfetti === 'function') launchConfetti();
+                    }, 1500);
+                }
+                safeSetStorage('pakel_last_tier_' + cid, cur);
+            } catch(e) {}
+        };
+    }
+})();
+
+console.log('[ADMIN v6.0] ✅ CMD + Buat Paket + Security + Tier Progress + Kupon Banner LOADED');
+/* ═══════════════════════════════════════════════════════════ */
 
 </script>
 
