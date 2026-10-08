@@ -196,7 +196,7 @@ body { background: radial-gradient(circle at 20% 0%, rgba(139, 92, 246, 0.15) 0%
 .step-list { padding-left: 0; list-style: none; }
 .step-list li { padding: 10px 12px 10px 40px; position: relative; font-size: 12.5px; color: #B0B7C3; line-height: 1.5; background: rgba(139,92,246,0.05); border-radius: 10px; margin-bottom: 8px; }
 .step-list li::before { content: attr(data-num); position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg,#8B5CF6,#06B6D4); color: #FFF; font-size: 11px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
-#toast-container { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 999999; display: flex; flex-direction: column; gap: 10px; width: calc(100% - 40px); max-width: 420px; pointer-events: none; }
+#toast-container { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 9999999; display: flex; flex-direction: column; gap: 10px; width: calc(100% - 40px); max-width: 420px; pointer-events: none; }
 .toast { padding: 14px 18px; border-radius: 14px; background: rgba(26,31,46,0.98); border: 1px solid rgba(139,92,246,0.4); color: #FFF; font-size: 13px; font-weight: 700; box-shadow: 0 8px 30px rgba(0,0,0,0.5); animation: toastIn 0.4s cubic-bezier(0.68,-0.55,0.27,1.55); pointer-events: auto; letter-spacing: 0.3px; }
 .toast.success { border-color: rgba(16,185,129,0.6); background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(26,31,46,0.98)); }
 .toast.error { border-color: rgba(239,68,68,0.6); background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(26,31,46,0.98)); }
@@ -431,8 +431,8 @@ body.light-mode .chat-option { background: rgba(139,92,246,0.06); }
 #adminBtn { display: none; }
 #adminBtn.show { display: flex; }
 #adminModal { z-index: 999999; }
-#modalLoginAPK { z-index: 99999 !important; }
-#modalWelcome { z-index: 99999 !important; }
+#modalLoginAPK { z-index: 100000 !important; }
+#modalWelcome { z-index: 100000 !important; }
 .admin-panel { padding: 4px 0; }
 .admin-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
 .admin-stat-box { background: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(6,182,212,0.08)); border: 1px solid rgba(139,92,246,0.3); border-radius: 12px; padding: 14px 12px; text-align: center; }
@@ -1166,6 +1166,7 @@ function checkAutoLoginAPK() {
         var m = document.getElementById('modalLoginAPK');
         if (!m) return;
         m.classList.add('show');
+        try { var _off = document.getElementById('offline'); if (_off) _off.classList.remove('show'); } catch(e) {}
         console.log('[AUTH] Login modal SHOW');
         var status = document.getElementById('loginStatus');
         if (status) status.innerHTML = '';
@@ -1585,7 +1586,7 @@ async function checkConnectionOnStart() {
         try { await fetchPaketFromAPI(); } catch(e) {}
         setTimeout(() => {
             document.getElementById('splash').classList.add('hide');
-            playHackerLoading(() => { initApp(); checkWelcome(); });
+            playHackerLoading(() => { initApp(); restoreLastState(); checkWelcome(); });
         }, 500);
     } else {
         if (statusEl) statusEl.textContent = '❌ No connection!';
@@ -1705,6 +1706,45 @@ function highlightRestockCard(namaPaket) {
         });
     } catch(e) {}
 }
+
+
+/* ===== P6: RESTORE STATE SETELAH KONEKSI PULIH ===== */
+function restoreLastState() {
+    try {
+        var lastPage = safeGetStorage('pakel_last_page');
+        if (lastPage && lastPage !== 'home' && lastPage !== 'undefined' && lastPage !== 'null') {
+            setTimeout(function() {
+                if (typeof goPage === 'function') goPage(lastPage);
+            }, 600);
+        }
+        var savedInvoice = safeGetStorage('pakel_open_invoice');
+        if (savedInvoice) {
+            var invData = null;
+            try { invData = JSON.parse(savedInvoice); } catch(e) { invData = null; }
+            if (invData && invData.resi) {
+                fetch(API_URL + '/api/cek-resi?resi=' + encodeURIComponent(invData.resi))
+                    .then(function(r) { return r.json(); })
+                    .then(function(j) {
+                        if (j && j.order && j.order.status === 'PENDING') {
+                            setTimeout(function() {
+                                if (typeof showInvoice === 'function') showInvoice(invData);
+                                if (typeof startOrderPolling === 'function') startOrderPolling(invData.resi);
+                            }, 1000);
+                        } else if (j && j.order && (j.order.status === 'BERHASIL' || j.order.status === 'DITOLAK')) {
+                            try { localStorage.removeItem('pakel_open_invoice'); } catch(e) {}
+                            if (typeof showOrderNotif === 'function') {
+                                showOrderNotif(j.order.status === 'BERHASIL' ? 'acc' : 'reject', j.order);
+                            }
+                        } else {
+                            try { localStorage.removeItem('pakel_open_invoice'); } catch(e) {}
+                        }
+                    })
+                    .catch(function() {});
+            }
+        }
+    } catch(e) { console.warn('[P6-RESTORE] err:', e); }
+}
+window.restoreLastState = restoreLastState;
 
 function initApp() {
     try {
@@ -1979,6 +2019,7 @@ function setupSearch() {
 }
 
 function goPage(page) {
+    try { safeSetStorage('pakel_last_page', page); } catch(e) {}
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const target = document.getElementById('page-' + page);
     if (target) target.classList.add('active');
@@ -2257,7 +2298,7 @@ function showInvoice(data) {
             <div class="modal-desc">
                 <b>💳 PEMBAYARAN</b><br><br>
                 ${(data.payment_method === 'QRIS') ?
-                    '<b>📱 SCAN QRIS:</b><br><img class="qris-img" src="https://i.ibb.co.com/JRXZvJkR/IMG-20260927-110643-128.jpg" alt="QRIS"><br>Bisa pakai DANA, OVO, GoPay, ShopeePay, LinkAja, m-Banking.<br><br>' :
+                    '<b>📱 SCAN QRIS:</b><br><img class="qris-img" src="https://pakelmlbb.github.io/ml.hackvip/qris.jpg" alt="QRIS"><br>Bisa pakai DANA, OVO, GoPay, ShopeePay, LinkAja, m-Banking.<br><br>' :
                     '<b>💳 TRANSFER DANA/GoPay:</b><br><code>085188371150</code><button class="btn-copy" onclick="copyText(\'085188371150\', \'Nomor DANA\')">📋 Copy</button><br>A/N: PakelMlbb<br><br>'
                 }
                 <b>3) Kirim bukti ke bot:</b><br>
@@ -2299,6 +2340,8 @@ function showInvoice(data) {
     try {
         const cid = safeGetStorage('chat_id');
         if (cid) safeSetStorage('pending_order_' + cid, JSON.stringify({ resi: data.resi, paket: data.paket, harga: data.harga_final_str, ts: Date.now() }));
+        safeSetStorage('pakel_open_invoice', JSON.stringify(data));
+        safeSetStorage('pakel_last_page', 'home');
     } catch(e) {}
     soundSuccess();
     haptic(80);
@@ -2463,6 +2506,7 @@ async function cancelOrder(resi) {
         if (j && j.status === 'OK') {
             showToast('✅ Pesanan dibatalkan!', 'success', 5000);
             try { localStorage.removeItem('pending_order_' + chatId); } catch(e) {}
+            try { localStorage.removeItem('pakel_open_invoice'); } catch(e) {}
             if (typeof _pollIntervals !== 'undefined') {
                 Object.keys(_pollIntervals).forEach(k => { clearInterval(_pollIntervals[k]); delete _pollIntervals[k]; });
             }
@@ -3702,7 +3746,14 @@ function setupConnectionMonitor() {
             fetchPaketFromAPI().then(() => { renderHomePaket(); renderKatalogPaket(); loadVoucherAktif(); }).catch(()=>{});
         }
     });
-    window.addEventListener('offline', () => document.getElementById('offline').classList.add('show'));
+    window.addEventListener('offline', () => {
+        var lm = document.getElementById('modalLoginAPK');
+        if (lm && lm.classList.contains('show')) {
+            console.log('[P6] Skip #offline - login modal buka');
+            return;
+        }
+        document.getElementById('offline').classList.add('show');
+    });
     setInterval(async () => {
         try {
             if (!navigator.onLine) { document.getElementById('offline').classList.add('show'); return; }
@@ -6003,6 +6054,272 @@ function showPendingPoinModal(order) {
     if (typeof soundSuccess === 'function') soundSuccess();
     if (typeof haptic === 'function') haptic(80);
 }
+
+
+/* ================================================================ */
+/*  PAKEL SECURITY LAYER v3 — 8 LAPISAN ANTI-BUG + ANTI-HACK        */
+/*  Auto-inject: 8 Okt 2026                                         */
+/* ================================================================ */
+(function() {
+    'use strict';
+    if (window._pakelSecV3) return;
+    window._pakelSecV3 = true;
+
+    console.log('%c🛡️ PAKEL SECURITY v3 ACTIVE', 'color:#10B981;font-weight:900;font-size:14px;');
+
+    // ============ LAPISAN 1: AUTO-RECOVERY ============
+    var _errTimestamps = [];
+    var _MAX_ERRORS_IN_WINDOW = 5;
+    var _ERROR_WINDOW_MS = 60000;
+    var _reloadGuard = false;
+
+    function _checkErrorRate() {
+        if (_reloadGuard) return;
+        var now = Date.now();
+        _errTimestamps = _errTimestamps.filter(function(t) { return now - t < _ERROR_WINDOW_MS; });
+        _errTimestamps.push(now);
+        if (_errTimestamps.length >= _MAX_ERRORS_IN_WINDOW) {
+            _reloadGuard = true;
+            console.warn('[SEC-1] Error rate tinggi, auto-reload...');
+            try { safeSetStorage('pakel_last_crash', String(now)); } catch(e) {}
+            setTimeout(function() { try { location.reload(); } catch(e) {} }, 2000);
+        }
+    }
+
+    window.addEventListener('error', function(e) {
+        try { _checkErrorRate(); } catch(err) {}
+        try {
+            if (typeof reportError === 'function') {
+                reportError('JS_ERROR', e.message, e.filename, e.lineno, e.colno);
+            }
+        } catch(err) {}
+    });
+
+    window.addEventListener('unhandledrejection', function(e) {
+        try { _checkErrorRate(); } catch(err) {}
+    });
+
+    // ============ LAPISAN 2: RATE LIMIT CLICK ============
+    var _lastClick = {};
+    var _CLICK_GAP_MS = 600;
+
+    document.addEventListener('click', function(e) {
+        try {
+            var t = e.target;
+            if (!t || !t.closest) return;
+            var btn = t.closest('button, .btn-order, .btn-submit, .btn-modal-primary, .btn-modal-poin, .btn-modal-secondary, .admin-execute-btn, .admin-btn-acc, .admin-btn-reject');
+            if (!btn) return;
+            var id = btn.id || btn.className || 'btn';
+            var now = Date.now();
+            if (_lastClick[id] && (now - _lastClick[id]) < _CLICK_GAP_MS) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('[SEC-2] Click rate-limited:', id);
+                return false;
+            }
+            _lastClick[id] = now;
+        } catch(err) {}
+    }, true);
+
+    // ============ LAPISAN 3: DEVICE FINGERPRINT ============
+    function _getFingerprint() {
+        try {
+            var fp = '';
+            fp += navigator.userAgent || '';
+            fp += '|' + (screen.width || 0);
+            fp += '|' + (screen.height || 0);
+            fp += '|' + (screen.colorDepth || 0);
+            fp += '|' + (navigator.language || '');
+            fp += '|' + (navigator.platform || '');
+            fp += '|' + (new Date().getTimezoneOffset());
+            // Simple hash
+            var h = 0;
+            for (var i = 0; i < fp.length; i++) {
+                h = ((h << 5) - h) + fp.charCodeAt(i);
+                h = h & h;
+            }
+            return 'DEV_' + Math.abs(h).toString(36);
+        } catch(e) { return 'DEV_unknown'; }
+    }
+
+    var _myFP = _getFingerprint();
+    try {
+        var savedFP = safeGetStorage('pakel_device_fp');
+        if (!savedFP) {
+            safeSetStorage('pakel_device_fp', _myFP);
+            console.log('[SEC-3] Device FP baru: ' + _myFP);
+        } else if (savedFP !== _myFP) {
+            console.warn('[SEC-3] Device FP berubah! ' + savedFP + ' -> ' + _myFP);
+            // Update karena bisa jadi karena update OS, bukan hacking
+            safeSetStorage('pakel_device_fp', _myFP);
+        } else {
+            console.log('[SEC-3] Device FP OK: ' + _myFP);
+        }
+    } catch(e) {}
+
+    // ============ LAPISAN 4: AUTO-CLEANUP ============
+    function _cleanupOldData() {
+        try {
+            var now = Date.now();
+            var MAX_AGE = 30 * 24 * 60 * 60 * 1000; // 30 hari
+            var keysToCheck = ['pakel_pending_orders', 'pakel_open_invoice', 'pakel_last_seen_orders'];
+            for (var i = 0; i < keysToCheck.length; i++) {
+                try {
+                    var raw = localStorage.getItem(keysToCheck[i]);
+                    if (!raw) continue;
+                    var data = JSON.parse(raw);
+                    if (data && data.savedAt && (now - data.savedAt) > MAX_AGE) {
+                        localStorage.removeItem(keysToCheck[i]);
+                        console.log('[SEC-4] Cleanup: ' + keysToCheck[i]);
+                    }
+                } catch(e) {}
+            }
+            // Buang last_crash lama
+            var lastCrash = safeGetStorage('pakel_last_crash');
+            if (lastCrash && (now - parseInt(lastCrash)) > 24 * 60 * 60 * 1000) {
+                localStorage.removeItem('pakel_last_crash');
+            }
+        } catch(e) {}
+    }
+    setTimeout(_cleanupOldData, 5000);
+    setInterval(_cleanupOldData, 3600000); // tiap 1 jam
+
+    // ============ LAPISAN 5: WATCHDOG TIMER ============
+    var _watchdogLastBeat = Date.now();
+    var _watchdogActive = true;
+
+    function _heartbeat() {
+        _watchdogLastBeat = Date.now();
+    }
+    document.addEventListener('click', _heartbeat, {passive: true});
+    document.addEventListener('touchstart', _heartbeat, {passive: true});
+
+    setInterval(function() {
+        try {
+            if (document.hidden) return;
+            var elapsed = Date.now() - _watchdogLastBeat;
+            if (elapsed > 10 * 60 * 1000) {
+                // 10 menit gak ada interaksi — cek masih hidup
+                console.log('[SEC-5] Watchdog: cek kesehatan aplikasi');
+                _watchdogLastBeat = Date.now();
+            }
+        } catch(e) {}
+    }, 60000);
+
+    // ============ LAPISAN 6: GLOBAL TRY-CATCH WRAPPER ============
+    // Wrap function kritis biar gak crash kalau error
+    function _safelyWrap(fnName) {
+        try {
+            if (typeof window[fnName] !== 'function') return;
+            var orig = window[fnName];
+            if (orig._pakelWrapped) return;
+            var wrapped = function() {
+                try {
+                    return orig.apply(this, arguments);
+                } catch(e) {
+                    console.error('[SEC-6] ' + fnName + ' error:', e);
+                    try { showToast('⚠️ Terjadi error, coba lagi', 'error', 3000); } catch(err) {}
+                    return null;
+                }
+            };
+            wrapped._pakelWrapped = true;
+            window[fnName] = wrapped;
+        } catch(e) {}
+    }
+
+    setTimeout(function() {
+        var critical = ['orderPaket', 'orderPaketPoin', 'uploadBukti', 'cancelOrder',
+                        'redeemVoucher', 'cekPoin', 'cekRiwayat', 'loadTestimoni',
+                        'openDetail', 'submitLoginAPK', 'checkAutoLoginAPK'];
+        for (var i = 0; i < critical.length; i++) _safelyWrap(critical[i]);
+        console.log('[SEC-6] Wrapped ' + critical.length + ' critical functions');
+    }, 2000);
+
+    // ============ LAPISAN 7: INTEGRITY CHECK ============
+    function _integrityCheck() {
+        try {
+            var ver = localStorage.getItem('pakelstore_version');
+            var loginVer = localStorage.getItem('pakel_login_version');
+            var sessionStart = localStorage.getItem('pakel_session_start');
+            var chatId = localStorage.getItem('chat_id_apk');
+
+            // Kalau ada chat_id tapi version beda → force login
+            if (chatId && ver && loginVer && ver !== loginVer) {
+                console.warn('[SEC-7] Versi mismatch! Login ulang');
+                try {
+                    localStorage.removeItem('chat_id_apk');
+                    localStorage.removeItem('chat_id');
+                    localStorage.removeItem('pakel_session_start');
+                } catch(e) {}
+            }
+            // Session > 8 hari → expired
+            if (sessionStart) {
+                var age = Date.now() - parseInt(sessionStart);
+                if (age > 8 * 24 * 60 * 60 * 1000) {
+                    console.warn('[SEC-7] Session expired');
+                    try {
+                        localStorage.removeItem('chat_id_apk');
+                        localStorage.removeItem('chat_id');
+                        localStorage.removeItem('pakel_session_start');
+                    } catch(e) {}
+                }
+            }
+        } catch(e) {}
+    }
+    setTimeout(_integrityCheck, 3000);
+
+    // ============ LAPISAN 8: ANTI-LOOP GUARD #OFFLINE ============
+    var _offlineShown = 0;
+    var _offlineLastShown = 0;
+    var _offlineBlocked = false;
+
+    var _offlineEl = document.getElementById('offline');
+    if (_offlineEl) {
+        var observer = new MutationObserver(function(mutations) {
+            try {
+                mutations.forEach(function(m) {
+                    if (m.attributeName === 'class') {
+                        var isShow = _offlineEl.classList.contains('show');
+                        if (isShow) {
+                            var now = Date.now();
+                            if (now - _offlineLastShown < 5000) {
+                                _offlineShown++;
+                                if (_offlineShown > 5) {
+                                    console.warn('[SEC-8] #offline loop terdeteksi, blokir 1 menit');
+                                    _offlineBlocked = true;
+                                    _offlineEl.classList.remove('show');
+                                    setTimeout(function() {
+                                        _offlineBlocked = false;
+                                        _offlineShown = 0;
+                                    }, 60000);
+                                }
+                            } else {
+                                _offlineShown = 0;
+                            }
+                            _offlineLastShown = now;
+                        }
+                    }
+                });
+            } catch(e) {}
+        });
+        observer.observe(_offlineEl, { attributes: true });
+    }
+
+    // ============ BOOT LOG ============
+    setTimeout(function() {
+        console.log('%c🛡️ SEC v3 BOOT COMPLETE', 'color:#06B6D4;font-weight:900;font-size:12px;');
+        console.log('  [1] Auto-Recovery ✅');
+        console.log('  [2] Rate Limit ✅');
+        console.log('  [3] Device FP: ' + _myFP);
+        console.log('  [4] Auto-Cleanup ✅');
+        console.log('  [5] Watchdog ✅');
+        console.log('  [6] Try-Catch Wrapper ✅');
+        console.log('  [7] Integrity Check ✅');
+        console.log('  [8] Anti-Loop Guard ✅');
+    }, 3000);
+
+})();
+/* ============ END SECURITY LAYER v3 ============ */
 
 </script>
 
