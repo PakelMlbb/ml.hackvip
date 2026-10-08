@@ -162,6 +162,9 @@ body { background: radial-gradient(circle at 20% 0%, rgba(139, 92, 246, 0.15) 0%
 .btn-modal-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 .btn-modal-secondary { padding: 14px; border: 1px solid rgba(139,92,246,0.4); border-radius: 13px; background: rgba(139,92,246,0.1); color: #A78BFA; font-size: 13px; font-weight: 800; cursor: pointer; transition: all 0.3s; position: relative; overflow: hidden; }
 .btn-modal-secondary:active { transform: scale(0.98); }
+#btnOrderTransfer { background: linear-gradient(135deg,#8B5CF6,#7C3AED) !important; }
+#btnOrderQRIS { background: linear-gradient(135deg,#06B6D4,#0891B2) !important; }
+#btnOrderPoinModal { background: linear-gradient(135deg,#FBBF24,#F59E0B) !important; color: #1A1F2E !important; }
 .btn-modal-poin { padding: 15px; border: none; border-radius: 13px; background: linear-gradient(135deg,#FBBF24,#F59E0B); color: #FFF; font-size: 14px; font-weight: 900; cursor: pointer; box-shadow: 0 6px 25px rgba(251,191,36,0.4); transition: all 0.3s; position: relative; overflow: hidden; }
 .btn-modal-poin:active { transform: scale(0.98); }
 .btn-modal-poin:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -193,7 +196,7 @@ body { background: radial-gradient(circle at 20% 0%, rgba(139, 92, 246, 0.15) 0%
 .step-list { padding-left: 0; list-style: none; }
 .step-list li { padding: 10px 12px 10px 40px; position: relative; font-size: 12.5px; color: #B0B7C3; line-height: 1.5; background: rgba(139,92,246,0.05); border-radius: 10px; margin-bottom: 8px; }
 .step-list li::before { content: attr(data-num); position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg,#8B5CF6,#06B6D4); color: #FFF; font-size: 11px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
-#toast-container { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 9997; display: flex; flex-direction: column; gap: 10px; width: calc(100% - 40px); max-width: 420px; pointer-events: none; }
+#toast-container { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 999999; display: flex; flex-direction: column; gap: 10px; width: calc(100% - 40px); max-width: 420px; pointer-events: none; }
 .toast { padding: 14px 18px; border-radius: 14px; background: rgba(26,31,46,0.98); border: 1px solid rgba(139,92,246,0.4); color: #FFF; font-size: 13px; font-weight: 700; box-shadow: 0 8px 30px rgba(0,0,0,0.5); animation: toastIn 0.4s cubic-bezier(0.68,-0.55,0.27,1.55); pointer-events: auto; letter-spacing: 0.3px; }
 .toast.success { border-color: rgba(16,185,129,0.6); background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(26,31,46,0.98)); }
 .toast.error { border-color: rgba(239,68,68,0.6); background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(26,31,46,0.98)); }
@@ -260,7 +263,8 @@ body { background: radial-gradient(circle at 20% 0%, rgba(139, 92, 246, 0.15) 0%
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 @keyframes splashPop { 0% { transform: scale(0.3); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 .splashPop-fix { animation: splashPop 0.6s ease-out forwards !important; }
-@keyframes toastIn { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes toastIn { from { transform: translate(-50%, -30px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+@keyframes toastInSlide { from { transform: translateY(-50px); opacity: 0; } 60% { transform: translateY(5px); opacity: 1; } to { transform: translateY(0); opacity: 1; } }
 @keyframes toastOut { to { transform: translateY(-30px); opacity: 0; } }
 @keyframes hackerLineIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
 @keyframes liveTickerIn { from { transform: translate(-50%, -20px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
@@ -427,6 +431,8 @@ body.light-mode .chat-option { background: rgba(139,92,246,0.06); }
 #adminBtn { display: none; }
 #adminBtn.show { display: flex; }
 #adminModal { z-index: 999999; }
+#modalLoginAPK { z-index: 99999 !important; }
+#modalWelcome { z-index: 99999 !important; }
 .admin-panel { padding: 4px 0; }
 .admin-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
 .admin-stat-box { background: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(6,182,212,0.08)); border: 1px solid rgba(139,92,246,0.3); border-radius: 12px; padding: 14px 12px; text-align: center; }
@@ -936,8 +942,9 @@ body.light-mode .admin-graph { background: rgba(139,92,246,0.05); }
         </div>
         <div class="modal-desc" id="modalDesc">-</div>
         <div class="modal-actions">
-            <button class="btn-modal-primary" id="btnOrderModal">🛒 ORDER SEKARANG</button>
-            <button class="btn-modal-poin" id="btnOrderPoinModal" style="display:none;">🪙 TUKAR POIN</button>
+            <button class="btn-modal-primary" id="btnOrderTransfer">💳 BAYAR VIA TRANSFER (DANA/GoPay)</button>
+            <button class="btn-modal-primary" id="btnOrderQRIS">📱 BAYAR VIA QRIS (All E-Wallet)</button>
+            <button class="btn-modal-poin" id="btnOrderPoinModal" style="display:none;">🪙 TUKAR PAKAI POIN</button>
             <button class="btn-modal-secondary" onclick="openTelegram('PakelMlbbOfficial')">💬 TANYA ADMIN</button>
         </div>
     </div>
@@ -1147,26 +1154,36 @@ function checkAutoLoginAPK() {
         if (w) w.classList.remove('show');
     }, 100);
     
-    // Tampilkan login modal
-    var showLogin = function(retry) {
-        retry = retry || 0;
+    // ===== P1: Tampilkan login modal — tunggu splash/hacker selesai =====
+    var _p1_isSplashDone = function() {
+        var sp = document.getElementById('splash');
+        var hk = document.getElementById('hackerLoad');
+        var spHide = !sp || sp.classList.contains('hide') || sp.style.display === 'none';
+        var hkHide = !hk || hk.style.display === 'none' || !hk.classList.contains('show');
+        return spHide && hkHide;
+    };
+    var _p1_showLoginModal = function() {
         var m = document.getElementById('modalLoginAPK');
-        if (m) {
-            m.classList.add('show');
-            console.log('[AUTH] Login modal SHOW');
-            // Reset status input
-            var status = document.getElementById('loginStatus');
-            if (status) status.innerHTML = '';
-            var inp = document.getElementById('inputLoginID');
-            if (inp) {
-                inp.value = '';
-                setTimeout(function() { try { inp.focus(); } catch(e) {} }, 400);
-            }
-        } else if (retry < 10) {
-            setTimeout(function() { showLogin(retry + 1); }, 200);
+        if (!m) return;
+        m.classList.add('show');
+        console.log('[AUTH] Login modal SHOW');
+        var status = document.getElementById('loginStatus');
+        if (status) status.innerHTML = '';
+        var inp = document.getElementById('inputLoginID');
+        if (inp) {
+            inp.value = '';
+            setTimeout(function() { try { inp.focus(); } catch(e) {} }, 600);
         }
     };
-    setTimeout(function() { showLogin(0); }, 300);
+    var _p1_waitThenShow = function(tries) {
+        tries = tries || 0;
+        if (_p1_isSplashDone() || tries >= 30) {
+            setTimeout(_p1_showLoginModal, 800);
+        } else {
+            setTimeout(function() { _p1_waitThenShow(tries + 1); }, 500);
+        }
+    };
+    setTimeout(function() { _p1_waitThenShow(0); }, 1200);
     
     return false;
 }
@@ -1205,10 +1222,16 @@ function submitLoginAPK() {
                 var m = document.getElementById('modalLoginAPK');
                 if (m) m.classList.remove('show');
                 showToast('✓ Login berhasil, ' + (res.nama || 'Kak') + '!');
-                // Setelah login → tampilkan welcome
-                setTimeout(function() {
+                // ===== P1: welcome tunggu login modal ketutup =====
+                var _p1_showWelcomeAfterLogin = function() {
+                    var lm = document.getElementById('modalLoginAPK');
+                    if (lm && lm.classList.contains('show')) {
+                        setTimeout(_p1_showWelcomeAfterLogin, 500);
+                        return;
+                    }
                     if (typeof showWelcomeModal === 'function') showWelcomeModal();
-                }, 1200);
+                };
+                setTimeout(_p1_showWelcomeAfterLogin, 800);
             }, 800);
         } else {
             if (status) status.innerHTML = '<span style="color:#EF4444;">❌ ' + (res.reason || 'ID tidak terdaftar') + '<br>Mulai bot @Pakel_Mlbb_Store_bot dulu ya!</span>';
@@ -1976,17 +1999,25 @@ async function openDetail(kode) {
     document.getElementById('modalStok').textContent = p.stok + ' unit';
     document.getElementById('modalDesc').innerHTML = escapeHtml(p.desc);
 
-    const btn = document.getElementById('btnOrderModal');
+    // ===== P3: 3 tombol bayar jelas =====
+    var btnTransfer = document.getElementById('btnOrderTransfer');
+    var btnQRIS = document.getElementById('btnOrderQRIS');
     if (p.stok <= 0) {
-        btn.textContent = '❌ STOK HABIS';
-        btn.disabled = true;
-        btn.style.opacity = '0.5';
+        if (btnTransfer) { btnTransfer.textContent = '❌ STOK HABIS'; btnTransfer.disabled = true; btnTransfer.style.opacity = '0.5'; }
+        if (btnQRIS) { btnQRIS.textContent = '❌ STOK HABIS'; btnQRIS.disabled = true; btnQRIS.style.opacity = '0.5'; }
     } else {
-        // Label lebih jelas: bayar via TRANSFER/QRIS
-        btn.textContent = '💳 BAYAR TRANSFER / QRIS';
-        btn.disabled = false;
-        btn.style.opacity = '1';
-        btn.onclick = () => orderPaket(p.kode);
+        if (btnTransfer) {
+            btnTransfer.textContent = '💳 BAYAR VIA TRANSFER (DANA/GoPay)';
+            btnTransfer.disabled = false;
+            btnTransfer.style.opacity = '1';
+            btnTransfer.onclick = function() { orderPaket(p.kode, 'TRANSFER'); };
+        }
+        if (btnQRIS) {
+            btnQRIS.textContent = '📱 BAYAR VIA QRIS (All E-Wallet)';
+            btnQRIS.disabled = false;
+            btnQRIS.style.opacity = '1';
+            btnQRIS.onclick = function() { orderPaket(p.kode, 'QRIS'); };
+        }
     }
 
     // Cek saldo poin
@@ -2053,11 +2084,13 @@ function closeModal(e) {
 }
 
 /* ==================== ORDER PAKET (TRANSFER) ==================== */
-async function orderPaket(kode) {
-    if (!debounce('order_' + kode, () => _orderInternal(kode), 1500)) return;
+async function orderPaket(kode, method) {
+    method = method || 'TRANSFER';
+    if (!debounce('order_' + kode + '_' + method, () => _orderInternal(kode, method), 1500)) return;
 }
 
-async function _orderInternal(kode) {
+async function _orderInternal(kode, method) {
+    method = method || 'TRANSFER';
     const p = PAKET_DATA.find(x => x.kode === kode);
     if (!p) { showToast('❌ Paket tidak ditemukan', 'error'); return; }
     if (p.stok <= 0) { showToast('❌ Stok habis!', 'error'); return; }
@@ -2106,7 +2139,7 @@ async function _orderInternal(kode) {
             const response = await safeFetch(API_URL + '/api/order', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: chatId, paket_kode: kode, payment_method: 'TRANSFER' })
+                body: JSON.stringify({ chat_id: chatId, paket_kode: kode, payment_method: method })
             });
             const result = await safeJson(response);
             if (result && result.status === 'OK') {
@@ -2186,7 +2219,14 @@ async function _orderPoinInternal(kode) {
         const result = await safeJson(response);
         if (result && result.status === 'OK') {
             document.getElementById('modalPaket').classList.remove('show');
-            showSuccessModalPoin(result);
+            if (result.pending || result.payment_method === 'POIN') {
+                showPendingPoinModal(result);
+                if (typeof startOrderPolling === 'function' && result.resi) {
+                    startOrderPolling(result.resi);
+                }
+            } else {
+                showSuccessModalPoin(result);
+            }
         } else {
             showToast('❌ ' + (result && result.message ? result.message : 'Tukar poin gagal'), 'error', 6000);
         }
@@ -2216,12 +2256,10 @@ function showInvoice(data) {
             </div>
             <div class="modal-desc">
                 <b>💳 PEMBAYARAN</b><br><br>
-                <b>1) QRIS (Scan):</b>
-                <img class="qris-img" src="https://i.ibb.co.com/JRXZvJkR/IMG-20260927-110643-128.jpg" alt="QRIS">
-                <b>2) Transfer DANA/GoPay:</b><br>
-                <code>085188371150</code>
-                <button class="btn-copy" onclick="copyText('085188371150', 'Nomor DANA')">📋 Copy</button>
-                <br>A/N: PakelMlbb<br><br>
+                ${(data.payment_method === 'QRIS') ?
+                    '<b>📱 SCAN QRIS:</b><br><img class="qris-img" src="https://i.ibb.co.com/JRXZvJkR/IMG-20260927-110643-128.jpg" alt="QRIS"><br>Bisa pakai DANA, OVO, GoPay, ShopeePay, LinkAja, m-Banking.<br><br>' :
+                    '<b>💳 TRANSFER DANA/GoPay:</b><br><code>085188371150</code><button class="btn-copy" onclick="copyText(\'085188371150\', \'Nomor DANA\')">📋 Copy</button><br>A/N: PakelMlbb<br><br>'
+                }
                 <b>3) Kirim bukti ke bot:</b><br>
                 @${BOT_USERNAME}
             </div>
@@ -2976,6 +3014,18 @@ function loadFAQ() {
 
 /* ==================== WELCOME POPUP ==================== */
 function showWelcomeModal() {
+    // P5 SAFEGUARD: wajib login dulu
+    var _p5_cid = safeGetStorage('chat_id_apk') || safeGetStorage('chat_id') || '';
+    if (!_p5_cid || !/^[0-9]{8,15}$/.test(_p5_cid)) {
+        console.log('[WELCOME] Skip - user belum login');
+        return;
+    }
+    // P5: cek login modal gak lagi kebuka
+    var _p5_login = document.getElementById('modalLoginAPK');
+    if (_p5_login && _p5_login.classList.contains('show')) {
+        console.log('[WELCOME] Skip - login modal masih buka');
+        return;
+    }
     const m = document.getElementById('modalWelcome');
     if (!m) return;
     const nameEl = document.getElementById('welcomeName');
@@ -3004,25 +3054,32 @@ function checkWelcome() {
         }
         const shown = safeGetStorage('pakel_welcome_shown');
         if (!shown) {
-            // Tunda 2.5 detik setelah login biar splash + hacker loading selesai
-            setTimeout(() => {
-                // Cek lagi apakah modal login udah ketutup
+            // ===== P1: Wait splash + login modal ketutup =====
+            var _p1_isSplashDone2 = function() {
+                var sp = document.getElementById('splash');
+                var hk = document.getElementById('hackerLoad');
+                var spHide = !sp || sp.classList.contains('hide') || sp.style.display === 'none';
+                var hkHide = !hk || hk.style.display === 'none' || !hk.classList.contains('show');
+                return spHide && hkHide;
+            };
+            var _p1_waitWelcome = function(tries) {
+                tries = tries || 0;
+                if (!_p1_isSplashDone2() && tries < 30) {
+                    setTimeout(function() { _p1_waitWelcome(tries + 1); }, 500);
+                    return;
+                }
                 var loginModal = document.getElementById('modalLoginAPK');
                 if (loginModal && loginModal.classList.contains('show')) {
-                    console.log('[WELCOME] Login modal masih terbuka, tunda welcome');
-                    // Retry tiap 1 detik (max 10x)
-                    var retry = 0;
-                    var iv = setInterval(function() {
-                        retry++;
-                        if (!loginModal.classList.contains('show') || retry > 10) {
-                            clearInterval(iv);
-                            showWelcomeModal();
-                        }
-                    }, 1000);
-                } else {
-                    showWelcomeModal();
+                    if (tries < 60) {
+                        setTimeout(function() { _p1_waitWelcome(tries + 1); }, 800);
+                    }
+                    return;
                 }
-            }, 2500);
+                setTimeout(function() {
+                    if (typeof showWelcomeModal === 'function') showWelcomeModal();
+                }, 800);
+            };
+            setTimeout(function() { _p1_waitWelcome(0); }, 1000);
         }
     } catch(e) {
         console.log('[WELCOME] Error:', e);
@@ -3613,7 +3670,14 @@ setTimeout(() => { showLiveTicker(); setInterval(showLiveTicker, 15000); }, 8000
 /* ==================== TOAST ==================== */
 function showToast(msg, type, duration) {
     type = type || 'info';
-    duration = duration || 3000;
+    duration = duration || 5000;
+    // P4: Batasi stack toast max 3 (biar gak numpuk nutup modal)
+    try {
+        var _tc = document.getElementById('toast-container');
+        if (_tc && _tc.children.length >= 3) {
+            _tc.removeChild(_tc.firstChild);
+        }
+    } catch(e) {}
     if (type === 'success') soundSuccess();
     else if (type === 'error') soundError();
     else if (type === 'warning') soundWarning();
@@ -5898,6 +5962,47 @@ if (document.readyState === 'loading') {
 
 console.log('[PAKELSTORE] Patch 6 fitur aktif');
 // ===== END PATCH =====
+
+
+/* ===== FIX P2: MODAL MENUNGGU ACC POIN ===== */
+function showPendingPoinModal(order) {
+    var old = document.getElementById('pendingPoinModal');
+    if (old) old.remove();
+    var modal = document.createElement('div');
+    modal.id = 'pendingPoinModal';
+    modal.className = 'modal-overlay show';
+    modal.style.zIndex = '99998';
+    var RESI = order.resi || '';
+    var modalHTML = '';
+    modalHTML += '<div class="modal-sheet" onclick="event.stopPropagation()">';
+    modalHTML += '<div class="modal-close" onclick="var m=document.getElementById(' + chr(39) + 'pendingPoinModal' + chr(39) + ');if(m)m.remove();">&#10005;</div>';
+    modalHTML += '<div style="text-align:center; padding:20px 0;">';
+    modalHTML += '<div style="font-size:70px; margin-bottom:12px; animation:pulseGlow 2s infinite;">&#9203;</div>';
+    modalHTML += '<div class="modal-title" style="text-align:center; font-size:18px;">MENUNGGU ACC ADMIN</div>';
+    modalHTML += '<div style="color:#FBBF24; font-weight:800; font-size:13px; margin-bottom:18px; letter-spacing:1px;">&#129689; PEMBAYARAN: POIN</div>';
+    modalHTML += '</div>';
+    modalHTML += '<div class="modal-info">';
+    modalHTML += '<div class="info-row"><div class="info-label">&#128273; Resi</div><div class="info-value">' + escapeHtml(order.resi || '-') + '</div></div>';
+    modalHTML += '<div class="info-row"><div class="info-label">&#128230; Paket</div><div class="info-value">' + escapeHtml(order.paket || '-') + '</div></div>';
+    modalHTML += '<div class="info-row"><div class="info-label">&#129689; Poin Dibutuhkan</div><div class="info-value gold">' + escapeHtml(order.harga_final_str || '-') + '</div></div>';
+    modalHTML += '<div class="info-row"><div class="info-label">&#128176; Saldo Poin</div><div class="info-value">' + (order.saldo_poin_sisa != null ? order.saldo_poin_sisa : '-') + '</div></div>';
+    modalHTML += '</div>';
+    modalHTML += '<div class="modal-desc">';
+    modalHTML += '<b>&#9203; MENUNGGU ACC ADMIN</b><br><br>';
+    modalHTML += 'Order kamu sudah diterima. Poin akan dipotong <b>setelah admin ACC</b>.<br><br>';
+    modalHTML += 'Biasanya admin ACC dalam <b>5-10 menit</b>.<br><br>';
+    modalHTML += 'Kamu akan dapat notifikasi otomatis begitu di-ACC.';
+    modalHTML += '</div>';
+    modalHTML += '<div class="modal-actions">';
+    modalHTML += '<button class="btn-modal-primary" onclick="startOrderPolling(' + chr(39) + RESI + chr(39) + ');var m=document.getElementById(' + chr(39) + 'pendingPoinModal' + chr(39) + ');if(m)m.remove();">&#128260; CEK STATUS PESANAN</button>';
+    modalHTML += '<button class="btn-modal-secondary" onclick="var m=document.getElementById(' + chr(39) + 'pendingPoinModal' + chr(39) + ');if(m)m.remove();">Tutup</button>';
+    modalHTML += '</div>';
+    modalHTML += '</div>';
+    modal.innerHTML = modalHTML;
+    document.body.appendChild(modal);
+    if (typeof soundSuccess === 'function') soundSuccess();
+    if (typeof haptic === 'function') haptic(80);
+}
 
 </script>
 
