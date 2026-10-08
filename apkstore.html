@@ -196,7 +196,7 @@ body { background: radial-gradient(circle at 20% 0%, rgba(139, 92, 246, 0.15) 0%
 .step-list { padding-left: 0; list-style: none; }
 .step-list li { padding: 10px 12px 10px 40px; position: relative; font-size: 12.5px; color: #B0B7C3; line-height: 1.5; background: rgba(139,92,246,0.05); border-radius: 10px; margin-bottom: 8px; }
 .step-list li::before { content: attr(data-num); position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg,#8B5CF6,#06B6D4); color: #FFF; font-size: 11px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
-#toast-container { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 9999999; display: flex; flex-direction: column; gap: 10px; width: calc(100% - 40px); max-width: 420px; pointer-events: none; }
+#toast-container { position: fixed !important; top: 80px; left: 50%; transform: translateX(-50%); z-index: 2147483647 !important; pointer-events: none; isolation: isolate; display: flex; flex-direction: column; gap: 10px; width: calc(100% - 40px); max-width: 420px; }
 .toast { padding: 14px 18px; border-radius: 14px; background: rgba(26,31,46,0.98); border: 1px solid rgba(139,92,246,0.4); color: #FFF; font-size: 13px; font-weight: 700; box-shadow: 0 8px 30px rgba(0,0,0,0.5); animation: toastIn 0.4s cubic-bezier(0.68,-0.55,0.27,1.55); pointer-events: auto; letter-spacing: 0.3px; }
 .toast.success { border-color: rgba(16,185,129,0.6); background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(26,31,46,0.98)); }
 .toast.error { border-color: rgba(239,68,68,0.6); background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(26,31,46,0.98)); }
@@ -1717,6 +1717,32 @@ function restoreLastState() {
                 if (typeof goPage === 'function') goPage(lastPage);
             }, 600);
         }
+        var savedPoinModal = safeGetStorage('pakel_open_poin_modal');
+        if (savedPoinModal) {
+            var poinOrder = null;
+            try { poinOrder = JSON.parse(savedPoinModal); } catch(e) {}
+            if (poinOrder && poinOrder.resi) {
+                fetch(API_URL + '/api/cek-resi?resi=' + encodeURIComponent(poinOrder.resi))
+                    .then(function(r) { return r.json(); })
+                    .then(function(j) {
+                        if (j && j.order && j.order.status === 'PENDING') {
+                            setTimeout(function() {
+                                if (typeof showPendingPoinModal === 'function') showPendingPoinModal(poinOrder);
+                                if (typeof startOrderPolling === 'function') startOrderPolling(poinOrder.resi);
+                            }, 1200);
+                        } else {
+                            try { localStorage.removeItem('pakel_open_poin_modal'); } catch(e) {}
+                        }
+                    })
+                    .catch(function() {});
+            }
+        }
+        var savedDetail = safeGetStorage('pakel_open_detail');
+        if (savedDetail && !safeGetStorage('pakel_open_invoice')) {
+            setTimeout(function() {
+                if (typeof openDetail === 'function') openDetail(savedDetail);
+            }, 1000);
+        }
         var savedInvoice = safeGetStorage('pakel_open_invoice');
         if (savedInvoice) {
             var invData = null;
@@ -1973,7 +1999,7 @@ function renderPaketCard(p) {
             ${slotBadge}
             <div class="paket-desc">${escapeHtml(p.desc)}</div>
             <div class="paket-actions">
-                <button class="btn-order" onclick="event.stopPropagation(); orderPaket('${escapeHtml(p.kode)}')">🛒 ORDER SEKARANG</button>
+                <button class="btn-order" onclick="event.stopPropagation(); openDetail('${escapeHtml(p.kode)}')">🛒 ORDER SEKARANG</button>
                 <button class="btn-ask" onclick="event.stopPropagation(); openTelegram('${ADMIN_USERNAME}')">💬</button>
             </div>
         </div>
@@ -2033,6 +2059,7 @@ function goPage(page) {
 async function openDetail(kode) {
     const p = PAKET_DATA.find(x => x.kode === kode);
     if (!p) return;
+    try { safeSetStorage('pakel_open_detail', kode); } catch(e) {}
     const hf = getHargaFinal(p);
     document.getElementById('modalName').textContent = p.nama;
     document.getElementById('modalPrice').textContent = formatRupiah(hf) + (FLASH_SALE_DISKON > 0 ? ' (Flash Sale ' + FLASH_SALE_DISKON + '%)' : '');
@@ -2122,6 +2149,7 @@ async function openDetail(kode) {
 function closeModal(e) {
     if (e && e.target && e.target.id !== 'modalPaket') return;
     document.getElementById('modalPaket').classList.remove('show');
+    try { localStorage.removeItem('pakel_open_detail'); } catch(e) {}
 }
 
 /* ==================== ORDER PAKET (TRANSFER) ==================== */
@@ -2170,7 +2198,7 @@ async function _orderInternal(kode, method) {
     }
     if (hasPending && pendingData) {
         document.getElementById('modalPaket').classList.remove('show');
-        showPendingWarningModal(pendingData);
+        showPendingOrderModal(pendingData);
         return;
     }
 
@@ -2185,7 +2213,8 @@ async function _orderInternal(kode, method) {
             const result = await safeJson(response);
             if (result && result.status === 'OK') {
                 document.getElementById('modalPaket').classList.remove('show');
-                showInvoice(result);
+                try { localStorage.removeItem('pakel_open_detail'); } catch(e) {}
+            showInvoice(result);
                 return;
             } else {
                 showToast('❌ ' + (result && result.message ? result.message : 'Order gagal'), 'error');
@@ -2245,7 +2274,7 @@ async function _orderPoinInternal(kode) {
         const jPending = await safeJson(rPending);
         if (jPending && jPending.status === 'OK' && jPending.count > 0) {
             document.getElementById('modalPaket').classList.remove('show');
-            showPendingWarningModal(jPending.pending[0]);
+            showPendingOrderModal(jPending.pending[0]);
             return;
         }
     } catch(e) {}
@@ -2260,6 +2289,7 @@ async function _orderPoinInternal(kode) {
         const result = await safeJson(response);
         if (result && result.status === 'OK') {
             document.getElementById('modalPaket').classList.remove('show');
+            try { localStorage.removeItem('pakel_open_poin_modal'); } catch(e) {}
             if (result.pending || result.payment_method === 'POIN') {
                 showPendingPoinModal(result);
                 if (typeof startOrderPolling === 'function' && result.resi) {
@@ -2307,7 +2337,7 @@ function showInvoice(data) {
             <div class="modal-actions">
                 <input type="file" accept="image/*" id="proofInput_${escapeHtml(data.resi)}" style="display:none;" onchange="uploadBukti(this, '${escapeHtml(data.resi)}')">
                 <button class="btn-modal-primary btn-upload" onclick="document.getElementById('proofInput_${escapeHtml(data.resi)}').click()">📸 UPLOAD BUKTI TRANSFER</button>
-                <button class="btn-modal-secondary btn-wa" onclick="copyWhatsAppTemplate('${escapeHtml(data.resi)}')">📋 COPY TEMPLATE WA</button>
+                
                 <button class="btn-modal-secondary" onclick="startOrderPolling('${escapeHtml(data.resi)}')">🔄 CEK STATUS PESANAN</button>
                 <button class="btn-modal-secondary" style="background:rgba(239,68,68,0.15); color:#EF4444; border-color:rgba(239,68,68,0.4);" onclick="cancelOrder('${escapeHtml(data.resi)}')">❌ BATALKAN PESANAN</button>
                 <button class="btn-modal-secondary" onclick="safeOpenUrl('https://t.me/${BOT_USERNAME}')">💬 Kirim Bukti ke Bot</button>
@@ -2422,7 +2452,7 @@ function showSuccessModalPoin(order) {
                 4. Admin kirim script
             </div>
             <div class="modal-actions">
-                <button class="btn-modal-primary btn-wa" onclick="copyWhatsAppTemplate('${escapeHtml(order.resi)}')">📋 COPY TEMPLATE WA</button>
+                
                 <button class="btn-modal-primary" onclick="showSertifikat()" style="background:linear-gradient(135deg,#FBBF24,#F59E0B); color:#1A1F2E;">📜 LIHAT SERTIFIKAT</button>
                 <button class="btn-modal-secondary" onclick="safeOpenUrl('https://wa.me/6285188371150')">💬 BUKA WHATSAPP</button>
                 <button class="btn-modal-secondary" onclick="this.closest('.modal-overlay').remove()">Tutup</button>
@@ -3745,6 +3775,9 @@ function setupConnectionMonitor() {
         if (!API_ONLINE) {
             fetchPaketFromAPI().then(() => { renderHomePaket(); renderKatalogPaket(); loadVoucherAktif(); }).catch(()=>{});
         }
+        setTimeout(function() {
+            if (typeof restoreLastState === 'function') restoreLastState();
+        }, 1500);
     });
     window.addEventListener('offline', () => {
         var lm = document.getElementById('modalLoginAPK');
@@ -6015,8 +6048,9 @@ console.log('[PAKELSTORE] Patch 6 fitur aktif');
 // ===== END PATCH =====
 
 
-/* ===== FIX P2: MODAL MENUNGGU ACC POIN ===== */
+/* ===== FIX P2: MODAL MENUNGGU ACC POIN (v2 clean) ===== */
 function showPendingPoinModal(order) {
+    try { safeSetStorage('pakel_open_poin_modal', JSON.stringify(order)); } catch(e) {}
     var old = document.getElementById('pendingPoinModal');
     if (old) old.remove();
     var modal = document.createElement('div');
@@ -6026,7 +6060,7 @@ function showPendingPoinModal(order) {
     var RESI = order.resi || '';
     var modalHTML = '';
     modalHTML += '<div class="modal-sheet" onclick="event.stopPropagation()">';
-    modalHTML += '<div class="modal-close" onclick="var m=document.getElementById(' + chr(39) + 'pendingPoinModal' + chr(39) + ');if(m)m.remove();">&#10005;</div>';
+    modalHTML += '<div class="modal-close" onclick="var m=document.getElementById(\'pendingPoinModal\');if(m)m.remove();">&#10005;</div>';
     modalHTML += '<div style="text-align:center; padding:20px 0;">';
     modalHTML += '<div style="font-size:70px; margin-bottom:12px; animation:pulseGlow 2s infinite;">&#9203;</div>';
     modalHTML += '<div class="modal-title" style="text-align:center; font-size:18px;">MENUNGGU ACC ADMIN</div>';
@@ -6045,8 +6079,8 @@ function showPendingPoinModal(order) {
     modalHTML += 'Kamu akan dapat notifikasi otomatis begitu di-ACC.';
     modalHTML += '</div>';
     modalHTML += '<div class="modal-actions">';
-    modalHTML += '<button class="btn-modal-primary" onclick="startOrderPolling(' + chr(39) + RESI + chr(39) + ');var m=document.getElementById(' + chr(39) + 'pendingPoinModal' + chr(39) + ');if(m)m.remove();">&#128260; CEK STATUS PESANAN</button>';
-    modalHTML += '<button class="btn-modal-secondary" onclick="var m=document.getElementById(' + chr(39) + 'pendingPoinModal' + chr(39) + ');if(m)m.remove();">Tutup</button>';
+    modalHTML += '<button class="btn-modal-primary" onclick="startOrderPolling(\'' + RESI + '\');var m=document.getElementById(\'pendingPoinModal\');if(m)m.remove();">&#128260; CEK STATUS PESANAN</button>';
+    modalHTML += '<button class="btn-modal-secondary" onclick="var m=document.getElementById(\'pendingPoinModal\');if(m)m.remove();">Tutup</button>';
     modalHTML += '</div>';
     modalHTML += '</div>';
     modal.innerHTML = modalHTML;
@@ -6056,7 +6090,6 @@ function showPendingPoinModal(order) {
 }
 
 
-/* ================================================================ */
 /*  PAKEL SECURITY LAYER v3 — 8 LAPISAN ANTI-BUG + ANTI-HACK        */
 /*  Auto-inject: 8 Okt 2026                                         */
 /* ================================================================ */
