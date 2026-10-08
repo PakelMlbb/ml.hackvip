@@ -671,6 +671,7 @@ body.light-mode .admin-graph { background: rgba(139,92,246,0.05); }
     <div class="menu-item" onclick="safeOpenUrl('https://t.me/PakelMlbb/368');closeMenu()"><div class="menu-item-icon">🌟</div><div class="menu-item-label">Channel Testi<span class="menu-item-sub">Lihat bukti order</span></div></div>
     <div class="menu-section-title">🔐 Akun</div>
     <div class="menu-item" onclick="logoutAPK();closeMenu()"><div class="menu-item-icon">🚪</div><div class="menu-item-label">Logout APK<span class="menu-item-sub">Keluar dari akun</span></div></div>
+    <div class="menu-item" onclick="forceLoginNow();closeMenu()"><div class="menu-item-icon">🔄</div><div class="menu-item-label">Force Login<span class="menu-item-sub">Paksa login ulang (debug)</span></div></div>
     <div class="menu-section-title">ℹ️ Info</div>
     <div class="menu-item" onclick="goPage('profil');closeMenu()"><div class="menu-item-icon">🏪</div><div class="menu-item-label">Profil Toko</div></div>
 </div>
@@ -1066,33 +1067,107 @@ window.addEventListener('unhandledrejection', function(e) { console.error('[UNHA
 
 /* ===== AUTO-LOGIN APK PAKEL STORE ===== */
 function checkAutoLoginAPK() {
+    console.log('[AUTH] === CHECK AUTO LOGIN ===');
     var savedID = safeGetStorage('chat_id_apk');
+    var sessionTs = safeGetStorage('pakel_session_start');
     var installedVer = safeGetStorage('pakelstore_version');
     var lastVer = safeGetStorage('pakel_login_version');
     
-    // Kalau versi APK berubah (install fresh / update) -> force login ulang
+    console.log('[AUTH] savedID=' + savedID + ' | sessionTs=' + sessionTs + ' | installedVer=' + installedVer + ' | lastVer=' + lastVer);
+    
+    // ═══ CHECK 1: Versi APK beda → force login
     if (installedVer && lastVer !== installedVer) {
+        console.log('[AUTH] Versi APK beda → FORCE LOGIN');
+        try {
+            localStorage.removeItem('chat_id_apk');
+            localStorage.removeItem('chat_id');
+            localStorage.removeItem('pakel_welcome_shown');
+            localStorage.removeItem('pakel_session_start');
+        } catch(e) {}
+        savedID = null;
+        sessionTs = null;
+        safeSetStorage('pakel_login_version', installedVer);
+    }
+    
+    // ═══ CHECK 2: chat_id_apk ADA tapi sessionTs GAK ADA → legacy/partial clear → FORCE LOGIN
+    if (savedID && !sessionTs) {
+        console.log('[AUTH] chat_id ada tapi session kosong → FORCE LOGIN');
         try {
             localStorage.removeItem('chat_id_apk');
             localStorage.removeItem('chat_id');
             localStorage.removeItem('pakel_welcome_shown');
         } catch(e) {}
         savedID = null;
-        safeSetStorage('pakel_login_version', installedVer);
-        console.log('[APK] Version changed -> force re-login');
-    } else if (!lastVer && installedVer) {
-        safeSetStorage('pakel_login_version', installedVer);
     }
     
-    if (savedID && isValidTelegramId(savedID)) {
+    // ═══ CHECK 3: Session expiry 7 hari
+    var SESSION_MAX_AGE = 7 * 24 * 60 * 60 * 1000;  // 7 hari
+    var now = Date.now();
+    var sessionValid = false;
+    if (savedID && sessionTs) {
+        try {
+            var ts = parseInt(sessionTs);
+            if (ts > 0 && (now - ts) < SESSION_MAX_AGE) {
+                sessionValid = true;
+                var sisaJam = Math.floor((SESSION_MAX_AGE - (now - ts)) / (60 * 60 * 1000));
+                console.log('[AUTH] Session VALID — sisa ~' + sisaJam + ' jam');
+            } else {
+                console.log('[AUTH] Session EXPIRED (umur > 7 hari)');
+            }
+        } catch(e) {
+            console.log('[AUTH] Session parse error');
+        }
+    }
+    
+    // ═══ VALIDASI: chat_id harus format valid
+    var idValid = savedID && typeof isValidTelegramId === 'function' && isValidTelegramId(savedID);
+    
+    // ═══ DECISION
+    if (sessionValid && idValid) {
+        // Auto-login
         safeSetStorage('chat_id', savedID);
-        console.log('[APK] Auto-login: ' + savedID);
+        console.log('[AUTH] ✅ AUTO-LOGIN: ' + savedID);
+        // Refresh session timestamp
+        try { localStorage.setItem('pakel_session_start', String(now)); } catch(e) {}
         return true;
     }
+    
+    // ═══ TAMPILKAN LOGIN — wajib
+    console.log('[AUTH] ❌ FORCE LOGIN — tampilkan modal');
+    try {
+        localStorage.removeItem('chat_id_apk');
+        localStorage.removeItem('chat_id');
+        localStorage.removeItem('pakel_welcome_shown');
+        localStorage.removeItem('pakel_session_start');
+    } catch(e) {}
+    
+    // Sembunyikan welcome kalau muncul duluan
     setTimeout(function() {
+        var w = document.getElementById('modalWelcome');
+        if (w) w.classList.remove('show');
+    }, 100);
+    
+    // Tampilkan login modal
+    var showLogin = function(retry) {
+        retry = retry || 0;
         var m = document.getElementById('modalLoginAPK');
-        if (m) m.classList.add('show');
-    }, 500);
+        if (m) {
+            m.classList.add('show');
+            console.log('[AUTH] Login modal SHOW');
+            // Reset status input
+            var status = document.getElementById('loginStatus');
+            if (status) status.innerHTML = '';
+            var inp = document.getElementById('inputLoginID');
+            if (inp) {
+                inp.value = '';
+                setTimeout(function() { try { inp.focus(); } catch(e) {} }, 400);
+            }
+        } else if (retry < 10) {
+            setTimeout(function() { showLogin(retry + 1); }, 200);
+        }
+    };
+    setTimeout(function() { showLogin(0); }, 300);
+    
     return false;
 }
 
@@ -1115,6 +1190,9 @@ function submitLoginAPK() {
         if (res.ok || res.unknown) {
             safeSetStorage('chat_id', id);
             safeSetStorage('chat_id_apk', id);
+                // Save session timestamp (auto-fix)
+                try { localStorage.setItem('pakel_session_start', String(Date.now())); } catch(e) {}
+                console.log('[AUTH] Session started (auto-fix) at ' + new Date().toISOString());
             var nameEl = document.getElementById('welcomeName');
             if (nameEl && res.nama) nameEl.textContent = res.nama;
             if (status) status.innerHTML = '<span style="color:#10B981;">✅ Login berhasil!</span>';
@@ -1136,6 +1214,7 @@ function submitLoginAPK() {
     }).catch(function() {
         safeSetStorage('chat_id', id);
         safeSetStorage('chat_id_apk', id);
+        try { localStorage.setItem('pakel_session_start', String(Date.now())); } catch(e) {}
         if (status) status.innerHTML = '<span style="color:#10B981;">✅ Login tersimpan!</span>';
         setTimeout(function() {
             var m = document.getElementById('modalLoginAPK');
@@ -1154,7 +1233,12 @@ function logoutAPK() {
         okColor: 'red'
     }).then(function(yes) {
         if (yes) {
-            try { localStorage.removeItem('chat_id_apk'); localStorage.removeItem('chat_id'); } catch(e) {}
+            try { 
+                localStorage.removeItem('chat_id_apk'); 
+                localStorage.removeItem('chat_id');
+                localStorage.removeItem('pakel_session_start');
+                localStorage.removeItem('pakel_welcome_shown');
+            } catch(e) {}
             location.reload();
         }
     });
@@ -5638,6 +5722,18 @@ if (document.readyState === 'loading') {
 }
 setTimeout(_initAdminEventDelegation, 1500);
 /* ===== END EVENT DELEGATION ===== */
+
+
+function forceLoginNow() {
+    try {
+        localStorage.removeItem('chat_id_apk');
+        localStorage.removeItem('chat_id');
+        localStorage.removeItem('pakel_session_start');
+        localStorage.removeItem('pakel_welcome_shown');
+    } catch(e) {}
+    console.log('[AUTH] Force login — reload');
+    location.reload();
+}
 
 </script>
 
