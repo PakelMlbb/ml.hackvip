@@ -7002,7 +7002,7 @@ function execAdminCmdFromInput() {
     execAdminCmd(cmd);
 }
 
-async async function execAdminCmd(cmdArg) {
+async function execAdminCmd(cmdArg) {
     var cmd = String(cmdArg || '').trim();
     if (cmd === '__FROM_INPUT__') { execAdminCmdFromInput(); return; }
     if (!cmd) return;
