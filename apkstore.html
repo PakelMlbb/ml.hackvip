@@ -243,6 +243,7 @@ body { background: radial-gradient(circle at 20% 0%, rgba(139, 92, 246, 0.15) 0%
 .skeleton-line.short { width: 40%; }
 .skeleton-line.med { width: 70%; }
 .skeleton-line.price { height: 24px; width: 50%; }
+#pakelConfirmModal { z-index: 1000001 !important; }
 #confettiCanvas { position: fixed; inset: 0; z-index: 9998; pointer-events: none; display: none; }
 #confettiCanvas.show { display: block; }
 .ripple { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.35); transform: scale(0); animation: rippleAnim 0.6s ease-out; pointer-events: none; overflow: hidden; }
@@ -604,7 +605,7 @@ body.light-mode .admin-graph { background: rgba(139,92,246,0.05); }
 
 
 /* ===== UPLOAD LOADING MODAL (OVO STYLE) ===== */
-#uploadLoadingModal { position: fixed; inset: 0; z-index: 99998; background: rgba(0,0,0,0.88); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; padding: 20px; }
+#uploadLoadingModal { position: fixed; inset: 0; z-index: 1000001; background: rgba(0,0,0,0.88); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; padding: 20px; }
 #uploadLoadingModal.show { display: flex; }
 .upload-loading-box { background: linear-gradient(180deg,#1A1F2E 0%,#0F1420 100%); border: 2px solid rgba(139,92,246,0.5); border-radius: 24px; padding: 32px 24px; max-width: 360px; width: 100%; text-align: center; animation: slideUp 0.4s cubic-bezier(0.68,-0.55,0.27,1.55); position: relative; overflow: hidden; }
 .upload-loading-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg,#8B5CF6,#06B6D4,#8B5CF6); background-size: 200% 100%; animation: gradientMove 2s infinite; }
@@ -622,7 +623,7 @@ body.light-mode .admin-graph { background: rgba(139,92,246,0.05); }
 @keyframes checkPop { 0% { transform: scale(0.3); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
 /* ===== ORDER NOTIF (ACC / TOLAK) ===== */
-#orderNotifModal { position: fixed; inset: 0; z-index: 99997; background: rgba(0,0,0,0.88); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; padding: 20px; }
+#orderNotifModal { position: fixed; inset: 0; z-index: 1000001; background: rgba(0,0,0,0.88); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; padding: 20px; }
 #orderNotifModal.show { display: flex; }
 .order-notif-box { background: linear-gradient(180deg,#1A1F2E 0%,#0F1420 100%); border-radius: 24px; padding: 28px 22px; max-width: 380px; width: 100%; text-align: center; animation: slideUp 0.4s cubic-bezier(0.68,-0.55,0.27,1.55); border: 2px solid; position: relative; overflow: hidden; }
 .order-notif-box.acc { border-color: rgba(16,185,129,0.6); }
@@ -1661,7 +1662,7 @@ function showConfirmModal(opts) {
         const modal = document.createElement('div');
         modal.id = 'pakelConfirmModal';
         modal.className = 'modal-overlay show';
-        modal.style.zIndex = '99999';
+        modal.style.zIndex = '1000001';
         modal.innerHTML = `
             <div class="modal-sheet" style="max-width:420px; margin:auto; border-radius:22px; border:1px solid rgba(139,92,246,0.35); box-shadow:0 20px 60px rgba(0,0,0,0.7);" onclick="event.stopPropagation()">
                 <div style="text-align:center; padding:28px 16px 10px;">
@@ -2693,6 +2694,7 @@ function showPendingWarningModal(orderPending) {
     const modal = document.createElement('div');
     modal.id = 'pendingWarnModal';
     modal.className = 'modal-overlay show';
+    modal.style.zIndex = '1000001';
     modal.innerHTML = `
         <div class="modal-sheet" onclick="event.stopPropagation()">
             <div class="modal-close" onclick="handleClosePendingModal()">✕</div>
@@ -6375,7 +6377,7 @@ function showPendingOrderModal(order) {
   var modal = document.createElement('div');
   modal.id = 'pendingOrderModal';
   modal.className = 'modal-overlay show';
-  modal.style.zIndex = '99999';
+  modal.style.zIndex = '1000001';
   modal.innerHTML = ''
     + '<div class="modal-sheet" onclick="event.stopPropagation()">'
     +   '<div class="modal-close" onclick="document.getElementById(\'pendingOrderModal\').remove()">✕</div>'
@@ -6504,7 +6506,7 @@ function showPendingPoinModal(order) {
     var modal = document.createElement('div');
     modal.id = 'pendingPoinModal';
     modal.className = 'modal-overlay show';
-    modal.style.zIndex = '99998';
+    modal.style.zIndex = '1000001';
     var RESI = order.resi || '';
     var modalHTML = '';
     modalHTML += '<div class="modal-sheet" onclick="event.stopPropagation()">';
@@ -6927,29 +6929,43 @@ var _cmdHistory = [];
 function renderCmdTab(content) {
     if (!content) return;
     var html = '';
-    html += '<div class="admin-section-title">⌨️ CMD EXECUTOR</div>';
-    html += '<div style="background:rgba(0,0,0,0.3); border:1px solid rgba(139,92,246,0.3); border-radius:12px; padding:14px; margin-bottom:14px; font-size:11px; color:#B0B7C3; line-height:1.7;">';
-    html += '<b style="color:#A78BFA;">📋 COMMAND:</b><br>';
-    html += '<code style="color:#06B6D4;">/acc RESI</code> · <code style="color:#06B6D4;">/reject RESI</code> · <code style="color:#06B6D4;">/bc PESAN</code><br>';
-    html += '<code style="color:#06B6D4;">/flash DISKON DURASI</code> · <code style="color:#06B6D4;">/stopflash</code><br>';
-    html += '<code style="color:#06B6D4;">/voucher KODE DISKON MAX DURASI</code> · <code style="color:#06B6D4;">/setstok KODE JUMLAH</code><br>';
-    html += '<code style="color:#06B6D4;">/buatpaket kode|nama|harga|poin|desk|kat|stok</code><br>';
-    html += '<code style="color:#06B6D4;">/hapuspaket KODE</code> · <code style="color:#06B6D4;">/unblacklist KODE</code><br>';
-    html += '<code style="color:#06B6D4;">/poin USERID JUMLAH</code> · <code style="color:#06B6D4;">/block USERID</code> · <code style="color:#06B6D4;">/unblock USERID</code><br>';
-    html += '<code style="color:#06B6D4;">/stats</code> · <code style="color:#06B6D4;">/laporan</code> · <code style="color:#06B6D4;">/help</code>';
+    html += '<div class="admin-section-title">\u2328\uFE0F CMD EXECUTOR</div>';
+    html += '<div style="background:rgba(139,92,246,0.08); border-left:3px solid #8B5CF6; border-radius:10px; padding:12px; margin-bottom:14px; font-size:11.5px; color:#B0B7C3; line-height:1.6;">';
+    html += '<b style="color:#A78BFA;">\uD83D\uDCA1 CARA PAKAI:</b> Ketik command di form bawah → tekan <b>Enter</b> atau klik <b>RUN</b>.<br>';
+    html += 'Ketik <code style="color:#06B6D4; cursor:pointer;" onclick="execAdminCmd(\'/help\')">/help</code> buat liat daftar lengkap + tutorial command.';
+    html += '</div>';
+    html += '<div class="admin-section-title">\uD83D\uDCDE QUICK ACCESS</div>';
+    html += '<div style="display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:14px;">';
+    var quicks = [
+        ['\uD83D\uDCCA /stats', '/stats'],
+        ['\uD83D\uDCCA /pending', '/pending'],
+        ['\uD83D\uDCE6 /listpaket', '/listpaket'],
+        ['\uD83C\uDFAB /listvoucher', '/listvoucher'],
+        ['\uD83D\uDEAB /blocklist', '/blocklist'],
+        ['\uD83D\uDD27 /laporan', '/laporan'],
+        ['\u2139\uFE0F /help', '/help'],
+        ['\uD83D\uDD04 /restock', '/restock']
+    ];
+    for (var q = 0; q < quicks.length; q++) {
+        html += '<button class="admin-execute-btn" data-admin-cmd="' + quicks[q][1] + '" style="padding:9px; font-size:11px; background:rgba(139,92,246,0.15); border:1px solid rgba(139,92,246,0.4); color:#A78BFA;">' + quicks[q][0] + '</button>';
+    }
     html += '</div>';
     html += '<div style="display:flex; gap:8px; margin-bottom:12px;">';
-    html += '<input class="admin-input" id="cmdInput" placeholder="Ketik command... ex: /stats" style="flex:1; font-family:monospace;">';
-    html += '<button class="admin-execute-btn" data-admin-cmd="__FROM_INPUT__" style="width:auto; padding:11px 20px; white-space:nowrap;">▶️ RUN</button>';
+    html += '<input class="admin-input" id="cmdInput" placeholder="Ketik command... ex: /stats" style="flex:1; font-family:monospace; font-size:12px;">';
+    html += '<button class="admin-execute-btn" data-admin-cmd="__FROM_INPUT__" style="width:auto; padding:11px 18px; white-space:nowrap;">\u25B6\uFE0F RUN</button>';
     html += '</div>';
-    html += '<div class="admin-section-title">📜 OUTPUT</div>';
-    html += '<div id="cmdOutput" style="background:#0A0E1A; border:1px solid rgba(139,92,246,0.3); border-radius:12px; padding:14px; font-family:monospace; font-size:11px; color:#10B981; min-height:180px; max-height:400px; overflow-y:auto; white-space:pre-wrap; word-break:break-word;">';
+    html += '<div class="admin-section-title">\uD83D\uDCDC OUTPUT</div>';
+    html += '<div id="cmdOutput" style="background:#0A0E1A; border:1px solid rgba(139,92,246,0.3); border-radius:12px; padding:14px; font-family:monospace; font-size:11px; color:#10B981; min-height:200px; max-height:400px; overflow-y:auto; white-space:pre-wrap; word-break:break-word; line-height:1.6;">';
     if (_cmdHistory.length === 0) {
-        html += '<div style="color:#4B5563;">$ Ketik command di atas, tekan Enter atau klik RUN...</div>';
+        html += '<div style="color:#4B5563;">$ Siap nerima command... ketik /help buat mulai</div>';
+    } else {
+        for (var i = 0; i < _cmdHistory.length; i++) {
+            var c = _cmdHistory[i];
+            html += '<div style="color:' + (c.color || '#10B981') + ';">' + escapeHtml(c.text) + '</div>';
+        }
     }
     html += '</div>';
     content.innerHTML = html;
-    // Enter key handler
     setTimeout(function() {
         var inp = document.getElementById('cmdInput');
         if (inp) inp.addEventListener('keydown', function(ev) {
@@ -6986,171 +7002,319 @@ function execAdminCmdFromInput() {
     execAdminCmd(cmd);
 }
 
-async function execAdminCmd(cmdArg) {
+async async function execAdminCmd(cmdArg) {
     var cmd = String(cmdArg || '').trim();
     if (cmd === '__FROM_INPUT__') { execAdminCmdFromInput(); return; }
     if (!cmd) return;
     if (cmd.charAt(0) !== '/') cmd = '/' + cmd;
-
     cmdLog('$ ' + cmd, '#8B5CF6');
     var parts = cmd.split(' ');
     var head = parts[0].toLowerCase();
 
     try {
+        // ===== /HELP — TUTORIAL LENGKAP =====
+        if (head === '/help' || head === '/cmds' || head === '/menu') {
+            cmdLog('\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557', '#06B6D4');
+            cmdLog('\u2551      \u2328\uFE0F  PAKEL ADMIN CMD v7 — TUTORIAL        \u2551', '#06B6D4');
+            cmdLog('\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D', '#06B6D4');
+            cmdLog('');
+            cmdLog('\uD83D\uDCE6 ORDER MANAGEMENT', '#FBBF24');
+            cmdLog('  /acc RESI          \u2192 ACC order (ex: /acc PKL-MLBB-12345)', '#B0B7C3');
+            cmdLog('  /reject RESI       \u2192 Tolak order', '#B0B7C3');
+            cmdLog('  /pending           \u2192 Liat semua order pending', '#B0B7C3');
+            cmdLog('');
+            cmdLog('\uD83D\uDCE2 BROADCAST', '#FBBF24');
+            cmdLog('  /bc PESAN          \u2192 BC ke SEMUA user', '#B0B7C3');
+            cmdLog('  /bcs PESAN         \u2192 BC cuma ke BUYER (pernah beli)', '#B0B7C3');
+            cmdLog('');
+            cmdLog('\u26A1 FLASH SALE', '#FBBF24');
+            cmdLog('  /flash DISKON DURASI  \u2192 Aktifkan (ex: /flash 20 2)', '#B0B7C3');
+            cmdLog('  /stopflash            \u2192 Matiin flash sale', '#B0B7C3');
+            cmdLog('');
+            cmdLog('\uD83C\uDFAB VOUCHER', '#FBBF24');
+            cmdLog('  /voucher KODE DISKON MAX DURASI  \u2192 Buat voucher', '#B0B7C3');
+            cmdLog('  /listvoucher                     \u2192 Liat voucher aktif', '#B0B7C3');
+            cmdLog('  /hapusvoucher KODE               \u2192 Hapus voucher', '#B0B7C3');
+            cmdLog('');
+            cmdLog('\uD83D\uDCE6 STOK MANAGEMENT', '#FBBF24');
+            cmdLog('  /setstok KODE JUMLAH  \u2192 Set stok (ex: /setstok buy_sultan 100)', '#B0B7C3');
+            cmdLog('  /restock              \u2192 Restock semua paket random', '#B0B7C3');
+            cmdLog('  /offstok KODE         \u2192 Set stok jadi 0 (habis)', '#B0B7C3');
+            cmdLog('');
+            cmdLog('\uD83D\uDED2 PAKET MANAGEMENT', '#FBBF24');
+            cmdLog('  /buatpaket kode|nama|harga|poin|desk|kat|stok', '#B0B7C3');
+            cmdLog('      Contoh: /buatpaket buy_mega|Mega Sultan|300000|120|Damage dewa|sultan|50', '#6B7280');
+            cmdLog('  /listpaket            \u2192 Liat semua paket', '#B0B7C3');
+            cmdLog('  /hapuspaket KODE      \u2192 Hapus/blacklist paket', '#B0B7C3');
+            cmdLog('  /unblacklist KODE     \u2192 Balikin paket default', '#B0B7C3');
+            cmdLog('');
+            cmdLog('\uD83E\uDE99 POIN MANAGEMENT', '#FBBF24');
+            cmdLog('  /poin USERID JUMLAH   \u2192 Set poin user', '#B0B7C3');
+            cmdLog('');
+            cmdLog('\uD83D\uDC65 USER MANAGEMENT', '#FBBF24');
+            cmdLog('  /block USERID         \u2192 Block user', '#B0B7C3');
+            cmdLog('  /unblock USERID       \u2192 Unblock user', '#B0B7C3');
+            cmdLog('  /blocklist            \u2192 Liat user ter-block', '#B0B7C3');
+            cmdLog('');
+            cmdLog('\uD83D\uDCCA STATISTIK', '#FBBF24');
+            cmdLog('  /stats                \u2192 Statistik hari ini', '#B0B7C3');
+            cmdLog('  /laporan              \u2192 Laporan 7/30 hari', '#B0B7C3');
+            cmdLog('');
+            return;
+        }
+
+        // ===== ORDER =====
         if (head === '/acc') {
             var resi = (parts[1] || '').toUpperCase();
-            if (!resi) { cmdLog('❌ Format: /acc RESI', '#EF4444'); return; }
+            if (!resi) { cmdLog('\u274C Format: /acc RESI', '#EF4444'); return; }
             var r = await safeFetch(API_URL + '/api/admin/acc-order', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ resi: resi }) });
             var j = await safeJson(r);
-            if (j && j.status === 'OK') { cmdLog('✅ Order ' + resi + ' di-ACC', '#10B981'); if (typeof soundVoucher === 'function') soundVoucher(); }
-            else cmdLog('❌ ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            if (j && j.status === 'OK') { cmdLog('\u2705 Order ' + resi + ' di-ACC', '#10B981'); if (typeof soundVoucher === 'function') soundVoucher(); }
+            else cmdLog('\u274C ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
             return;
         }
         if (head === '/reject') {
             var resi = (parts[1] || '').toUpperCase();
-            if (!resi) { cmdLog('❌ Format: /reject RESI', '#EF4444'); return; }
+            if (!resi) { cmdLog('\u274C Format: /reject RESI', '#EF4444'); return; }
             var r = await safeFetch(API_URL + '/api/admin/reject-order', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ resi: resi }) });
             var j = await safeJson(r);
-            if (j && j.status === 'OK') cmdLog('❌ Order ' + resi + ' ditolak', '#FBBF24');
-            else cmdLog('❌ ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            if (j && j.status === 'OK') cmdLog('\u274C Order ' + resi + ' ditolak', '#FBBF24');
+            else cmdLog('\u274C ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
             return;
         }
-        if (head === '/bc') {
-            var pesan = cmd.replace('/bc', '').trim();
-            if (!pesan) { cmdLog('❌ Format: /bc PESAN', '#EF4444'); return; }
-            cmdLog('⏳ Mengirim broadcast...', '#FBBF24');
-            var r = await safeFetch(API_URL + '/api/admin/broadcast', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ pesan: pesan, target: 'all' }) });
+        if (head === '/pending') {
+            var r = await safeFetch(API_URL + '/api/admin/pending-orders', { headers: { 'X-Admin-Token': _adminToken } });
             var j = await safeJson(r);
-            if (j && j.status === 'OK') cmdLog('✅ BC terkirim ' + j.sent + '/' + j.total + ' user', '#10B981');
-            else cmdLog('❌ ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            if (j && j.status === 'OK') {
+                cmdLog('\uD83D\uDCE6 PENDING: ' + (j.count || 0) + ' order', '#06B6D4');
+                if (j.pending && j.pending.length > 0) {
+                    for (var i = 0; i < Math.min(5, j.pending.length); i++) {
+                        var o = j.pending[i];
+                        cmdLog('  \uD83D\uDD11 ' + o.resi + ' | ' + o.paket + ' | ' + o.harga, '#B0B7C3');
+                    }
+                    if (j.pending.length > 5) cmdLog('  ... +' + (j.pending.length - 5) + ' lain', '#6B7280');
+                }
+            } else cmdLog('\u274C Gagal', '#EF4444');
             return;
         }
+
+        // ===== BROADCAST =====
+        if (head === '/bc' || head === '/bcs') {
+            var target = (head === '/bcs') ? 'buyer' : 'all';
+            var prefix = (head === '/bcs') ? '/bcs' : '/bc';
+            var pesan = cmd.substring(prefix.length).trim();
+            if (!pesan) { cmdLog('\u274C Format: ' + prefix + ' PESAN', '#EF4444'); return; }
+            cmdLog('\u23F3 Mengirim BC ke ' + (target === 'buyer' ? 'buyer' : 'semua user') + '...', '#FBBF24');
+            var r = await safeFetch(API_URL + '/api/admin/broadcast', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ pesan: pesan, target: target }) });
+            var j = await safeJson(r);
+            if (j && j.status === 'OK') cmdLog('\u2705 BC terkirim ' + j.sent + '/' + j.total + ' user', '#10B981');
+            else cmdLog('\u274C ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            return;
+        }
+
+        // ===== FLASH SALE =====
         if (head === '/flash') {
             var diskon = parseInt(parts[1] || '0');
             var durasi = parseInt(parts[2] || '0');
-            if (diskon < 1 || diskon > 90 || durasi < 1 || durasi > 24) { cmdLog('❌ Format: /flash DISKON(1-90) DURASI(1-24)', '#EF4444'); return; }
+            if (diskon < 1 || diskon > 90 || durasi < 1 || durasi > 24) { cmdLog('\u274C Format: /flash DISKON(1-90) DURASI(1-24)', '#EF4444'); return; }
             var r = await safeFetch(API_URL + '/api/admin/flashsale', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ diskon: diskon, durasi: durasi }) });
             var j = await safeJson(r);
-            if (j && j.status === 'OK') cmdLog('✅ Flash sale aktif: ' + diskon + '% / ' + durasi + ' jam', '#10B981');
-            else cmdLog('❌ ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            if (j && j.status === 'OK') cmdLog('\u2705 Flash sale aktif: ' + diskon + '% / ' + durasi + ' jam', '#10B981');
+            else cmdLog('\u274C ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
             return;
         }
         if (head === '/stopflash') {
             var r = await safeFetch(API_URL + '/api/admin/flashsale/stop', { method: 'POST', headers: { 'X-Admin-Token': _adminToken } });
             var j = await safeJson(r);
-            if (j && j.status === 'OK') cmdLog('✅ Flash sale dihentikan', '#10B981');
-            else cmdLog('❌ Gagal', '#EF4444');
+            if (j && j.status === 'OK') cmdLog('\u2705 Flash sale dihentikan', '#10B981');
+            else cmdLog('\u274C Gagal', '#EF4444');
             return;
         }
+
+        // ===== VOUCHER =====
         if (head === '/voucher') {
             var kode = (parts[1] || '').toUpperCase();
             var diskon = parseInt(parts[2] || '0');
             var mx = parseInt(parts[3] || '1');
             var dr = parseInt(parts[4] || '24');
-            if (!kode || diskon < 1000) { cmdLog('❌ Format: /voucher KODE DISKON MAX DURASI', '#EF4444'); return; }
+            if (!kode || diskon < 1000) { cmdLog('\u274C Format: /voucher KODE DISKON MAX DURASI', '#EF4444'); return; }
             var r = await safeFetch(API_URL + '/api/admin/voucher', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ kode: kode, diskon: diskon, max_pakai: mx, durasi: dr }) });
             var j = await safeJson(r);
-            if (j && j.status === 'OK') cmdLog('✅ Voucher ' + kode + ' + BC ' + j.sent + '/' + j.total, '#10B981');
-            else cmdLog('❌ ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            if (j && j.status === 'OK') cmdLog('\u2705 Voucher ' + kode + ' + BC ' + j.sent + '/' + j.total, '#10B981');
+            else cmdLog('\u274C ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
             return;
         }
+        if (head === '/listvoucher') {
+            var r = await safeFetch(API_URL + '/api/admin/voucher', { headers: { 'X-Admin-Token': _adminToken } });
+            var j = await safeJson(r);
+            if (j && j.status === 'OK') {
+                cmdLog('\uD83C\uDFAB VOUCHER AKTIF: ' + (j.count || 0), '#06B6D4');
+                if (j.vouchers && j.vouchers.length > 0) {
+                    for (var i = 0; i < j.vouchers.length; i++) {
+                        var v = j.vouchers[i];
+                        cmdLog('  \uD83C\uDFAB ' + v.kode + ' | Rp ' + v.diskon.toLocaleString('id-ID') + ' | sisa ' + v.sisa + '/' + v.max, '#B0B7C3');
+                    }
+                }
+            } else cmdLog('\u274C Gagal', '#EF4444');
+            return;
+        }
+        if (head === '/hapusvoucher') {
+            var kode = (parts[1] || '').toUpperCase();
+            if (!kode) { cmdLog('\u274C Format: /hapusvoucher KODE', '#EF4444'); return; }
+            var r = await safeFetch(API_URL + '/api/admin/voucher/delete', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ kode: kode }) });
+            var j = await safeJson(r);
+            if (j && j.status === 'OK') cmdLog('\u2705 Voucher ' + kode + ' dihapus', '#10B981');
+            else cmdLog('\u274C ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            return;
+        }
+
+        // ===== STOK =====
         if (head === '/setstok') {
             var kode = (parts[1] || '').trim();
             var jumlah = parseInt(parts[2] || '0');
-            if (!kode || jumlah < 0) { cmdLog('❌ Format: /setstok KODE JUMLAH', '#EF4444'); return; }
+            if (!kode || jumlah < 0) { cmdLog('\u274C Format: /setstok KODE JUMLAH', '#EF4444'); return; }
             var r = await safeFetch(API_URL + '/api/admin/restock', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ kode: kode, jumlah: jumlah }) });
             var j = await safeJson(r);
-            if (j && j.status === 'OK') cmdLog('✅ Stok ' + kode + ': ' + j.old + ' → ' + j.new, '#10B981');
-            else cmdLog('❌ ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            if (j && j.status === 'OK') cmdLog('\u2705 Stok ' + kode + ': ' + j.old + ' \u2192 ' + j.new, '#10B981');
+            else cmdLog('\u274C ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
             return;
         }
+        if (head === '/restock') {
+            cmdLog('\u23F3 Restock semua paket...', '#FBBF24');
+            var r = await safeFetch(API_URL + '/api/admin/restock', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ kode: 'ALL', jumlah: null }) });
+            var j = await safeJson(r);
+            if (j && j.status === 'OK') cmdLog('\u2705 ' + (j.count || 0) + ' paket di-restock + BC', '#10B981');
+            else cmdLog('\u274C ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            return;
+        }
+        if (head === '/offstok') {
+            var kode = (parts[1] || '').trim();
+            if (!kode) { cmdLog('\u274C Format: /offstok KODE', '#EF4444'); return; }
+            var r = await safeFetch(API_URL + '/api/admin/restock', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ kode: kode, jumlah: 0 }) });
+            var j = await safeJson(r);
+            if (j && j.status === 'OK') cmdLog('\u2705 Stok ' + kode + ' diset 0', '#10B981');
+            else cmdLog('\u274C ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            return;
+        }
+
+        // ===== PAKET =====
         if (head === '/buatpaket') {
             var args = cmd.substring(10).trim();
             var p = args.split('|').map(function(x) { return x.trim(); });
-            if (p.length < 7) { cmdLog('❌ Format: /buatpaket kode|nama|harga|poin|desk|kat|stok', '#EF4444'); return; }
-            cmdLog('⏳ Membuat paket ' + p[0] + '...', '#FBBF24');
+            if (p.length < 7) { cmdLog('\u274C Format: /buatpaket kode|nama|harga|poin|desk|kat|stok', '#EF4444'); return; }
+            cmdLog('\u23F3 Membuat paket ' + p[0] + '...', '#FBBF24');
             var r = await safeFetch(API_URL + '/api/admin/create-paket', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ kode: p[0], nama: p[1], harga: parseInt(p[2]), poin: parseInt(p[3]), deskripsi: p[4], kategori: p[5], stok: parseInt(p[6]) }) });
             var j = await safeJson(r);
-            if (j && j.status === 'OK') { cmdLog('✅ Paket ' + p[0] + ' dibuat!', '#10B981'); if (typeof fetchPaketFromAPI === 'function') fetchPaketFromAPI(); }
-            else cmdLog('❌ ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            if (j && j.status === 'OK') { cmdLog('\u2705 Paket ' + p[0] + ' dibuat!', '#10B981'); if (typeof fetchPaketFromAPI === 'function') fetchPaketFromAPI(); }
+            else cmdLog('\u274C ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            return;
+        }
+        if (head === '/listpaket') {
+            var r = await safeFetch(API_URL + '/api/admin/paket', { headers: { 'X-Admin-Token': _adminToken } });
+            var j = await safeJson(r);
+            if (j && j.status === 'OK') {
+                cmdLog('\uD83D\uDCE6 TOTAL: ' + (j.count || 0) + ' paket', '#06B6D4');
+                if (j.paket) {
+                    for (var i = 0; i < j.paket.length; i++) {
+                        var p2 = j.paket[i];
+                        cmdLog('  ' + (p2.is_custom ? '\uD83C\uDD95' : '\uD83D\uDCE6') + ' ' + p2.kode + ' | ' + p2.harga_str + ' | stok ' + p2.stok, '#B0B7C3');
+                    }
+                }
+            } else cmdLog('\u274C Gagal', '#EF4444');
             return;
         }
         if (head === '/hapuspaket') {
             var kode = (parts[1] || '').trim();
-            if (!kode) { cmdLog('❌ Format: /hapuspaket KODE', '#EF4444'); return; }
+            if (!kode) { cmdLog('\u274C Format: /hapuspaket KODE', '#EF4444'); return; }
             var r = await safeFetch(API_URL + '/api/admin/delete-paket', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ kode: kode }) });
             var j = await safeJson(r);
-            if (j && j.status === 'OK') cmdLog('✅ Paket ' + kode + ' dihapus (' + j.tipe + ')', '#10B981');
-            else cmdLog('❌ ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            if (j && j.status === 'OK') cmdLog('\u2705 Paket ' + kode + ' dihapus (' + j.tipe + ')', '#10B981');
+            else cmdLog('\u274C ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
             return;
         }
         if (head === '/unblacklist') {
             var kode = (parts[1] || '').trim();
-            if (!kode) { cmdLog('❌ Format: /unblacklist KODE', '#EF4444'); return; }
+            if (!kode) { cmdLog('\u274C Format: /unblacklist KODE', '#EF4444'); return; }
             var r = await safeFetch(API_URL + '/api/admin/unblacklist-paket', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ kode: kode }) });
             var j = await safeJson(r);
-            if (j && j.status === 'OK') cmdLog('✅ Paket ' + kode + ' dibalikin', '#10B981');
-            else cmdLog('❌ ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            if (j && j.status === 'OK') cmdLog('\u2705 Paket ' + kode + ' dibalikin', '#10B981');
+            else cmdLog('\u274C ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
             return;
         }
+
+        // ===== POIN =====
         if (head === '/poin') {
             var uid = (parts[1] || '').trim();
             var poin = parseInt(parts[2] || '0');
-            if (!uid || isNaN(poin) || poin < 0) { cmdLog('❌ Format: /poin USERID JUMLAH', '#EF4444'); return; }
+            if (!uid || isNaN(poin) || poin < 0) { cmdLog('\u274C Format: /poin USERID JUMLAH', '#EF4444'); return; }
             var r = await safeFetch(API_URL + '/api/admin/edit-poin', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ chat_id: uid, poin: poin }) });
             var j = await safeJson(r);
-            if (j && j.status === 'OK') cmdLog('✅ Poin ' + uid + ': ' + j.old + ' → ' + j.new, '#10B981');
-            else cmdLog('❌ ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            if (j && j.status === 'OK') cmdLog('\u2705 Poin ' + uid + ': ' + j.old + ' \u2192 ' + j.new, '#10B981');
+            else cmdLog('\u274C ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
             return;
         }
+
+        // ===== USER =====
         if (head === '/block') {
             var uid = (parts[1] || '').trim();
-            if (!uid) { cmdLog('❌ Format: /block USERID', '#EF4444'); return; }
+            if (!uid) { cmdLog('\u274C Format: /block USERID', '#EF4444'); return; }
             var r = await safeFetch(API_URL + '/api/admin/block-user', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ chat_id: uid, action: 'block' }) });
             var j = await safeJson(r);
-            if (j && j.status === 'OK') cmdLog('🚫 User ' + uid + ' di-block', '#FBBF24');
-            else cmdLog('❌ ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            if (j && j.status === 'OK') cmdLog('\uD83D\uDEAB User ' + uid + ' di-block', '#FBBF24');
+            else cmdLog('\u274C ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
             return;
         }
         if (head === '/unblock') {
             var uid = (parts[1] || '').trim();
-            if (!uid) { cmdLog('❌ Format: /unblock USERID', '#EF4444'); return; }
+            if (!uid) { cmdLog('\u274C Format: /unblock USERID', '#EF4444'); return; }
             var r = await safeFetch(API_URL + '/api/admin/block-user', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Token': _adminToken }, body: JSON.stringify({ chat_id: uid, action: 'unblock' }) });
             var j = await safeJson(r);
-            if (j && j.status === 'OK') cmdLog('✅ User ' + uid + ' di-unblock', '#10B981');
-            else cmdLog('❌ ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
+            if (j && j.status === 'OK') cmdLog('\u2705 User ' + uid + ' di-unblock', '#10B981');
+            else cmdLog('\u274C ' + (j && j.message ? j.message : 'Gagal'), '#EF4444');
             return;
         }
+        if (head === '/blocklist') {
+            var r = await safeFetch(API_URL + '/api/admin/blocked-users', { headers: { 'X-Admin-Token': _adminToken } });
+            var j = await safeJson(r);
+            if (j && j.status === 'OK') {
+                cmdLog('\uD83D\uDEAB USER TER-BLOCK: ' + (j.count || 0), '#06B6D4');
+                if (j.users && j.users.length > 0) {
+                    for (var i = 0; i < Math.min(10, j.users.length); i++) {
+                        cmdLog('  \uD83D\uDD11 ' + j.users[i], '#B0B7C3');
+                    }
+                } else cmdLog('  \u2705 Tidak ada user ter-block', '#10B981');
+            } else cmdLog('\u274C Gagal', '#EF4444');
+            return;
+        }
+
+        // ===== STATS =====
         if (head === '/stats') {
             var r = await safeFetch(API_URL + '/api/admin/stats', { headers: { 'X-Admin-Token': _adminToken } });
             var j = await safeJson(r);
             if (j && j.status === 'OK') {
-                cmdLog('📊 STATS HARI INI', '#06B6D4');
-                cmdLog('  • Total Order: ' + (j.total_order || 0), '#B0B7C3');
-                cmdLog('  • Pending: ' + (j.pending || 0), '#FBBF24');
-                cmdLog('  • Sukses: ' + (j.sukses || 0), '#10B981');
-                cmdLog('  • Ditolak: ' + (j.ditolak || 0), '#EF4444');
-                cmdLog('  • Pendapatan: ' + (j.pendapatan_str || 'Rp 0'), '#FBBF24');
-            } else cmdLog('❌ Gagal ambil stats', '#EF4444');
+                cmdLog('\uD83D\uDCCA STATS HARI INI', '#06B6D4');
+                cmdLog('  \u2022 Total Order: ' + (j.total_order || 0), '#B0B7C3');
+                cmdLog('  \u2022 Pending: ' + (j.pending || 0), '#FBBF24');
+                cmdLog('  \u2022 Sukses: ' + (j.sukses || 0), '#10B981');
+                cmdLog('  \u2022 Ditolak: ' + (j.ditolak || 0), '#EF4444');
+                cmdLog('  \u2022 Pendapatan: ' + (j.pendapatan_str || 'Rp 0'), '#FBBF24');
+            } else cmdLog('\u274C Gagal ambil stats', '#EF4444');
             return;
         }
         if (head === '/laporan') {
             var r = await safeFetch(API_URL + '/api/admin/laporan', { headers: { 'X-Admin-Token': _adminToken } });
             var j = await safeJson(r);
             if (j && j.status === 'OK') {
-                cmdLog('📊 7 HARI: ' + (j.hari_ini_7.order || 0) + ' order, ' + (j.hari_ini_7_str || 'Rp 0'), '#06B6D4');
-                cmdLog('📊 30 HARI: ' + (j.hari_ini_30.order || 0) + ' order, ' + (j.hari_ini_30_str || 'Rp 0'), '#06B6D4');
-            } else cmdLog('❌ Gagal ambil laporan', '#EF4444');
+                cmdLog('\uD83D\uDCCA 7 HARI: ' + (j.hari_ini_7.order || 0) + ' order, ' + (j.hari_ini_7_str || 'Rp 0'), '#06B6D4');
+                cmdLog('\uD83D\uDCCA 30 HARI: ' + (j.hari_ini_30.order || 0) + ' order, ' + (j.hari_ini_30_str || 'Rp 0'), '#06B6D4');
+            } else cmdLog('\u274C Gagal ambil laporan', '#EF4444');
             return;
         }
-        if (head === '/help' || head === '/cmds') {
-            cmdLog('💡 Daftar command ada di atas form input', '#06B6D4');
-            return;
-        }
-        cmdLog('❌ Command tidak dikenal: ' + head, '#EF4444');
-        cmdLog('💡 Ketik /help buat daftar command', '#FBBF24');
+
+        cmdLog('\u274C Command tidak dikenal: ' + head, '#EF4444');
+        cmdLog('\uD83D\uDCA1 Ketik /help buat daftar lengkap command', '#FBBF24');
     } catch(e) {
-        cmdLog('❌ Error: ' + (e.message || e), '#EF4444');
+        cmdLog('\u274C Error: ' + (e.message || e), '#EF4444');
     }
 }
 window.execAdminCmd = execAdminCmd;
