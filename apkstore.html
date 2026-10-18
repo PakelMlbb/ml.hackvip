@@ -1308,7 +1308,7 @@ function submitLoginAPK() {
                 _waitLoginClose();
             }, 3800);
         } else {
-            if (status) status.innerHTML = '<span style="color:#EF4444;">❌ ' + (res.reason || 'ID tidak terdaftar') + '<br>Mulai bot @Pakel_Mlbb_Store_bot dulu ya!</span>';
+            if (status) status.innerHTML = '<span style="color:#EF4444;">❌ ' + escapeHtml(res.reason || 'ID tidak terdaftar') + '<br>Mulai bot @Pakel_Mlbb_Store_bot dulu ya!</span>';
             sError();
             if (btn) { btn.disabled = false; btn.textContent = '🚀 MASUK PAKEL STORE'; }
         }
@@ -1953,8 +1953,8 @@ function restoreLastState() {
                             }, 1000);
                         } else if (j && j.order && (j.order.status === 'BERHASIL' || j.order.status === 'DITOLAK')) {
                             try { localStorage.removeItem('pakel_open_invoice'); } catch(e) {}
-                            if (typeof showOrderNotif === 'function') {
-                                showOrderNotif(j.order.status === 'BERHASIL' ? 'acc' : 'reject', j.order);
+                            if (typeof showOrderNotifOnce === 'function') {
+                                showOrderNotifOnce(j.order.status === 'BERHASIL' ? 'acc' : 'reject', j.order);
                             }
                         } else {
                             try { localStorage.removeItem('pakel_open_invoice'); } catch(e) {}
@@ -2917,9 +2917,9 @@ async function startOrderPolling(resi) {
                         try { m.remove(); } catch(e) {}
                     });
                     // Tampilkan notif ACC baru
-                    if (typeof showOrderNotif === 'function') {
-                        showOrderNotif('acc', j.order);
-                    } else {
+                    if (typeof showOrderNotifOnce === 'function') {
+                        showOrderNotifOnce('acc', j.order);
+                    } else if (typeof showOrderNotif === 'function') {
                         showToast('🎉 PESANAN DITERIMA!', 'success', 15000);
                         showSuccessModal(j.order);
                     }
@@ -2929,9 +2929,9 @@ async function startOrderPolling(resi) {
                         if (m.id === 'pakelConfirmModal' || m.id === 'modalPaket' || m.id === 'orderNotifModal') return;
                         try { m.remove(); } catch(e) {}
                     });
-                    if (typeof showOrderNotif === 'function') {
-                        showOrderNotif('reject', j.order);
-                    } else {
+                    if (typeof showOrderNotifOnce === 'function') {
+                        showOrderNotifOnce('reject', j.order);
+                    } else if (typeof showOrderNotif === 'function') {
                         showToast('❌ Pesanan ditolak.', 'error', 8000);
                     }
                     try { const cid = safeGetStorage('chat_id'); if (cid) localStorage.removeItem('pending_order_' + cid); } catch(e) {}
@@ -6055,18 +6055,14 @@ async function checkOrderNotifOnStart() {
             return;
         }
 
-        /* CRITICAL: save SEBELUM show — biar kalau user tutup/keluar APK/crash,
-           notif gak muncul lagi */
-        var saveOk = _markOrderResiAsSeen(target.resi);
-        console.log('[ORDER-NOTIF] Mark seen: ' + target.resi + ' — save=' + saveOk);
-
         _orderNotifChecking = false;
 
-        /* Delay dikit biar UI ready */
+        /* Semua jalur memakai satu fungsi idempotent agar polling, restore,
+           dan startup tidak menampilkan resi yang sama dua kali. */
         setTimeout(function() {
             try {
-                if (typeof showOrderNotif === 'function') {
-                    showOrderNotif(target.status === 'BERHASIL' ? 'acc' : 'reject', target);
+                if (typeof showOrderNotifOnce === 'function') {
+                    showOrderNotifOnce(target.status === 'BERHASIL' ? 'acc' : 'reject', target);
                 }
             } catch(e) { console.warn('[ORDER-NOTIF] Show error:', e); }
         }, 500);
@@ -6078,6 +6074,34 @@ async function checkOrderNotifOnStart() {
         _orderNotifChecking = false;
     }
 }
+
+/* Tampilkan notif terminal maksimal sekali per resi.
+   Dipakai oleh startup, polling, dan restore invoice supaya jalurnya konsisten. */
+var _orderNotifShownThisSession = Object.create(null);
+function showOrderNotifOnce(type, order) {
+    try {
+        if (!order || !order.resi) {
+            console.warn('[ORDER-NOTIF] Skip: data order/resi tidak tersedia');
+            return false;
+        }
+        var resi = String(order.resi);
+        if (_orderNotifShownThisSession[resi]) return false;
+        var seen = _getSeenOrderResi();
+        if (seen[resi]) {
+            _orderNotifShownThisSession[resi] = 1;
+            return false;
+        }
+        /* Tandai sebelum render supaya pemanggilan paralel tidak menggandakan modal. */
+        _orderNotifShownThisSession[resi] = 1;
+        _markOrderResiAsSeen(resi);
+        showOrderNotif(type, order);
+        return true;
+    } catch (e) {
+        console.warn('[ORDER-NOTIF] show once error:', e);
+        return false;
+    }
+}
+window.showOrderNotifOnce = showOrderNotifOnce;
 
 function showOrderNotif(type, order) {
     var modal = document.getElementById('orderNotifModal');
@@ -6290,9 +6314,10 @@ function forceLoginNow() {
         localStorage.removeItem('pakel_open_invoice');
         localStorage.removeItem('pakel_open_detail');
         localStorage.removeItem('pakel_open_poin_modal');
-        /* FIX v4.1: cleanup key notif legacy */
+        /* Jangan hapus penanda notifikasi saat force-login.
+           Login ulang tidak berarti notifikasi lama harus diputar kembali.
+           Key legacy boleh dibersihkan; key seen terbaru dipertahankan. */
         localStorage.removeItem('pakel_last_seen_orders');
-        localStorage.removeItem('pakel_order_notif_seen_v2');
     } catch(e) {}
     console.log('[AUTH] Force login — reload');
     location.reload();
@@ -6425,7 +6450,7 @@ function lanjutBayarPending(resi) {
           showInvoice({ resi: j.order.resi, paket: j.order.paket, harga_final_str: j.order.harga, harga: j.order.harga, payment_method: j.order.metode || 'TRANSFER' });
           if (typeof startOrderPolling === 'function') startOrderPolling(j.order.resi);
         } else if (j && j.order && (j.order.status === 'BERHASIL' || j.order.status === 'DITOLAK')) {
-          if (typeof showOrderNotif === 'function') showOrderNotif(j.order.status === 'BERHASIL' ? 'acc' : 'reject', j.order);
+          if (typeof showOrderNotifOnce === 'function') showOrderNotifOnce(j.order.status === 'BERHASIL' ? 'acc' : 'reject', j.order);
         } else {
           if (typeof showToast === 'function') showToast('Pesanan tidak ditemukan', 'warning', 3000);
         }
