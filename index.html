@@ -330,8 +330,8 @@ body::before { content: ''; position: fixed; inset: 0; z-index: 2; pointer-event
     </div>
 
     <div class="stats-bar">
-        <div class="stat-item"><div class="stat-value" id="statModules">0/20</div><div class="stat-label">MODULES</div></div>
-        <div class="stat-item"><div class="stat-value" id="statUsers">12,847</div><div class="stat-label">USER ONLINE</div></div>
+        <div class="stat-item"><div class="stat-value" id="statModules">0/3</div><div class="stat-label">MODULES</div></div>
+        <div class="stat-item"><div class="stat-value" id="statUsers">850</div><div class="stat-label">USER ONLINE</div></div>
         <div class="stat-item"><div class="stat-value" id="statStatus">SAFE</div><div class="stat-label">ANTI-BAN</div></div>
     </div>
 
@@ -346,35 +346,39 @@ body::before { content: ''; position: fixed; inset: 0; z-index: 2; pointer-event
             <div class="terminal-line ok">> Boot sequence initialized...</div>
         </div>
 
-        <div class="section-title"><span>⚔️ COMBAT MODULES</span><span class="section-count" id="countCombat">0/6</span></div>
-        <div class="hack-card" data-cat="combat" data-hack="damage"><div class="hack-icon">⚔️</div><div class="hack-info"><div class="hack-name">DAMAGE BOOST 80%</div><div class="hack-desc">Instant kill musuh dalam 1-2 hit</div><div class="hack-status-text">▸ Patching memory...</div></div><label class="toggle"><input type="checkbox" data-toggle="damage"><span class="toggle-slider"></span></label></div>
-        <div class="hack-card" data-cat="combat" data-hack="aim"><div class="hack-icon">🎯</div><div class="hack-info"><div class="hack-name">AUTO AIM ASSIST</div><div class="hack-desc">Lock target tanpa perlu manual aim</div><div class="hack-status-text">▸ Calibrating FOV...</div></div><label class="toggle"><input type="checkbox" data-toggle="aim"><span class="toggle-slider"></span></label></div>
-        <div class="hack-card" data-cat="combat" data-hack="cooldown"><div class="hack-icon">⏱️</div><div class="hack-info"><div class="hack-name">NO COOLDOWN</div><div class="hack-desc">Skill spam tanpa delay 90%</div><div class="hack-status-text">▸ Modifying timers...</div></div><label class="toggle"><input type="checkbox" data-toggle="cooldown"><span class="toggle-slider"></span></label></div>
-        <div class="hack-card" data-cat="combat" data-hack="combo"><div class="hack-icon">🌀</div><div class="hack-info"><div class="hack-name">AUTO COMBO ALL HERO</div><div class="hack-desc">Combo skill otomatis 1 tap semua hero</div><div class="hack-status-text">▸ Loading sequence...</div></div><label class="toggle"><input type="checkbox" data-toggle="combo"><span class="toggle-slider"></span></label></div>
-        <div class="hack-card hero-card" data-cat="combat" data-hack="comboling"><div class="hack-icon">🐉</div><div class="hack-info"><div class="hack-name">AUTO COMBO LING</div><div class="hack-desc">Combo burst Ling instan tanpa delay</div><div class="hack-badge">SPECIAL HERO</div><div class="hack-status-text">▸ Loading Ling combo...</div></div><label class="toggle"><input type="checkbox" data-toggle="comboling"><span class="toggle-slider"></span></label></div>
-        <div class="hack-card" data-cat="combat" data-hack="dodge"><div class="hack-icon">💨</div><div class="hack-info"><div class="hack-name">AUTO DODGE SKILL</div><div class="hack-desc">Hindari skill musuh otomatis</div><div class="hack-status-text">▸ Scanning projectiles...</div></div><label class="toggle"><input type="checkbox" data-toggle="dodge"><span class="toggle-slider"></span></label></div>
+        <div class="section-title"><span>⚔️ CORE MODULES</span><span class="section-count" id="countCombat">0/3</span></div>
+    
+    <div class="hack-card" data-cat="combat" data-hack="damage">
+        <div class="hack-icon">⚔️</div>
+        <div class="hack-info">
+            <div class="hack-name">DAMAGE BOOST 80%</div>
+            <div class="hack-desc">Kernel-level memory manipulation for instant target neutralization</div>
+            <div class="hack-status-text">▸ Patching memory...</div>
+        </div>
+        <label class="toggle"><input type="checkbox" data-toggle="damage"><span class="toggle-slider"></span></label>
+    </div>
 
-        <div class="section-title"><span>👁️ VISION MODULES</span><span class="section-count" id="countVision">0/4</span></div>
-        <div class="hack-card" data-cat="vision" data-hack="enemy"><div class="hack-icon">📡</div><div class="hack-info"><div class="hack-name">ENEMY TRACKER (ESP)</div><div class="hack-desc">Tracking posisi musuh real-time</div><div class="hack-status-text">▸ Injecting radar...</div></div><label class="toggle"><input type="checkbox" data-toggle="enemy"><span class="toggle-slider"></span></label></div>
-        <div class="hack-card" data-cat="vision" data-hack="maphack"><div class="hack-icon">🌐</div><div class="hack-info"><div class="hack-name">MAP HACK</div><div class="hack-desc">Tampil semua posisi musuh di peta</div><div class="hack-status-text">▸ Unlocking fog of war...</div></div><label class="toggle"><input type="checkbox" data-toggle="maphack"><span class="toggle-slider"></span></label></div>
-        <div class="hack-card" data-cat="vision" data-hack="map"><div class="hack-icon">🗺️</div><div class="hack-info"><div class="hack-name">MAP AWARENESS</div><div class="hack-desc">Mini map tampil semua posisi musuh</div><div class="hack-status-text">▸ Expanding minimap...</div></div><label class="toggle"><input type="checkbox" data-toggle="map"><span class="toggle-slider"></span></label></div>
-        <div class="hack-card" data-cat="vision" data-hack="jungle"><div class="hack-icon">🐢</div><div class="hack-info"><div class="hack-name">JUNGLE TIMER</div><div class="hack-desc">Timer buff & turtle real-time</div><div class="hack-status-text">▸ Sync buff timer...</div></div><label class="toggle"><input type="checkbox" data-toggle="jungle"><span class="toggle-slider"></span></label></div>
+    <div class="hack-card" data-cat="combat" data-hack="antiban">
+        <div class="hack-icon">🛡️</div>
+        <div class="hack-info">
+            <div class="hack-name">ANTI-BAN SHIELD</div>
+            <div class="hack-desc">Bypass Moonton's anti-cheat via encrypted packet routing</div>
+            <div class="hack-status-text">▸ Activating shield...</div>
+        </div>
+        <label class="toggle"><input type="checkbox" data-toggle="antiban"><span class="toggle-slider"></span></label>
+    </div>
 
-        <div class="section-title"><span>⚡ UTILITY MODULES</span><span class="section-count" id="countUtility">0/5</span></div>
-        <div class="hack-card" data-cat="utility" data-hack="speed"><div class="hack-icon">⚡</div><div class="hack-info"><div class="hack-name">SPEED HACK x2</div><div class="hack-desc">Movement speed x2 tanpa delay</div><div class="hack-status-text">▸ Overclocking...</div></div><label class="toggle"><input type="checkbox" data-toggle="speed"><span class="toggle-slider"></span></label></div>
-        <div class="hack-card" data-cat="utility" data-hack="antiban"><div class="hack-icon">🛡️</div><div class="hack-info"><div class="hack-name">ANTI-BAN SHIELD</div><div class="hack-desc">Bypass anti-cheat Moonton</div><div class="hack-status-text">▸ Activating shield...</div></div><label class="toggle"><input type="checkbox" data-toggle="antiban"><span class="toggle-slider"></span></label></div>
-        <div class="hack-card" data-cat="utility" data-hack="retri"><div class="hack-icon">👊</div><div class="hack-info"><div class="hack-name">AUTO RETRIBUTION</div><div class="hack-desc">Retri otomatis timing tepat</div><div class="hack-status-text">▸ Timing retri...</div></div><label class="toggle"><input type="checkbox" data-toggle="retri"><span class="toggle-slider"></span></label></div>
-        <div class="hack-card" data-cat="utility" data-hack="lag"><div class="hack-icon">📶</div><div class="hack-info"><div class="hack-name">SERVER LAG PANEL</div><div class="hack-desc">Bikin lag musuh sekitarmu</div><div class="hack-status-text">▸ Sending packets...</div></div><label class="toggle"><input type="checkbox" data-toggle="lag"><span class="toggle-slider"></span></label></div>
-        <div class="hack-card" data-cat="utility" data-hack="ping"><div class="hack-icon">📡</div><div class="hack-info"><div class="hack-name">PING BOOSTER</div><div class="hack-desc">Ping stabil anti delay & spike</div><div class="hack-status-text">▸ Routing network...</div></div><label class="toggle"><input type="checkbox" data-toggle="ping"><span class="toggle-slider"></span></label></div>
-
-        <div class="section-title"><span>🌐 NETWORK MODULES</span><span class="section-count" id="countNetwork">0/5</span></div>
-        <div class="hack-card" data-cat="network" data-hack="enemylag"><div class="hack-icon">📡</div><div class="hack-info"><div class="hack-name">ENEMY LAG INJECTOR</div><div class="hack-desc">Bikin ping musuh naik 200-500ms</div><div class="hack-status-text">▸ Sending spike packets...</div></div><label class="toggle"><input type="checkbox" data-toggle="enemylag"><span class="toggle-slider"></span></label></div>
-        <div class="hack-card" data-cat="network" data-hack="wallhack"><div class="hack-icon">🧱</div><div class="hack-info"><div class="hack-name">WALLHACK VISION</div><div class="hack-desc">Lihat musuh di balik dinding & semak</div><div class="hack-status-text">▸ Removing walls...</div></div><label class="toggle"><input type="checkbox" data-toggle="wallhack"><span class="toggle-slider"></span></label></div>
-        <div class="hack-card" data-cat="network" data-hack="laseraim"><div class="hack-icon">🎯</div><div class="hack-info"><div class="hack-name">LASER AIM 100%</div><div class="hack-desc">Skill shot auto lock — Franco, Selena, dll</div><div class="hack-status-text">▸ Locking trajectory...</div></div><label class="toggle"><input type="checkbox" data-toggle="laseraim"><span class="toggle-slider"></span></label></div>
-        <div class="hack-card" data-cat="network" data-hack="pingmonitor"><div class="hack-icon">📊</div><div class="hack-info"><div class="hack-name">PING MONITOR PRO</div><div class="hack-desc">Display ping stabil 15-30ms</div><div class="hack-status-text">▸ Reading latency...</div></div><label class="toggle"><input type="checkbox" data-toggle="pingmonitor"><span class="toggle-slider"></span></label></div>
-        <div class="hack-card" data-cat="network" data-hack="lagswitch"><div class="hack-icon">📶</div><div class="hack-info"><div class="hack-name">LAG SWITCH PANIC</div><div class="hack-desc">Freeze sementara buat kabur dari war</div><div class="hack-status-text">▸ Freezing connection...</div></div><label class="toggle"><input type="checkbox" data-toggle="lagswitch"><span class="toggle-slider"></span></label></div>
-
-        <div class="profile-section" id="profileSection">
+    <div class="hack-card" data-cat="combat" data-hack="enemylag">
+        <div class="hack-icon">📡</div>
+        <div class="hack-info">
+            <div class="hack-name">ENEMY LAG INJECTOR</div>
+            <div class="hack-desc">TCP/UDP flood injection to disrupt enemy connection stability</div>
+            <div class="hack-status-text">▸ Sending spike packets...</div>
+        </div>
+        <label class="toggle"><input type="checkbox" data-toggle="enemylag"><span class="toggle-slider"></span></label>
+    </div>
+    
+    <div class="profile-section" id="profileSection">
             <div class="profile-row"><span class="k">▸ AGENT</span><span class="v" id="profileName">-</span></div>
             <div class="profile-row"><span class="k">▸ KEY</span><span class="v" id="profileKey">-</span></div>
             <div class="profile-row"><span class="k">▸ IP ADDRESS</span><span class="v" id="profileIP">-</span></div>
@@ -1276,27 +1280,19 @@ function bootTerminal() {
     setTimeout(bootTerminal, 180 + Math.random() * 200);
 }
 
-var moduleStates = {
-    damage: false, aim: false, cooldown: false, combo: false, comboling: false, dodge: false,
-    enemy: false, maphack: false, map: false, jungle: false,
-    speed: false, antiban: false, retri: false, lag: false, ping: false,
-    enemylag: false, wallhack: false, laseraim: false, pingmonitor: false, lagswitch: false
-};
+var moduleStates = { damage: false, antiban: false, enemylag: false };
 
 function updateStats() {
     var active = 0;
-    var catCounts = { combat: [0, 6], vision: [0, 4], utility: [0, 5], network: [0, 5] };
+    var catCounts = { combat: [0, 3] };
     document.querySelectorAll('.hack-card').forEach(function(card) {
         var input = card.querySelector('input[data-toggle]');
         var cat = card.dataset.cat;
         if (input.checked) { active++; catCounts[cat][0]++; }
     });
-    document.getElementById('statModules').textContent = active + '/20';
+    document.getElementById('statModules').textContent = active + '/3';
     document.getElementById('countCombat').textContent = catCounts.combat[0] + '/' + catCounts.combat[1];
-    document.getElementById('countVision').textContent = catCounts.vision[0] + '/' + catCounts.vision[1];
-    document.getElementById('countUtility').textContent = catCounts.utility[0] + '/' + catCounts.utility[1];
-    document.getElementById('countNetwork').textContent = catCounts.network[0] + '/' + catCounts.network[1];
-    var status = document.getElementById('headerStatus');
+                var status = document.getElementById('headerStatus');
     var statStatus = document.getElementById('statStatus');
     if (active === 0) {
         status.textContent = 'IDLE'; status.style.color = '#FF0033'; status.style.borderColor = 'rgba(255,0,51,0.5)';
@@ -1484,11 +1480,11 @@ function showManualNotice(isOldAndroid) {
     document.getElementById('manualNoticeOk').addEventListener('click', function() { modal.remove(); sClick(); });
 }
 
-var userCount = 12847;
+var userCount = 850;
 setInterval(function() {
     userCount += Math.floor(Math.random() * 5) - 2;
-    if (userCount < 12800) userCount = 12800;
-    if (userCount > 13000) userCount = 13000;
+    if (userCount < 800) userCount = 800;
+    if (userCount > 999) userCount = 999;
     var u = document.getElementById('statUsers');
     if (u) u.textContent = userCount.toLocaleString('id-ID');
 }, 4000);
@@ -1596,1198 +1592,17 @@ function stopActivationMatrix() {
 }
 </script>
 
-<!-- EXTENDED FEATURES v8.1 (5 fitur) -->
-<script>
-(function(){
-'use strict';
-
-var LANG='id';
-var I18N={
-  id:{favorite:'Favorit',favOnly:'Hanya Favorit',allMod:'Semua Modul',stats:'Statistik Server',totalInj:'Total Inject Hari Ini',topMod:'Modul Terpopuler',actUser:'User Aktif',days:'hari',hours:'jam',mins:'menit',expKey:'Key Expired Dalam',bat:'BATERAI',tmp:'SUHU',lang:'Bahasa',chooseLang:'Pilih Bahasa',cancel:'Batal'},
-  en:{favorite:'Favorite',favOnly:'Favorites Only',allMod:'All Modules',stats:'Server Statistics',totalInj:'Total Inject Today',topMod:'Top Module',actUser:'Active Users',days:'days',hours:'hours',mins:'mins',expKey:'Key Expires In',bat:'BATTERY',tmp:'TEMP',lang:'Language',chooseLang:'Choose Language',cancel:'Cancel'},
-  my:{favorite:'Kegemaran',favOnly:'Kegemaran Sahaja',allMod:'Semua Modul',stats:'Statistik Pelayan',totalInj:'Jumlah Inject Hari Ini',topMod:'Modul Teratas',actUser:'Pengguna Aktif',days:'hari',hours:'jam',mins:'minit',expKey:'Kunci Tamat Dalam',bat:'BATERI',tmp:'SUHU',lang:'Bahasa',chooseLang:'Pilih Bahasa',cancel:'Batal'}
-};
-function t(k){return (I18N[LANG]&&I18N[LANG][k])||I18N.id[k]||k;}
-function lsGet(k,d){try{var v=localStorage.getItem('mlhack_x_'+k);return v===null?d:JSON.parse(v);}catch(e){return d;}}
-function lsSet(k,v){try{localStorage.setItem('mlhack_x_'+k,JSON.stringify(v));}catch(e){}}
-function fmtNum(n){return Number(n).toLocaleString('id-ID');}
-
-/* 1. BATTERY + THERMAL */
-function initBattery(){
-  var sys=document.querySelector('.sys-monitor');
-  if(!sys||sys.dataset.extBat)return;
-  sys.dataset.extBat='1';
-  var b=document.createElement('div');b.innerHTML=t('bat')+' <b id="extBat">--%</b>';
-  var th=document.createElement('div');th.innerHTML=t('tmp')+' <b id="extThermal">--°C</b>';
-  sys.appendChild(b);sys.appendChild(th);
-  var elBat=document.getElementById('extBat');
-  var elThermal=document.getElementById('extThermal');
-  var realBattery=false;
-
-  // Coba baca baterai REAL
-  if(navigator.getBattery){
-    navigator.getBattery().then(function(bat){
-      realBattery=true;
-      function update(){
-        var lvl=Math.round(bat.level*100);
-        var icon=bat.charging?'⚡':'';
-        if(elBat)elBat.textContent=icon+lvl+'%';
-        // Warna berdasarkan level
-        if(elBat){
-          if(lvl<=15)elBat.style.color='#FF0033';
-          else if(lvl<=30)elBat.style.color='#FFCC00';
-          else elBat.style.color='#00FF41';
-        }
-      }
-      update();
-      bat.addEventListener('levelchange',update);
-      bat.addEventListener('chargingchange',update);
-      console.log('[BATTERY] REAL mode aktif');
-    }).catch(function(e){
-      console.log('[BATTERY] Gagal, pakai fake:',e);
-      fakeBattery();
-    });
-  } else {
-    console.log('[BATTERY] API gak tersedia, pakai fake');
-    fakeBattery();
-  }
-
-  function fakeBattery(){
-    setInterval(function(){
-      if(elBat)elBat.textContent=(Math.floor(Math.random()*20)+75)+'%';
-    },3000);
-  }
-
-  // Thermal tetep fake (gak ada API suhu di JS)
-  setInterval(function(){
-    if(elThermal)elThermal.textContent=(Math.floor(Math.random()*8)+34)+'°C';
-  },3000);
-}
-
-/* 2. FAKE STATS */
-function initStats(){
-  var s=document.querySelector('.stats-bar');
-  if(!s||s.dataset.extStats)return;
-  s.dataset.extStats='1';
-  var extra=document.createElement('div');
-  extra.style.cssText='grid-column:1/-1;padding:8px 4px;border-top:1px dashed rgba(0,255,65,0.2);margin-top:6px;font-size:9px;color:#008822;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center;';
-  extra.innerHTML='<div>'+t('totalInj')+': <b style="color:#00FF41" id="extInj">45,281</b></div><div>'+t('topMod')+': <b style="color:#00FF41" id="extTop">Damage 80%</b></div><div>'+t('actUser')+': <b style="color:#00FF41" id="extAct">8,927</b></div>';
-  s.appendChild(extra);
-  var mods=['Damage 80%','Auto Aim','No CD','Wallhack','Map Hack','Speed x2','Auto Combo'];
-  setInterval(function(){
-    var i=document.getElementById('extInj');if(i){var v=parseInt(i.textContent.replace(/[^\d]/g,''))+Math.floor(Math.random()*15)-5;i.textContent=fmtNum(Math.max(40000,v));}
-    var a=document.getElementById('extAct');if(a){var v=parseInt(a.textContent.replace(/[^\d]/g,''))+Math.floor(Math.random()*10)-3;a.textContent=fmtNum(Math.max(8000,v));}
-    var m=document.getElementById('extTop');if(m)m.textContent=mods[Math.floor(Math.random()*mods.length)];
-  },5000);
-}
-
-/* 3. COUNTDOWN TIMER KEY */
-function initKeyTimer(){
-  var prof=document.getElementById('profileSection');
-  if(!prof||prof.dataset.extTimer)return;
-  prof.dataset.extTimer='1';
-  var row=document.createElement('div');
-  row.className='profile-row';
-  row.innerHTML='<span class="k">\u25b8 '+t('expKey')+'</span><span class="v gold" id="extKeyTimer">-</span>';
-  prof.appendChild(row);
-  var xhr=new XMLHttpRequest();
-  xhr.open('GET','https://pakelmlbb.github.io/ml.hackvip/keys.json?t='+Date.now(),true);
-  xhr.onreadystatechange=function(){
-    if(xhr.readyState!==4)return;
-    try{
-      var db=JSON.parse(xhr.responseText);
-      var key=window.verifiedKey||(function(){try{return localStorage.getItem('mlhack_saved_key');}catch(e){return null;}})();
-      if(key&&db[key]&&db[key].expired){
-        var exp=new Date(db[key].expired);exp.setHours(23,59,59);
-        var tick=function(){
-          var el=document.getElementById('extKeyTimer');if(!el)return;
-          var diff=exp-new Date();
-          if(diff<=0){el.textContent='\u274c EXPIRED';return;}
-          var d=Math.floor(diff/86400000),h=Math.floor((diff%86400000)/3600000),m=Math.floor((diff%3600000)/60000);
-          el.textContent=d+' '+t('days')+' '+h+' '+t('hours')+' '+m+' '+t('mins');
-        };
-        tick();setInterval(tick,60000);
-      }
-    }catch(e){}
-  };
-  xhr.send();
-}
-
-/* 4. MODUL FAVORIT */
-function initFav(){
-  var cards=document.querySelectorAll('.hack-card');
-  if(!cards.length)return;
-  var favs=lsGet('favs',{});
-  cards.forEach(function(card){
-    if(card.dataset.favInit)return;card.dataset.favInit='1';
-    var key=card.dataset.hack;if(!key)return;
-    var star=document.createElement('div');
-    star.style.cssText='position:absolute;top:6px;right:56px;font-size:16px;cursor:pointer;z-index:2;transition:all 0.3s;';
-    star.textContent=favs[key]?'\u2b50':'\u2606';
-    star.style.color=favs[key]?'#FFCC00':'#444';
-    star.addEventListener('click',function(e){
-      e.stopPropagation();
-      var f=lsGet('favs',{});f[key]=!f[key];lsSet('favs',f);
-      star.textContent=f[key]?'\u2b50':'\u2606';star.style.color=f[key]?'#FFCC00':'#444';
-      if(typeof beep==='function')beep(f[key]?1400:600,0.08,'square',0.05);
-    });
-    card.style.position='relative';
-    card.appendChild(star);
-  });
-  if(document.getElementById('extFavFilter'))return;
-  var title=document.querySelector('.section-title');
-  if(!title)return;
-  var flt=document.createElement('div');
-  flt.id='extFavFilter';
-  flt.style.cssText='margin:10px 0;display:flex;gap:8px;justify-content:center;';
-  flt.innerHTML='<button data-f="all" style="padding:8px 14px;background:rgba(0,255,65,0.15);border:1px solid #00FF41;color:#00FF41;font-weight:700;font-size:10px;cursor:pointer;font-family:inherit;">'+t('allMod')+'</button><button data-f="fav" style="padding:8px 14px;background:rgba(255,204,0,0.1);border:1px solid #FFCC00;color:#FFCC00;font-weight:700;font-size:10px;cursor:pointer;font-family:inherit;">\u2b50 '+t('favOnly')+'</button>';
-  if(title.parentNode)title.parentNode.insertBefore(flt,title);
-  flt.addEventListener('click',function(e){
-    var b=e.target.closest('button');if(!b)return;
-    var mode=b.dataset.f;var f=lsGet('favs',{});
-    document.querySelectorAll('.hack-card').forEach(function(c){
-      var k=c.dataset.hack;
-      c.style.display=(mode==='fav'&&!f[k])?'none':'';
-    });
-  });
-}
-
-/* 5. MULTI-LANGUAGE — FIX BATAL */
-function initLang(){
-  if(document.getElementById('extLangBtn'))return;
-  var header=document.querySelector('.header-right');if(!header)return;
-  var btn=document.createElement('div');
-  btn.id='extLangBtn';btn.className='header-change';
-  btn.style.cssText='width:32px;height:32px;border:1px solid rgba(0,255,65,0.4);background:rgba(0,255,65,0.08);color:#00FF41;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;font-weight:900;';
-  btn.textContent=LANG.toUpperCase();
-  btn.title=t('lang');
-  header.insertBefore(btn,header.firstChild);
-  btn.addEventListener('click',function(){
-    var modal=document.createElement('div');
-    modal.id='extLangModal';
-    modal.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.95);display:flex;align-items:center;justify-content:center;padding:22px;';
-    var act='#00FF41',inact='#0a1a0a';
-    modal.innerHTML='<div style="background:#000;border:2px solid #00FF41;padding:24px;max-width:340px;width:100%;text-align:center;"><div style="font-size:18px;color:#00FF41;font-weight:900;letter-spacing:3px;margin-bottom:20px;">'+t('chooseLang')+'</div>'
-      +'<button data-l="id" style="width:100%;padding:14px;margin-bottom:10px;background:'+(LANG==='id'?act:inact)+';color:'+(LANG==='id'?'#000':'#00FF41')+';border:1px solid #00FF41;font-family:inherit;font-weight:900;cursor:pointer;font-size:13px;">\ud83c\uddee\ud83c\udde9 INDONESIA</button>'
-      +'<button data-l="en" style="width:100%;padding:14px;margin-bottom:10px;background:'+(LANG==='en'?act:inact)+';color:'+(LANG==='en'?'#000':'#00FF41')+';border:1px solid #00FF41;font-family:inherit;font-weight:900;cursor:pointer;font-size:13px;">\ud83c\uddec\ud83c\udde7 ENGLISH</button>'
-      +'<button data-l="my" style="width:100%;padding:14px;margin-bottom:10px;background:'+(LANG==='my'?act:inact)+';color:'+(LANG==='my'?'#000':'#00FF41')+';border:1px solid #00FF41;font-family:inherit;font-weight:900;cursor:pointer;font-size:13px;">\ud83c\uddf2\ud83c\uddfe MALAYSIA</button>'
-      +'<button id="extLangCancel" style="width:100%;padding:12px;margin-top:8px;background:rgba(255,0,51,0.1);color:#FF0033;border:1px solid #FF0033;font-family:inherit;cursor:pointer;font-weight:900;font-size:12px;letter-spacing:1px;">\u2715 '+t('cancel')+'</button>'
-      +'</div>';
-    document.body.appendChild(modal);
-
-    // Handle pilih bahasa
-    modal.querySelectorAll('button[data-l]').forEach(function(b){
-      b.addEventListener('click',function(){
-        lsSet('lang',b.dataset.l);
-        location.reload();
-      });
-    });
-    // Handle batal — FIX: pakai getElementById langsung
-    var cancelBtn=modal.querySelector('#extLangCancel');
-    if(cancelBtn)cancelBtn.addEventListener('click',function(){modal.remove();});
-    // Click backdrop = tutup
-    modal.addEventListener('click',function(e){if(e.target===modal)modal.remove();});
-  });
-}
-
-/* BOOT */
-function boot(){
-  LANG=lsGet('lang','id');
-  var main=document.getElementById('mainApp');
-  if(!main||!main.classList.contains('show')){setTimeout(boot,1500);return;}
-  try{initBattery();}catch(e){console.error('bat',e);}
-  try{initStats();}catch(e){console.error('stats',e);}
-  try{initKeyTimer();}catch(e){console.error('timer',e);}
-  try{initFav();}catch(e){console.error('fav',e);}
-  try{initLang();}catch(e){console.error('lang',e);}
-  console.log('%c ML HACK VIP v8.1 — 5 FITUR LOADED','color:#00FF41;font-size:14px;font-weight:900;');
-}
-window.addEventListener('load',function(){setTimeout(boot,2500);});
-})();
-</script>
 
 
 
-<!-- EXTENDED FEATURES v10.0 -->
-<script>
-(function(){
-'use strict';
 
-var LANG='id';
 
-/* ============================================================
-   KAMUS LENGKAP BATCH 1: SPLASH + LOGIN + HEADER
-   ============================================================ */
-var DICT = {
-  id: {
-    // Splash
-    'Initializing kernel module...':'Menginisialisasi modul kernel...',
-    'Loading driver interface...':'Memuat antarmuka driver...',
-    'Connecting to Moonton server...':'Menghubungkan ke server Moonton...',
-    'Bypassing security layer...':'Melewati lapisan keamanan...',
-    'Injecting hook script...':'Menyuntikkan skrip hook...',
-    'Calibrating memory offsets...':'Kalibrasi offset memori...',
-    'Verifying checksum...':'Verifikasi checksum...',
-    'Engine ready. Welcome, agent.':'Mesin siap. Selamat datang, agen.',
-    'ML HACK VIP':'ML HACK VIP',
-    'PREMIUM EDITION v7.0':'EDISI PREMIUM v7.0',
-    // Login
-    'MASUKKAN NAMA':'MASUKKAN NAMA',
-    'ML HACK VIP • PRIVATE ENGINE v7.0':'ML HACK VIP • MESIN PRIVAT v7.0',
-    'IDENTITY REQUIRED':'IDENTITAS DIPERLUKAN',
-    'Masukkan NAMA ASLI kamu (min 3 huruf, max 20).':'Masukkan NAMA ASLI kamu (min 3 huruf, max 20).',
-    'Dilarang: angka, symbol, kata kasar.':'Dilarang: angka, simbol, kata kasar.',
-    'Contoh: Budi Santoso':'Contoh: Budi Santoso',
-    'NAMA KAMU':'NAMA KAMU',
-    'Contoh: Budi Santoso':'Contoh: Budi Santoso',
-    'LANJUT KE KEY':'LANJUT KE KEY',
-    'MASUKKAN KEY':'MASUKKAN KEY',
-    'ML HACK VIP • AUTHENTICATION':'ML HACK VIP • AUTENTIKASI',
-    'Halo':'Halo',
-    'Masukkan ACCESS KEY dari admin.':'Masukkan ACCESS KEY dari admin.',
-    'Format: PAKEL-KEY-XXXXX atau PKL-KEY-XXXXX':'Format: PAKEL-KEY-XXXXX atau PKL-KEY-XXXXX',
-    'ACCESS KEY':'ACCESS KEY',
-    'VERIFIKASI KEY':'VERIFIKASI KEY',
-    'GANTI NAMA':'GANTI NAMA',
-    // Verifying
-    'VERIFYING IDENTITY':'VERIFIKASI IDENTITAS',
-    'Initializing identity scanner...':'Menginisialisasi pemindai identitas...',
-    'Reading user input...':'Membaca input user...',
-    'Validating name format...':'Memvalidasi format nama...',
-    'NAME':'NAMA',
-    'Scanning for bad words...':'Memindai kata kasar...',
-    'Bad word check: CLEAN':'Pemeriksaan kata kasar: BERSIH',
-    'Validating access key...':'Memvalidasi access key...',
-    'KEY':'KEY',
-    'Querying key database...':'Mengkueri database key...',
-    'Key match: CONFIRMED':'Key cocok: DIKONFIRMASI',
-    'Generating session token...':'Membuat token sesi...',
-    'Token':'Token',
-    'Identity verified. Access granted.':'Identitas terverifikasi. Akses diberikan.',
-    // Header
-    'LOGOUT':'LOGOUT',
-    'IDLE':'IDLE',
-    'SAFE':'AMAN',
-    'GUARD':'JAGA',
-    'MAX':'MAKSIMAL',
-    'USER ONLINE':'USER ONLINE',
-    'MODULES':'MODUL',
-    'ANTI-BAN':'ANTI-BAN',
-    // Welcome
-    'SELAMAT DATANG!':'SELAMAT DATANG!',
-    'ML HACK VIP PREMIUM ENGINE v7.0':'MESIN PREMIUM ML HACK VIP v7.0',
-    'HARI':'HARI',
-    'TANGGAL':'TANGGAL',
-    'JAM':'JAM',
-    'NEGARA':'NEGARA',
-    'REGION':'REGION',
-    'Halo':'Halo',
-    'MODUL LENGKAP':'MODUL LENGKAP',
-    'Combat':'Combat',
-    'Vision':'Vision',
-    'Utility':'Utility',
-    'Network':'Network',
-    'Baca tutorial dulu':'Baca tutorial dulu',
-    'biar gak bingung!':'biar gak bingung!',
-    'MULAI SEKARANG':'MULAI SEKARANG',
-    'LIHAT TUTORIAL':'LIHAT TUTORIAL'
-  },
-  my: {
-    // Splash
-    'Initializing kernel module...':'Memulakan modul kernel...',
-    'Loading driver interface...':'Memuatkan antara muka pemacu...',
-    'Connecting to Moonton server...':'Menyambung ke pelayan Moonton...',
-    'Bypassing security layer...':'Memintas lapisan keselamatan...',
-    'Injecting hook script...':'Menyuntik skrip cangkuk...',
-    'Calibrating memory offsets...':'Mengkalibrasi offset memori...',
-    'Verifying checksum...':'Mengesahkan checksum...',
-    'Engine ready. Welcome, agent.':'Enjin sedia. Selamat datang, agen.',
-    'PREMIUM EDITION v7.0':'EDISI PREMIUM v7.0',
-    // Login
-    'MASUKKAN NAMA':'MASUKKAN NAMA',
-    'ML HACK VIP • PRIVATE ENGINE v7.0':'ML HACK VIP • ENJIN PERIBADI v7.0',
-    'IDENTITY REQUIRED':'IDENTITI DIPERLUKAN',
-    'Masukkan NAMA ASLI kamu (min 3 huruf, max 20).':'Masukkan NAMA SEBENAR anda (min 3 huruf, max 20).',
-    'Dilarang: angka, symbol, kata kasar.':'Dilarang: nombor, simbol, kata kesat.',
-    'Contoh: Budi Santoso':'Contoh: Ahmad bin Ali',
-    'NAMA KAMU':'NAMA ANDA',
-    'LANJUT KE KEY':'TERUS KE KEY',
-    'MASUKKAN KEY':'MASUKKAN KEY',
-    'ML HACK VIP • AUTHENTICATION':'ML HACK VIP • PENGESAHAN',
-    'Halo':'Hai',
-    'Masukkan ACCESS KEY dari admin.':'Masukkan ACCESS KEY dari admin.',
-    'Format: PAKEL-KEY-XXXXX atau PKL-KEY-XXXXX':'Format: PAKEL-KEY-XXXXX atau PKL-KEY-XXXXX',
-    'ACCESS KEY':'ACCESS KEY',
-    'VERIFIKASI KEY':'SAHKAN KEY',
-    'GANTI NAMA':'TUKAR NAMA',
-    // Verifying
-    'VERIFYING IDENTITY':'MENGESAHKAN IDENTITI',
-    'Initializing identity scanner...':'Memulakan pengimbas identiti...',
-    'Reading user input...':'Membaca input pengguna...',
-    'Validating name format...':'Mengesahkan format nama...',
-    'NAME':'NAMA',
-    'Scanning for bad words...':'Mengimbas kata kesat...',
-    'Bad word check: CLEAN':'Semakan kata kesat: BERSIH',
-    'Validating access key...':'Mengesahkan access key...',
-    'KEY':'KEY',
-    'Querying key database...':'Membuat pertanyaan pangkalan data key...',
-    'Key match: CONFIRMED':'Key sepadan: DISAHKAN',
-    'Generating session token...':'Menjana token sesi...',
-    'Token':'Token',
-    'Identity verified. Access granted.':'Identiti disahkan. Akses diberikan.',
-    // Header
-    'LOGOUT':'LOG KELUAR',
-    'IDLE':'MENUNGGU',
-    'SAFE':'SELAMAT',
-    'GUARD':'JAGA',
-    'MAX':'MAKSIMA',
-    'USER ONLINE':'PENGGUNA ONLINE',
-    'MODULES':'MODUL',
-    'ANTI-BAN':'ANTI-LARANG',
-    // Welcome
-    'SELAMAT DATANG!':'SELAMAT DATANG!',
-    'ML HACK VIP PREMIUM ENGINE v7.0':'ENJIN PREMIUM ML HACK VIP v7.0',
-    'HARI':'HARI',
-    'TANGGAL':'TARIKH',
-    'JAM':'MASA',
-    'NEGARA':'NEGARA',
-    'REGION':'RANTAU',
-    'Halo':'Hai',
-    'MODUL LENGKAP':'MODUL LENGKAP',
-    'Combat':'Tempur',
-    'Vision':'Penglihatan',
-    'Utility':'Utiliti',
-    'Network':'Rangkaian',
-    'Baca tutorial dulu':'Baca tutorial dahulu',
-    'biar gak bingung!':'supaya tak keliru!',
-    'MULAI SEKARANG':'MULA SEKARANG',
-    'LIHAT TUTORIAL':'LIHAT TUTORIAL'
-  },
-  en: {
-    // Splash
-    'Initializing kernel module...':'Initializing kernel module...',
-    'Loading driver interface...':'Loading driver interface...',
-    'Connecting to Moonton server...':'Connecting to Moonton server...',
-    'Bypassing security layer...':'Bypassing security layer...',
-    'Injecting hook script...':'Injecting hook script...',
-    'Calibrating memory offsets...':'Calibrating memory offsets...',
-    'Verifying checksum...':'Verifying checksum...',
-    'Engine ready. Welcome, agent.':'Engine ready. Welcome, agent.',
-    'PREMIUM EDITION v7.0':'PREMIUM EDITION v7.0',
-    // Login
-    'MASUKKAN NAMA':'ENTER NAME',
-    'ML HACK VIP • PRIVATE ENGINE v7.0':'ML HACK VIP • PRIVATE ENGINE v7.0',
-    'IDENTITY REQUIRED':'IDENTITY REQUIRED',
-    'Masukkan NAMA ASLI kamu (min 3 huruf, max 20).':'Enter your REAL NAME (min 3 letters, max 20).',
-    'Dilarang: angka, symbol, kata kasar.':'Forbidden: numbers, symbols, bad words.',
-    'Contoh: Budi Santoso':'Example: John Smith',
-    'NAMA KAMU':'YOUR NAME',
-    'LANJUT KE KEY':'CONTINUE TO KEY',
-    'MASUKKAN KEY':'ENTER KEY',
-    'ML HACK VIP • AUTHENTICATION':'ML HACK VIP • AUTHENTICATION',
-    'Halo':'Hello',
-    'Masukkan ACCESS KEY dari admin.':'Enter ACCESS KEY from admin.',
-    'Format: PAKEL-KEY-XXXXX atau PKL-KEY-XXXXX':'Format: PAKEL-KEY-XXXXX or PKL-KEY-XXXXX',
-    'ACCESS KEY':'ACCESS KEY',
-    'VERIFIKASI KEY':'VERIFY KEY',
-    'GANTI NAMA':'CHANGE NAME',
-    // Verifying
-    'VERIFYING IDENTITY':'VERIFYING IDENTITY',
-    'Initializing identity scanner...':'Initializing identity scanner...',
-    'Reading user input...':'Reading user input...',
-    'Validating name format...':'Validating name format...',
-    'NAME':'NAME',
-    'Scanning for bad words...':'Scanning for bad words...',
-    'Bad word check: CLEAN':'Bad word check: CLEAN',
-    'Validating access key...':'Validating access key...',
-    'KEY':'KEY',
-    'Querying key database...':'Querying key database...',
-    'Key match: CONFIRMED':'Key match: CONFIRMED',
-    'Generating session token...':'Generating session token...',
-    'Token':'Token',
-    'Identity verified. Access granted.':'Identity verified. Access granted.',
-    // Header
-    'LOGOUT':'LOG OUT',
-    'IDLE':'IDLE',
-    'SAFE':'SAFE',
-    'GUARD':'GUARD',
-    'MAX':'MAX',
-    'USER ONLINE':'USERS ONLINE',
-    'MODULES':'MODULES',
-    'ANTI-BAN':'ANTI-BAN',
-    // Welcome
-    'SELAMAT DATANG!':'WELCOME!',
-    'ML HACK VIP PREMIUM ENGINE v7.0':'ML HACK VIP PREMIUM ENGINE v7.0',
-    'HARI':'DAY',
-    'TANGGAL':'DATE',
-    'JAM':'TIME',
-    'NEGARA':'COUNTRY',
-    'REGION':'REGION',
-    'Halo':'Hello',
-    'MODUL LENGKAP':'FULL MODULES',
-    'Combat':'Combat',
-    'Vision':'Vision',
-    'Utility':'Utility',
-    'Network':'Network',
-    'Baca tutorial dulu':'Read tutorial first',
-    'biar gak bingung!':'so you wont get confused!',
-    'MULAI SEKARANG':'START NOW',
-    'LIHAT TUTORIAL':'VIEW TUTORIAL'
-  }
-};
 
-var I18N={
-  id:{chooseLang:'Pilih Bahasa',confirmLang:'Ingin mengganti Bahasa?',yes:'Ya',no:'Tidak',langChanged:'✓ Bahasa berhasil diubah!',cancel:'Batal'},
-  my:{chooseLang:'Pilih Bahasa',confirmLang:'Tukar Bahasa?',yes:'Ya',no:'Tidak',langChanged:'✓ Bahasa berjaya ditukar!',cancel:'Batal'},
-  en:{chooseLang:'Choose Language',confirmLang:'Change Language?',yes:'Yes',no:'No',langChanged:'✓ Language changed!',cancel:'Cancel'}
-};
-function t(k){return (I18N[LANG]&&I18N[LANG][k])||I18N.id[k]||k;}
-function lsGet(k,d){try{var v=localStorage.getItem('mlhack_x_'+k);return v===null?d:JSON.parse(v);}catch(e){return d;}}
-function lsSet(k,v){try{localStorage.setItem('mlhack_x_'+k,JSON.stringify(v));}catch(e){}}
 
-/* ====== APPLY TRANSLATION ====== */
-function applyTranslation(){
-  if(LANG==='id')return;
-  var dict=DICT[LANG]||{};
-  // Walk semua text node
-  var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null,false);
-  var nodes=[],n;
-  while(n=walker.nextNode())nodes.push(n);
-  nodes.forEach(function(node){
-    var txt=node.textContent;
-    var trimmed=txt.trim();
-    if(dict[trimmed]){
-      node.textContent=txt.replace(trimmed,dict[trimmed]);
-    }
-  });
-  // Translate placeholder
-  document.querySelectorAll('input[placeholder]').forEach(function(el){
-    var p=el.placeholder.trim();
-    if(dict[p])el.placeholder=dict[p];
-  });
-  // Translate title attribute
-  document.querySelectorAll('[title]').forEach(function(el){
-    var tt=el.getAttribute('title');
-    if(dict[tt])el.setAttribute('title',dict[tt]);
-  });
-}
 
-/* ====== MULTI-LANGUAGE ====== */
-var LANGS=[
-  {c:'id',n:'Indonesia',f:'🇮🇩'},
-  {c:'my',n:'Malaysia',f:'🇲🇾'},
-  {c:'en',n:'Amerika (USA)',f:'🇺🇸'}
-];
 
-function initLang(){
-  if(document.getElementById('extLangBtn'))return;
-  var header=document.querySelector('.header-right');
-  if(!header)return;
-  var btn=document.createElement('div');
-  btn.id='extLangBtn';
-  btn.style.cssText='width:36px;height:32px;border:1px solid rgba(0,255,65,0.4);background:rgba(0,255,65,0.08);color:#00FF41;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;font-weight:900;';
-  var curLang=LANGS.find(function(l){return l.c===LANG;})||LANGS[0];
-  btn.textContent=curLang.f;
-  btn.title='Language';
-  header.insertBefore(btn,header.firstChild);
-  btn.addEventListener('click',showLangModal);
-}
 
-function showLangModal(){
-  if(document.getElementById('extLangModal'))return;
-  var modal=document.createElement('div');
-  modal.id='extLangModal';
-  modal.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.95);display:flex;align-items:center;justify-content:center;padding:22px;';
-  var html='<div style="background:#000;border:2px solid #00FF41;padding:22px;max-width:360px;width:100%;text-align:center;">'
-    +'<div style="font-size:16px;color:#00FF41;font-weight:900;letter-spacing:3px;margin-bottom:18px;">🌐 '+t('chooseLang')+'</div>';
-  LANGS.forEach(function(l){
-    var active=LANG===l.c;
-    html+='<button data-l="'+l.c+'" style="width:100%;padding:14px;margin-bottom:10px;background:'+(active?'#00FF41':'rgba(0,20,0,0.6)')+';color:'+(active?'#000':'#00FF41')+';border:1px solid rgba(0,255,65,0.5);font-family:inherit;font-weight:900;font-size:13px;cursor:pointer;">'+l.f+' '+l.n+'</button>';
-  });
-  html+='<button id="extLangCancel" style="width:100%;padding:11px;margin-top:8px;background:rgba(255,0,51,0.1);color:#FF0033;border:1px solid #FF0033;font-family:inherit;cursor:pointer;font-weight:900;font-size:12px;letter-spacing:1px;">✕ '+t('cancel')+'</button></div>';
-  modal.innerHTML=html;
-  document.body.appendChild(modal);
-  
-  modal.querySelectorAll('button[data-l]').forEach(function(b){
-    b.addEventListener('click',function(){
-      var code=b.dataset.l;
-      var lang=LANGS.find(function(l){return l.c===code;});
-      if(!lang)return;
-      // Modal HTML custom — PASTI MUNCUL
-      showLangConfirmModal(lang, code);
-    });
-  });
-  
-  var cb=document.getElementById('extLangCancel');
-  if(cb)cb.addEventListener('click',function(){modal.remove();});
-  modal.addEventListener('click',function(e){if(e.target===modal)modal.remove();});
-}
 
-/* ====== MATRIX RAIN FOR VERIFYING IDENTITY ====== */
-function startIdentityMatrix(){
-  var loader=document.getElementById('identityLoader');
-  if(!loader||!loader.classList.contains('show'))return;
-  if(!document.getElementById('identityMatrixCanvas')){
-    var cv=document.createElement('canvas');
-    cv.id='identityMatrixCanvas';
-    cv.style.cssText='position:absolute;inset:0;width:100%;height:100%;opacity:0.28;z-index:0;pointer-events:none;';
-    loader.insertBefore(cv,loader.firstChild);
-    loader.querySelectorAll('div').forEach(function(d){d.style.position='relative';d.style.zIndex='2';});
-  }
-  var canvas=document.getElementById('identityMatrixCanvas');
-  var ctx=canvas.getContext('2d');
-  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
-  var chars='アカサタナハマヤラワ0123456789ABCDEF><{}[]$#@!%&*';
-  var fs=14;var cols=Math.floor(canvas.width/fs);var drops=new Array(cols).fill(1);
-  if(window._idMatrixInt)clearInterval(window._idMatrixInt);
-  window._idMatrixInt=setInterval(function(){
-    try{
-      ctx.fillStyle='rgba(0,0,0,0.08)';ctx.fillRect(0,0,canvas.width,canvas.height);
-      ctx.fillStyle='#00FF41';ctx.font=fs+'px monospace';
-      for(var i=0;i<drops.length;i++){
-        var tx=chars.charAt(Math.floor(Math.random()*chars.length));
-        ctx.fillText(tx,i*fs,drops[i]*fs);
-        if(drops[i]*fs>canvas.height&&Math.random()>0.975)drops[i]=0;
-        drops[i]++;
-      }
-    }catch(e){}
-  },55);
-}
-setInterval(function(){
-  var loader=document.getElementById('identityLoader');
-  if(loader&&loader.classList.contains('show')&&!document.getElementById('identityMatrixCanvas'))startIdentityMatrix();
-},200);
-
-/* ====== TOMBOL LOGOUT ====== */
-function initLogoutBtn(){
-  var btn=document.getElementById('changeAccountBtn');
-  if(!btn){setTimeout(initLogoutBtn,1500);return;}
-  btn.innerHTML='<span style="font-size:9px;font-weight:900;letter-spacing:1px;">'+t('logout')+'</span>';
-  btn.style.cssText='width:auto;padding:0 10px;height:32px;border:1px solid rgba(255,0,51,0.5);background:rgba(255,0,51,0.1);color:#FF0033;display:flex;align-items:center;justify-content:center;font-family:inherit;font-size:9px;font-weight:900;letter-spacing:1px;cursor:pointer;';
-}
-
-/* ====== BOOT ====== */
-function boot(){
-  LANG=lsGet('lang','id');
-  applyTranslation();
-  var main=document.getElementById('mainApp');
-  if(main&&main.classList.contains('show')){
-    try{initLang();}catch(e){}
-    try{initLogoutBtn();}catch(e){}
-    setTimeout(applyTranslation,500);
-    setTimeout(applyTranslation,2000);
-  }else{
-    setTimeout(boot,1500);
-  }
-  console.log('%c ML HACK VIP v10.0 — BATCH 1 TRANSLATION','color:#00FF41;font-size:14px;font-weight:900;');
-}
-window.addEventListener('load',function(){setTimeout(boot,2000);});
-})();
-
-</script>
-
-<!-- BATCH 2 TRANSLATION -->
-<script>
-(function(){
-'use strict';
-
-/* ============================================================
-   KAMUS BATCH 2: MAIN APP + MODUL + SECTION
-   ============================================================ */
-var DICT={
-  id:{
-    // Stats
-    'USER ONLINE':'USER ONLINE','ANTI-BAN':'ANTI-BAN','MODULES':'MODUL',
-    // Sys monitor
-    'CPU':'CPU','RAM':'RAM','PING':'PING','BATERAI':'BATERAI','SUHU':'SUHU',
-    // Terminal
-    'SYSTEM_LOG.txt':'SYSTEM_LOG.txt','Boot sequence initialized...':'Urutan boot diinisialisasi...',
-    'Kernel loaded. Version 7.0.0-STABLE':'Kernel dimuat. Versi 7.0.0-STABLE',
-    'Memory scanner initialized':'Pemindai memori diinisialisasi',
-    'Loading VIP hook interface...':'Memuat antarmuka hook VIP...',
-    'Detecting MLBB package...':'Mendeteksi paket MLBB...',
-    'Package found: com.mobile.legends':'Paket ditemukan: com.mobile.legends',
-    'Reading process memory...':'Membaca memori proses...',
-    'Anti-cheat signature: DETECTED':'Tanda tangan anti-cheat: TERDETEKSI',
-    'Bypass method: OVERRIDE v2.4':'Metode bypass: OVERRIDE v2.4',
-    'Injecting 20 modules...':'Menyuntikkan 20 modul...',
-    'Hook interface ready':'Antarmuka hook siap',
-    'System integrity: 100%':'Integritas sistem: 100%',
-    'Ready to inject. Toggle module.':'Siap disuntik. Aktifkan modul.',
-    // Section Titles
-    'COMBAT MODULES':'MODUL COMBAT','VISION MODULES':'MODUL VISION',
-    'UTILITY MODULES':'MODUL UTILITY','NETWORK MODULES':'MODUL NETWORK',
-    'AGENT PROFILE':'PROFIL AGEN',
-    // 20 Modul
-    'DAMAGE BOOST 80%':'DAMAGE BOOST 80%','Instant kill musuh dalam 1-2 hit':'Bunuh musuh instan dalam 1-2 hit',
-    'AUTO AIM ASSIST':'AUTO AIM ASSIST','Lock target tanpa perlu manual aim':'Kunci target tanpa perlu bidik manual',
-    'NO COOLDOWN':'TANPA COOLDOWN','Skill spam tanpa delay 90%':'Skill spam tanpa delay 90%',
-    'AUTO COMBO ALL HERO':'AUTO COMBO SEMUA HERO','Combo skill otomatis 1 tap semua hero':'Combo skill otomatis 1 tap semua hero',
-    'AUTO COMBO LING':'AUTO COMBO LING','Combo burst Ling instan tanpa delay':'Combo burst Ling instan tanpa delay',
-    'SPECIAL HERO':'HERO SPESIAL',
-    'AUTO DODGE SKILL':'AUTO DODGE SKILL','Hindari skill musuh otomatis':'Hindari skill musuh otomatis',
-    'ENEMY TRACKER (ESP)':'ENEMY TRACKER (ESP)','Tracking posisi musuh real-time':'Tracking posisi musuh real-time',
-    'MAP HACK':'MAP HACK','Tampil semua posisi musuh di peta':'Tampil semua posisi musuh di peta',
-    'MAP AWARENESS':'MAP AWARENESS','Mini map tampil semua posisi musuh':'Mini map tampil semua posisi musuh',
-    'JUNGLE TIMER':'JUNGLE TIMER','Timer buff & turtle real-time':'Timer buff & turtle real-time',
-    'SPEED HACK x2':'SPEED HACK x2','Movement speed x2 tanpa delay':'Kecepatan gerak x2 tanpa delay',
-    'ANTI-BAN SHIELD':'ANTI-BAN SHIELD','Bypass anti-cheat Moonton':'Bypass anti-cheat Moonton',
-    'AUTO RETRIBUTION':'AUTO RETRIBUTION','Retri otomatis timing tepat':'Retri otomatis timing tepat',
-    'SERVER LAG PANEL':'SERVER LAG PANEL','Bikin lag musuh sekitarmu':'Bikin lag musuh sekitarmu',
-    'PING BOOSTER':'PING BOOSTER','Ping stabil anti delay & spike':'Ping stabil anti delay & spike',
-    'ENEMY LAG INJECTOR':'ENEMY LAG INJECTOR','Bikin ping musuh naik 200-500ms':'Bikin ping musuh naik 200-500ms',
-    'WALLHACK VISION':'WALLHACK VISION','Lihat musuh di balik dinding & semak':'Lihat musuh di balik dinding & semak',
-    'LASER AIM 100%':'LASER AIM 100%','Skill shot auto lock — Franco, Selena, dll':'Skill shot auto lock — Franco, Selena, dll',
-    'PING MONITOR PRO':'PING MONITOR PRO','Display ping stabil 15-30ms':'Display ping stabil 15-30ms',
-    'LAG SWITCH PANIC':'LAG SWITCH PANIC','Freeze sementara buat kabur dari war':'Freeze sementara buat kabur dari war',
-    'Patching memory...':'Patching memori...','Calibrating FOV...':'Kalibrasi FOV...',
-    'Modifying timers...':'Modifikasi timer...','Loading sequence...':'Memuat urutan...',
-    'Loading Ling combo...':'Memuat combo Ling...','Scanning projectiles...':'Memindai proyektil...',
-    'Injecting radar...':'Menyuntikkan radar...','Unlocking fog of war...':'Membuka kabut perang...',
-    'Expanding minimap...':'Memperluas minimap...','Sync buff timer...':'Sinkron timer buff...',
-    'Overclocking...':'Overclocking...','Activating shield...':'Mengaktifkan shield...',
-    'Timing retri...':'Timing retri...','Sending packets...':'Mengirim paket...',
-    'Routing network...':'Routing jaringan...','Sending spike packets...':'Mengirim paket spike...',
-    'Removing walls...':'Menghapus dinding...','Locking trajectory...':'Mengunci trajektori...',
-    'Reading latency...':'Membaca latency...','Freezing connection...':'Membekukan koneksi...'
-  },
-  my:{
-    'USER ONLINE':'PENGGUNA ONLINE','ANTI-BAN':'ANTI-LARANG','MODULES':'MODUL',
-    'CPU':'CPU','RAM':'RAM','PING':'PING','BATERAI':'BATERI','SUHU':'SUHU',
-    'SYSTEM_LOG.txt':'LOG_SISTEM.txt','Boot sequence initialized...':'Urutan boot dimulakan...',
-    'Kernel loaded. Version 7.0.0-STABLE':'Kernel dimuatkan. Versi 7.0.0-STABLE',
-    'Memory scanner initialized':'Pengimbas memori dimulakan',
-    'Loading VIP hook interface...':'Memuatkan antara muka cangkuk VIP...',
-    'Detecting MLBB package...':'Mengesan pakej MLBB...',
-    'Package found: com.mobile.legends':'Pakej ditemui: com.mobile.legends',
-    'Reading process memory...':'Membaca memori proses...',
-    'Anti-cheat signature: DETECTED':'Tandatangan anti-cheat: DIKESAN',
-    'Bypass method: OVERRIDE v2.4':'Kaedah pintasan: OVERRIDE v2.4',
-    'Injecting 20 modules...':'Menyuntik 20 modul...',
-    'Hook interface ready':'Antara muka cangkuk sedia',
-    'System integrity: 100%':'Integriti sistem: 100%',
-    'Ready to inject. Toggle module.':'Sedia disuntik. Togol modul.',
-    'COMBAT MODULES':'MODUL TEMPUR','VISION MODULES':'MODUL PENGLIHATAN',
-    'UTILITY MODULES':'MODUL UTILITI','NETWORK MODULES':'MODUL RANGKAIAN',
-    'AGENT PROFILE':'PROFIL AGEN',
-    'DAMAGE BOOST 80%':'PENINGKATAN KEROSAKAN 80%','Instant kill musuh dalam 1-2 hit':'Bunuh musuh serta-merta dalam 1-2 serangan',
-    'AUTO AIM ASSIST':'BANTUAN SASARAN AUTO','Lock target tanpa perlu manual aim':'Kunci sasaran tanpa perlu bidik manual',
-    'NO COOLDOWN':'TANPA COOLDOWN','Skill spam tanpa delay 90%':'Spam kemahiran tanpa lengah 90%',
-    'AUTO COMBO ALL HERO':'AUTO COMBO SEMUA WIRA','Combo skill otomatis 1 tap semua hero':'Combo kemahiran auto 1 ketuk semua wira',
-    'AUTO COMBO LING':'AUTO COMBO LING','Combo burst Ling instan tanpa delay':'Combo burst Ling serta-merta tanpa lengah',
-    'SPECIAL HERO':'WIRA KHAS',
-    'AUTO DODGE SKILL':'AUTO DODGE KEMAHIRAN','Hindari skill musuh otomatis':'Elak kemahiran musuh secara auto',
-    'ENEMY TRACKER (ESP)':'PENJEJAK MUSUH (ESP)','Tracking posisi musuh real-time':'Menjejak posisi musuh masa nyata',
-    'MAP HACK':'MAP HACK','Tampil semua posisi musuh di peta':'Papar semua posisi musuh di peta',
-    'MAP AWARENESS':'KESEDARAN PETA','Mini map tampil semua posisi musuh':'Peta mini papar semua posisi musuh',
-    'JUNGLE TIMER':'PEMASA JUNGLE','Timer buff & turtle real-time':'Pemasa buff & turtle masa nyata',
-    'SPEED HACK x2':'SPEED HACK x2','Movement speed x2 tanpa delay':'Kelajuan gerak x2 tanpa lengah',
-    'ANTI-BAN SHIELD':'PERISAI ANTI-LARANG','Bypass anti-cheat Moonton':'Pintas anti-cheat Moonton',
-    'AUTO RETRIBUTION':'AUTO RETRIBUSI','Retri otomatis timing tepat':'Retri auto masa tepat',
-    'SERVER LAG PANEL':'PANEL LAG PELAYAN','Bikin lag musuh sekitarmu':'Buat lag musuh di sekeliling anda',
-    'PING BOOSTER':'PENINGKAT PING','Ping stabil anti delay & spike':'Ping stabil anti lengah & spike',
-    'ENEMY LAG INJECTOR':'INJECTOR LAG MUSUH','Bikin ping musuh naik 200-500ms':'Buat ping musuh naik 200-500ms',
-    'WALLHACK VISION':'PENGLIHATAN WALLHACK','Lihat musuh di balik dinding & semak':'Lihat musuh di sebalik dinding & semak',
-    'LASER AIM 100%':'SASARAN LASER 100%','Skill shot auto lock — Franco, Selena, dll':'Tembakan kemahiran kunci auto — Franco, Selena, dll',
-    'PING MONITOR PRO':'PEMANTAU PING PRO','Display ping stabil 15-30ms':'Papar ping stabil 15-30ms',
-    'LAG SWITCH PANIC':'LAG SWITCH PANIK','Freeze sementara buat kabur dari war':'Beku sementara buat lari dari perang',
-    'Patching memory...':'Menampal memori...','Calibrating FOV...':'Mengkalibrasi FOV...',
-    'Modifying timers...':'Mengubah pemasa...','Loading sequence...':'Memuatkan urutan...',
-    'Loading Ling combo...':'Memuatkan combo Ling...','Scanning projectiles...':'Mengimbas projektil...',
-    'Injecting radar...':'Menyuntik radar...','Unlocking fog of war...':'Membuka kabus perang...',
-    'Expanding minimap...':'Memperluas peta mini...','Sync buff timer...':'Segerak pemasa buff...',
-    'Overclocking...':'Overclocking...','Activating shield...':'Mengaktifkan perisai...',
-    'Timing retri...':'Masa retri...','Sending packets...':'Menghantar paket...',
-    'Routing network...':'Merangkaian...','Sending spike packets...':'Menghantar paket spike...',
-    'Removing walls...':'Menghapus dinding...','Locking trajectory...':'Mengunci trajektori...',
-    'Reading latency...':'Membaca latency...','Freezing connection...':'Membekukan sambungan...'
-  },
-  en:{
-    'USER ONLINE':'USERS ONLINE','ANTI-BAN':'ANTI-BAN','MODULES':'MODULES',
-    'CPU':'CPU','RAM':'RAM','PING':'PING','BATERAI':'BATTERY','SUHU':'TEMP',
-    'SYSTEM_LOG.txt':'SYSTEM_LOG.txt','Boot sequence initialized...':'Boot sequence initialized...',
-    'Kernel loaded. Version 7.0.0-STABLE':'Kernel loaded. Version 7.0.0-STABLE',
-    'Memory scanner initialized':'Memory scanner initialized',
-    'Loading VIP hook interface...':'Loading VIP hook interface...',
-    'Detecting MLBB package...':'Detecting MLBB package...',
-    'Package found: com.mobile.legends':'Package found: com.mobile.legends',
-    'Reading process memory...':'Reading process memory...',
-    'Anti-cheat signature: DETECTED':'Anti-cheat signature: DETECTED',
-    'Bypass method: OVERRIDE v2.4':'Bypass method: OVERRIDE v2.4',
-    'Injecting 20 modules...':'Injecting 20 modules...',
-    'Hook interface ready':'Hook interface ready',
-    'System integrity: 100%':'System integrity: 100%',
-    'Ready to inject. Toggle module.':'Ready to inject. Toggle module.',
-    'COMBAT MODULES':'COMBAT MODULES','VISION MODULES':'VISION MODULES',
-    'UTILITY MODULES':'UTILITY MODULES','NETWORK MODULES':'NETWORK MODULES',
-    'AGENT PROFILE':'AGENT PROFILE',
-    'DAMAGE BOOST 80%':'DAMAGE BOOST 80%','Instant kill musuh dalam 1-2 hit':'Instant kill enemy in 1-2 hits',
-    'AUTO AIM ASSIST':'AUTO AIM ASSIST','Lock target tanpa perlu manual aim':'Lock target without manual aim',
-    'NO COOLDOWN':'NO COOLDOWN','Skill spam tanpa delay 90%':'Skill spam without 90% delay',
-    'AUTO COMBO ALL HERO':'AUTO COMBO ALL HERO','Combo skill otomatis 1 tap semua hero':'Auto combo skill 1 tap all heroes',
-    'AUTO COMBO LING':'AUTO COMBO LING','Combo burst Ling instan tanpa delay':'Instant Ling burst combo without delay',
-    'SPECIAL HERO':'SPECIAL HERO',
-    'AUTO DODGE SKILL':'AUTO DODGE SKILL','Hindari skill musuh otomatis':'Auto dodge enemy skill',
-    'ENEMY TRACKER (ESP)':'ENEMY TRACKER (ESP)','Tracking posisi musuh real-time':'Track enemy position real-time',
-    'MAP HACK':'MAP HACK','Tampil semua posisi musuh di peta':'Show all enemy positions on map',
-    'MAP AWARENESS':'MAP AWARENESS','Mini map tampil semua posisi musuh':'Mini map shows all enemy positions',
-    'JUNGLE TIMER':'JUNGLE TIMER','Timer buff & turtle real-time':'Real-time buff & turtle timer',
-    'SPEED HACK x2':'SPEED HACK x2','Movement speed x2 tanpa delay':'Movement speed x2 without delay',
-    'ANTI-BAN SHIELD':'ANTI-BAN SHIELD','Bypass anti-cheat Moonton':'Bypass Moonton anti-cheat',
-    'AUTO RETRIBUTION':'AUTO RETRIBUTION','Retri otomatis timing tepat':'Auto retri with perfect timing',
-    'SERVER LAG PANEL':'SERVER LAG PANEL','Bikin lag musuh sekitarmu':'Lag nearby enemies',
-    'PING BOOSTER':'PING BOOSTER','Ping stabil anti delay & spike':'Stable ping anti delay & spike',
-    'ENEMY LAG INJECTOR':'ENEMY LAG INJECTOR','Bikin ping musuh naik 200-500ms':'Raise enemy ping by 200-500ms',
-    'WALLHACK VISION':'WALLHACK VISION','Lihat musuh di balik dinding & semak':'See enemies behind walls & bushes',
-    'LASER AIM 100%':'LASER AIM 100%','Skill shot auto lock — Franco, Selena, dll':'Skill shot auto lock — Franco, Selena, etc',
-    'PING MONITOR PRO':'PING MONITOR PRO','Display ping stabil 15-30ms':'Display stable ping 15-30ms',
-    'LAG SWITCH PANIC':'LAG SWITCH PANIC','Freeze sementara buat kabur dari war':'Temporary freeze to escape war',
-    'Patching memory...':'Patching memory...','Calibrating FOV...':'Calibrating FOV...',
-    'Modifying timers...':'Modifying timers...','Loading sequence...':'Loading sequence...',
-    'Loading Ling combo...':'Loading Ling combo...','Scanning projectiles...':'Scanning projectiles...',
-    'Injecting radar...':'Injecting radar...','Unlocking fog of war...':'Unlocking fog of war...',
-    'Expanding minimap...':'Expanding minimap...','Sync buff timer...':'Sync buff timer...',
-    'Overclocking...':'Overclocking...','Activating shield...':'Activating shield...',
-    'Timing retri...':'Timing retri...','Sending packets...':'Sending packets...',
-    'Routing network...':'Routing network...','Sending spike packets...':'Sending spike packets...',
-    'Removing walls...':'Removing walls...','Locking trajectory...':'Locking trajectory...',
-    'Reading latency...':'Reading latency...','Freezing connection...':'Freezing connection...'
-  }
-};
-
-var LANG='id';
-function lsGet(k,d){try{var v=localStorage.getItem('mlhack_x_'+k);return v===null?d:JSON.parse(v);}catch(e){return d;}}
-
-function applyBatch2(){
-  if(LANG==='id')return;
-  var dict=DICT[LANG]||{};
-  var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null,false);
-  var nodes=[],n;
-  while(n=walker.nextNode())nodes.push(n);
-  nodes.forEach(function(node){
-    var txt=node.textContent;
-    var trimmed=txt.trim();
-    if(dict[trimmed])node.textContent=txt.replace(trimmed,dict[trimmed]);
-  });
-}
-
-window.addEventListener('load',function(){
-  setTimeout(function(){
-    LANG=lsGet('lang','id');
-    if(LANG==='id')return;
-    applyBatch2();
-    setTimeout(applyBatch2,1000);
-    setTimeout(applyBatch2,3000);
-    setInterval(applyBatch2,5000);
-  },2500);
-});
-})();
-
-</script>
-
-<!-- BATCH 3 TRANSLATION -->
-<script>
-(function(){
-'use strict';
-
-/* ============================================================
-   KAMUS BATCH 3: TOMBOL, EMERGENCY, LAUNCH, TOAST, LOG, PROFILE
-   ============================================================ */
-var DICT={
-  id:{
-    // Bulk buttons
-    'ACTIVATE ALL':'AKTIFKAN SEMUA','RESET ALL':'RESET SEMUA',
-    // Emergency
-    'EMERGENCY STOP':'EMERGENCY STOP','EMERGENCY':'EMERGENCY',
-    // Launch
-    'READY TO LAUNCH':'SIAP LAUNCH','WARNING':'PERINGATAN',
-    'Pastikan modul yang diinginkan sudah aktif. Klik tombol di bawah untuk inject ke Mobile Legends. Jika auto-launch gagal, MLBB bisa dibuka manual.':'Pastikan modul yang diinginkan sudah aktif. Klik tombol di bawah untuk inject ke Mobile Legends. Jika auto-launch gagal, MLBB bisa dibuka manual.',
-    'LAUNCH MOBILE LEGENDS':'LAUNCH MOBILE LEGENDS',
-    // Profile Section
-    'AGENT':'AGEN','KEY':'KEY','IP ADDRESS':'ALAMAT IP','PING':'PING',
-    'UPTIME':'WAKTU AKTIF','TIER':'TINGKAT','STATUS':'STATUS','DEVICE':'PERANGKAT',
-    'PREMIUM':'PREMIUM','MULTI-DEVICE':'MULTI-PERANGKAT','VERIFIED':'TERVERIFIKASI',
-    // Live Console
-    'LIVE CONSOLE':'KONSOL LIVE',
-    'Session started':'Sesi dimulai',
-    'Key verified':'Key terverifikasi',
-    'Loading modules...':'Memuat modul...',
-    'Auto-login: session restored':'Auto-login: sesi dipulihkan',
-    'Welcome back':'Selamat datang kembali',
-    'Module':'Modul','ACTIVATED':'DIAKTIFKAN','DISABLED':'DINONAKTIFKAN',
-    'All modules disabled. System safe.':'Semua modul dinonaktifkan. Sistem aman.',
-    'EMERGENCY STOP ACTIVATED!':'EMERGENCY STOP DIAKTIFKAN!',
-    'Disabling all modules...':'Menonaktifkan semua modul...',
-    'Bulk activation complete':'Aktivasi massal selesai',
-    'Reset all modules':'Reset semua modul',
-    'Session ended':'Sesi berakhir',
-    // Inject Overlay
-    'LIVE INJECTION CONSOLE':'KONSOL INJECT LIVE',
-    'INJECTING MODULES':'MENYUNTIK MODUL',
-    'Patching memory address':'Patch alamat memori',
-    'Overriding damage value':'Override nilai damage',
-    'Hooking render pipeline...':'Hook pipeline render...',
-    'Injecting radar overlay script...':'Menyuntik skrip overlay radar...',
-    'Calibrating aim assist FOV':'Kalibrasi FOV aim assist',
-    'Loading Ling combo sequence...':'Memuat urutan combo Ling...',
-    'Unlocking map fog of war...':'Membuka kabut perang...',
-    'Injecting enemy lag packet...':'Menyuntik paket lag musuh...',
-    'Encrypting payload to avoid detection...':'Mengenkripsi payload biar gak terdeteksi...',
-    'Verifying anti-cheat bypass...':'Verifikasi bypass anti-cheat...',
-    'Shield integrity':'Integritas shield',
-    'Active modules':'Modul aktif',
-    'Scanning for MLBB process...':'Memindai proses MLBB...',
-    'Attempting auto-launch MLBB...':'Mencoba auto-launch MLBB...',
-    'MLBB launched successfully!':'MLBB berhasil diluncurkan!',
-    'Auto-launch failed. Manual launch required.':'Auto-launch gagal. Buka manual.',
-    // Manual Notice
-    'ANDROID TERLALU TUA':'ANDROID TERLALU TUA','AUTO-LAUNCH GAGAL':'AUTO-LAUNCH GAGAL',
-    'SILAKAN BUKA MLBB MANUAL:':'SILAKAN BUKA MLBB MANUAL:',
-    'Tekan tombol HOME':'Tekan tombol HOME','Buka app MOBILE LEGENDS':'Buka app MOBILE LEGENDS',
-    'Modul tetap AKTIF':'Modul tetap AKTIF',
-    'OK, MENGERTI':'OK, MENGERTI',
-    // Tutorial
-    'TUTORIAL':'TUTORIAL','CARA MASUK ENGINE:':'CARA MASUK ENGINE:',
-    'CARA PAKE MODUL:':'CARA PAKE MODUL:','CARA LAUNCH MLBB:':'CARA LAUNCH MLBB:',
-    'TIPS PRO:':'TIPS PRO:','MENGERTI, LANJUT':'MENGERTI, LANJUT',
-    // Welcome
-    'MULAI SEKARANG':'MULAI SEKARANG','LIHAT TUTORIAL':'LIHAT TUTORIAL',
-    'MULAI':'MULAI',
-    // Status
-    'VERIFIED':'TERVERIFIKASI','ONLINE':'ONLINE','SECURE':'AMAN',
-    'ONLINE • SECURE':'ONLINE • AMAN',
-    // Toast
-    'Welcome':'Selamat datang','Welcome back':'Selamat datang kembali',
-    'ACTIVATED':'DIAKTIFKAN','DISABLED':'DINONAKTIFKAN',
-    'ALL MODULES ACTIVATED':'SEMUA MODUL DIAKTIFKAN',
-    'ALL MODULES RESET':'SEMUA MODUL DI-RESET',
-    'EMERGENCY STOP — ALL OFF':'EMERGENCY STOP — SEMUA OFF',
-    'BUKA MLBB MANUAL':'BUKA MLBB MANUAL',
-    'ANDROID TERLALU TUA':'ANDROID TERLALU TUA',
-    'Gagal buka':'Gagal buka','Server offline. Cek internet lo.':'Server offline. Cek internet lo.',
-    'Format key salah':'Format key salah','Key terlalu pendek':'Key terlalu pendek',
-    'KEY TIDAK VALID':'KEY TIDAK VALID','KEY DI-BANNED':'KEY DI-BANNED','KEY EXPIRED':'KEY EXPIRED',
-    'NAMA AMAN!':'NAMA AMAN!','Klik LANJUT KE KEY':'Klik LANJUT KE KEY',
-    'KEY VALID!':'KEY VALID!','Klik MASUK ENGINE':'Klik MASUK ENGINE',
-    'Nama gak boleh kosong':'Nama gak boleh kosong','Nama minimal 3 huruf':'Nama minimal 3 huruf',
-    'Nama maksimal 20 huruf':'Nama maksimal 20 huruf','HANYA HURUF':'HANYA HURUF',
-    'Maksimal 2 spasi':'Maksimal 2 spasi','Spasi gak boleh dobel':'Spasi gak boleh dobel',
-    'NAMA MENGANDUNG KATA KASAR':'NAMA MENGANDUNG KATA KASAR',
-    'Beli key':'Beli key','CHAT ADMIN TELEGRAM':'CHAT ADMIN TELEGRAM',
-    // Footer
-    'Undetectable • Anti-Ban • Stable Connection':'Gak Terdeteksi • Anti-Ban • Koneksi Stabil',
-    'Build Date':'Tanggal Build','ML Hack Studio':'ML Hack Studio'
-  },
-  my:{
-    'ACTIVATE ALL':'AKTIFKAN SEMUA','RESET ALL':'RESET SEMUA',
-    'EMERGENCY STOP':'HENTIKAN KECEMASAN','EMERGENCY':'KECEMASAN',
-    'READY TO LAUNCH':'SIAP MELANCARKAN','WARNING':'AMARAN',
-    'Pastikan modul yang diinginkan sudah aktif. Klik tombol di bawah untuk inject ke Mobile Legends. Jika auto-launch gagal, MLBB bisa dibuka manual.':'Pastikan modul yang dikehendaki sudah aktif. Klik butang di bawah untuk inject ke Mobile Legends. Jika auto-launch gagal, MLBB boleh dibuka manual.',
-    'LAUNCH MOBILE LEGENDS':'LANCAR MOBILE LEGENDS',
-    'AGENT':'AGEN','KEY':'KEY','IP ADDRESS':'ALAMAT IP','PING':'PING',
-    'UPTIME':'MASA AKTIF','TIER':'TAHAP','STATUS':'STATUS','DEVICE':'PERANTI',
-    'PREMIUM':'PREMIUM','MULTI-DEVICE':'MULTI-PERANTI','VERIFIED':'DISAHKAN',
-    'LIVE CONSOLE':'KONSOL LANGSUNG',
-    'Session started':'Sesi dimulakan','Key verified':'Key disahkan',
-    'Loading modules...':'Memuatkan modul...','Auto-login: session restored':'Auto-login: sesi dipulihkan',
-    'Welcome back':'Selamat kembali','Module':'Modul','ACTIVATED':'DIAKTIFKAN','DISABLED':'DINYAHKAN',
-    'All modules disabled. System safe.':'Semua modul dinyahkan. Sistem selamat.',
-    'EMERGENCY STOP ACTIVATED!':'HENTIKAN KECEMASAN DIAKTIFKAN!',
-    'Disabling all modules...':'Menyahkan semua modul...',
-    'Bulk activation complete':'Aktivasi pukal selesai',
-    'Reset all modules':'Reset semua modul','Session ended':'Sesi tamat',
-    'LIVE INJECTION CONSOLE':'KONSOL INJECT LANGSUNG',
-    'INJECTING MODULES':'MENYUNTIK MODUL',
-    'Patching memory address':'Menampal alamat memori',
-    'Overriding damage value':'Override nilai kerosakan',
-    'Hooking render pipeline...':'Mengait saluran render...',
-    'Injecting radar overlay script...':'Menyuntik skrip overlay radar...',
-    'Calibrating aim assist FOV':'Mengkalibrasi FOV bantuan sasaran',
-    'Loading Ling combo sequence...':'Memuatkan urutan combo Ling...',
-    'Unlocking map fog of war...':'Membuka kabus perang...',
-    'Injecting enemy lag packet...':'Menyuntik paket lag musuh...',
-    'Encrypting payload to avoid detection...':'Mengenkripsi payload supaya tak dikesan...',
-    'Verifying anti-cheat bypass...':'Mengesahkan pintasan anti-cheat...',
-    'Shield integrity':'Integriti perisai','Active modules':'Modul aktif',
-    'Scanning for MLBB process...':'Mengimbas proses MLBB...',
-    'Attempting auto-launch MLBB...':'Cuba auto-launch MLBB...',
-    'MLBB launched successfully!':'MLBB berjaya dilancarkan!',
-    'Auto-launch failed. Manual launch required.':'Auto-launch gagal. Lancar manual.',
-    'ANDROID TERLALU TUA':'ANDROID TERLALU TUA','AUTO-LAUNCH GAGAL':'AUTO-LAUNCH GAGAL',
-    'SILAKAN BUKA MLBB MANUAL:':'SILA BUKA MLBB MANUAL:',
-    'Tekan tombol HOME':'Tekan butang HOME','Buka app MOBILE LEGENDS':'Buka app MOBILE LEGENDS',
-    'Modul tetap AKTIF':'Modul tetap AKTIF','OK, MENGERTI':'OK, FAHAM',
-    'TUTORIAL':'TUTORIAL','CARA MASUK ENGINE:':'CARA MASUK ENJIN:',
-    'CARA PAKE MODUL:':'CARA GUNA MODUL:','CARA LAUNCH MLBB:':'CARA LANCAR MLBB:',
-    'TIPS PRO:':'TIPS PRO:','MENGERTI, LANJUT':'FAHAM, TERUSKAN',
-    'MULAI SEKARANG':'MULA SEKARANG','LIHAT TUTORIAL':'LIHAT TUTORIAL','MULAI':'MULA',
-    'VERIFIED':'DISAHKAN','ONLINE':'ONLINE','SECURE':'SELAMAT','ONLINE • SECURE':'ONLINE • SELAMAT',
-    'Welcome':'Selamat datang','Welcome back':'Selamat kembali',
-    'ACTIVATED':'DIAKTIFKAN','DISABLED':'DINYAHKAN',
-    'ALL MODULES ACTIVATED':'SEMUA MODUL DIAKTIFKAN',
-    'ALL MODULES RESET':'SEMUA MODUL DI-RESET',
-    'EMERGENCY STOP — ALL OFF':'HENTIKAN KECEMASAN — SEMUA OFF',
-    'BUKA MLBB MANUAL':'BUKA MLBB MANUAL','ANDROID TERLALU TUA':'ANDROID TERLALU TUA',
-    'Gagal buka':'Gagal buka','Server offline. Cek internet lo.':'Pelayan offline. Cek internet anda.',
-    'Format key salah':'Format key salah','Key terlalu pendek':'Key terlalu pendek',
-    'KEY TIDAK VALID':'KEY TIDAK SAH','KEY DI-BANNED':'KEY DILARANG','KEY EXPIRED':'KEY TAMAT',
-    'NAMA AMAN!':'NAMA SELAMAT!','Klik LANJUT KE KEY':'Klik TERUS KE KEY',
-    'KEY VALID!':'KEY SAH!','Klik MASUK ENGINE':'Klik MASUK ENJIN',
-    'Nama gak boleh kosong':'Nama tak boleh kosong','Nama minimal 3 huruf':'Nama minima 3 huruf',
-    'Nama maksimal 20 huruf':'Nama maksima 20 huruf','HANYA HURUF':'HURUF SAHAJA',
-    'Maksimal 2 spasi':'Maksima 2 ruang','Spasi gak boleh dobel':'Ruang tak boleh berganda',
-    'NAMA MENGANDUNG KATA KASAR':'NAMA MENGANDUNGI KATA KESAT',
-    'Beli key':'Beli key','CHAT ADMIN TELEGRAM':'CHAT ADMIN TELEGRAM',
-    'Undetectable • Anti-Ban • Stable Connection':'Tak Dikesan • Anti-Larang • Sambungan Stabil',
-    'Build Date':'Tarikh Bina','ML Hack Studio':'ML Hack Studio'
-  },
-  en:{
-    'ACTIVATE ALL':'ACTIVATE ALL','RESET ALL':'RESET ALL',
-    'EMERGENCY STOP':'EMERGENCY STOP','EMERGENCY':'EMERGENCY',
-    'READY TO LAUNCH':'READY TO LAUNCH','WARNING':'WARNING',
-    'Pastikan modul yang diinginkan sudah aktif. Klik tombol di bawah untuk inject ke Mobile Legends. Jika auto-launch gagal, MLBB bisa dibuka manual.':'Make sure the desired modules are active. Click the button below to inject to Mobile Legends. If auto-launch fails, MLBB can be opened manually.',
-    'LAUNCH MOBILE LEGENDS':'LAUNCH MOBILE LEGENDS',
-    'AGENT':'AGENT','KEY':'KEY','IP ADDRESS':'IP ADDRESS','PING':'PING',
-    'UPTIME':'UPTIME','TIER':'TIER','STATUS':'STATUS','DEVICE':'DEVICE',
-    'PREMIUM':'PREMIUM','MULTI-DEVICE':'MULTI-DEVICE','VERIFIED':'VERIFIED',
-    'LIVE CONSOLE':'LIVE CONSOLE',
-    'Session started':'Session started','Key verified':'Key verified',
-    'Loading modules...':'Loading modules...','Auto-login: session restored':'Auto-login: session restored',
-    'Welcome back':'Welcome back','Module':'Module','ACTIVATED':'ACTIVATED','DISABLED':'DISABLED',
-    'All modules disabled. System safe.':'All modules disabled. System safe.',
-    'EMERGENCY STOP ACTIVATED!':'EMERGENCY STOP ACTIVATED!',
-    'Disabling all modules...':'Disabling all modules...',
-    'Bulk activation complete':'Bulk activation complete',
-    'Reset all modules':'Reset all modules','Session ended':'Session ended',
-    'LIVE INJECTION CONSOLE':'LIVE INJECTION CONSOLE',
-    'INJECTING MODULES':'INJECTING MODULES',
-    'Patching memory address':'Patching memory address',
-    'Overriding damage value':'Overriding damage value',
-    'Hooking render pipeline...':'Hooking render pipeline...',
-    'Injecting radar overlay script...':'Injecting radar overlay script...',
-    'Calibrating aim assist FOV':'Calibrating aim assist FOV',
-    'Loading Ling combo sequence...':'Loading Ling combo sequence...',
-    'Unlocking map fog of war...':'Unlocking map fog of war...',
-    'Injecting enemy lag packet...':'Injecting enemy lag packet...',
-    'Encrypting payload to avoid detection...':'Encrypting payload to avoid detection...',
-    'Verifying anti-cheat bypass...':'Verifying anti-cheat bypass...',
-    'Shield integrity':'Shield integrity','Active modules':'Active modules',
-    'Scanning for MLBB process...':'Scanning for MLBB process...',
-    'Attempting auto-launch MLBB...':'Attempting auto-launch MLBB...',
-    'MLBB launched successfully!':'MLBB launched successfully!',
-    'Auto-launch failed. Manual launch required.':'Auto-launch failed. Manual launch required.',
-    'ANDROID TERLALU TUA':'ANDROID TOO OLD','AUTO-LAUNCH GAGAL':'AUTO-LAUNCH FAILED',
-    'SILAKAN BUKA MLBB MANUAL:':'PLEASE OPEN MLBB MANUALLY:',
-    'Tekan tombol HOME':'Press HOME button','Buka app MOBILE LEGENDS':'Open MOBILE LEGENDS app',
-    'Modul tetap AKTIF':'Modules still ACTIVE','OK, MENGERTI':'OK, GOT IT',
-    'TUTORIAL':'TUTORIAL','CARA MASUK ENGINE:':'HOW TO ENTER ENGINE:',
-    'CARA PAKE MODUL:':'HOW TO USE MODULES:','CARA LAUNCH MLBB:':'HOW TO LAUNCH MLBB:',
-    'TIPS PRO:':'PRO TIPS:','MENGERTI, LANJUT':'GOT IT, CONTINUE',
-    'MULAI SEKARANG':'START NOW','LIHAT TUTORIAL':'VIEW TUTORIAL','MULAI':'START',
-    'VERIFIED':'VERIFIED','ONLINE':'ONLINE','SECURE':'SECURE','ONLINE • SECURE':'ONLINE • SECURE',
-    'Welcome':'Welcome','Welcome back':'Welcome back',
-    'ACTIVATED':'ACTIVATED','DISABLED':'DISABLED',
-    'ALL MODULES ACTIVATED':'ALL MODULES ACTIVATED',
-    'ALL MODULES RESET':'ALL MODULES RESET',
-    'EMERGENCY STOP — ALL OFF':'EMERGENCY STOP — ALL OFF',
-    'BUKA MLBB MANUAL':'OPEN MLBB MANUALLY','ANDROID TERLALU TUA':'ANDROID TOO OLD',
-    'Gagal buka':'Failed to open','Server offline. Cek internet lo.':'Server offline. Check your internet.',
-    'Format key salah':'Wrong key format','Key terlalu pendek':'Key too short',
-    'KEY TIDAK VALID':'INVALID KEY','KEY DI-BANNED':'KEY BANNED','KEY EXPIRED':'KEY EXPIRED',
-    'NAMA AMAN!':'NAME OK!','Klik LANJUT KE KEY':'Click CONTINUE TO KEY',
-    'KEY VALID!':'KEY VALID!','Klik MASUK ENGINE':'Click ENTER ENGINE',
-    'Nama gak boleh kosong':'Name cannot be empty','Nama minimal 3 huruf':'Name minimum 3 letters',
-    'Nama maksimal 20 huruf':'Name maximum 20 letters','HANYA HURUF':'LETTERS ONLY',
-    'Maksimal 2 spasi':'Maximum 2 spaces','Spasi gak boleh dobel':'No double spaces',
-    'NAMA MENGANDUNG KATA KASAR':'NAME CONTAINS BAD WORDS',
-    'Beli key':'Buy key','CHAT ADMIN TELEGRAM':'CHAT ADMIN TELEGRAM',
-    'Undetectable • Anti-Ban • Stable Connection':'Undetectable • Anti-Ban • Stable Connection',
-    'Build Date':'Build Date','ML Hack Studio':'ML Hack Studio'
-  }
-};
-
-var LANG='id';
-function lsGet(k,d){try{var v=localStorage.getItem('mlhack_x_'+k);return v===null?d:JSON.parse(v);}catch(e){return d;}}
-
-function applyBatch3(){
-  if(LANG==='id')return;
-  var dict=DICT[LANG]||{};
-  var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null,false);
-  var nodes=[],n;
-  while(n=walker.nextNode())nodes.push(n);
-  nodes.forEach(function(node){
-    var txt=node.textContent;
-    var trimmed=txt.trim();
-    if(dict[trimmed])node.textContent=txt.replace(trimmed,dict[trimmed]);
-  });
-}
-
-window.addEventListener('load',function(){
-  setTimeout(function(){
-    LANG=lsGet('lang','id');
-    if(LANG==='id')return;
-    applyBatch3();
-    setTimeout(applyBatch3,1000);
-    setTimeout(applyBatch3,3000);
-    setInterval(applyBatch3,5000);
-  },2500);
-});
-})();
-
-</script>
-
-<!-- FIX FINAL TRANSLATION -->
-<script>
-(function(){
-'use strict';
-
-/* ============================================================
-   FIX FINAL: EMOJI MATCHING + TEXT KELEWAT + CLEANUP
-   ============================================================ */
-
-var LANG='id';
-
-/* ====== KAMUS TAMBAHAN (yang mungkin kelewat) ====== */
-var DICT_EXTRA={
-  id:{
-    // Quick menu home
-    '⚡ MENU CEPAT':'⚡ MENU CEPAT',
-    '🔥 PAKET TERLARIS':'🔥 PAKET TERLARIS',
-    'MENU CEPAT':'MENU CEPAT',
-    'PAKET TERLARIS':'PAKET TERLARIS',
-    'VOUCHER':'VOUCHER','CEK POIN':'CEK POIN','RIWAYAT':'RIWAYAT','MENU':'MENU',
-    // Loading / generic
-    'Loading...':'Memuat...','Loading':'Memuat','Mengerti':'Mengerti','Batal':'Batal',
-    'Ya':'Ya','Tidak':'Tidak','OK':'OK','Cancel':'Batal','Kembali':'Kembali',
-    // Splash & opening
-    'Initializing kernel module...':'Menginisialisasi modul kernel...',
-    'Engine ready. Welcome, agent.':'Mesin siap. Selamat datang, agen.',
-    // Tutorial
-    'CARA MASUK ENGINE':'CARA MASUK ENGINE',
-    'CARA PAKE MODUL':'CARA PAKE MODUL',
-    'CARA LAUNCH MLBB':'CARA LAUNCH MLBB',
-    'TIPS PRO':'TIPS PRO',
-    // Toast templates
-    'Session started':'Sesi dimulai','Session ended':'Sesi berakhir',
-    'Loading modules...':'Memuat modul...','Module':'Modul',
-    // Status & label lain
-    'ONLINE':'ONLINE','SECURE':'AMAN','VERIFIED':'TERVERIFIKASI',
-    'Premium':'Premium','Free':'Gratis','PRO':'PRO',
-    // Placeholder input
-    'Contoh: Budi Santoso':'Contoh: Budi Santoso',
-    'PAKEL-KEY-XXXXX':'PAKEL-KEY-XXXXX',
-    // About section
-    'About':'Tentang','Version':'Versi','Build':'Build'
-  },
-  my:{
-    '⚡ MENU CEPAT':'⚡ MENU PANTAS',
-    '🔥 PAKET TERLARIS':'🔥 PAKET TERLARIS',
-    'MENU CEPAT':'MENU PANTAS','PAKET TERLARIS':'PAKET TERLARIS',
-    'VOUCHER':'VOUCHER','CEK POIN':'SEMAK POIN','RIWAYAT':'SEJARAH','MENU':'MENU',
-    'Loading...':'Memuatkan...','Loading':'Memuatkan','Mengerti':'Faham','Batal':'Batal',
-    'Ya':'Ya','Tidak':'Tidak','OK':'OK','Cancel':'Batal','Kembali':'Kembali',
-    'CARA MASUK ENGINE':'CARA MASUK ENJIN','CARA PAKE MODUL':'CARA GUNA MODUL',
-    'CARA LAUNCH MLBB':'CARA LANCAR MLBB','TIPS PRO':'TIPS PRO',
-    'Session started':'Sesi dimulakan','Session ended':'Sesi tamat',
-    'Loading modules...':'Memuatkan modul...','Module':'Modul',
-    'ONLINE':'ONLINE','SECURE':'SELAMAT','VERIFIED':'DISAHKAN',
-    'Premium':'Premium','Free':'Percuma','PRO':'PRO',
-    'Contoh: Budi Santoso':'Contoh: Ahmad bin Ali',
-    'About':'Tentang','Version':'Versi','Build':'Bina'
-  },
-  en:{
-    '⚡ MENU CEPAT':'⚡ QUICK MENU',
-    '🔥 PAKET TERLARIS':'🔥 TOP PACKAGES',
-    'MENU CEPAT':'QUICK MENU','PAKET TERLARIS':'TOP PACKAGES',
-    'VOUCHER':'VOUCHER','CEK POIN':'CHECK POINTS','RIWAYAT':'HISTORY','MENU':'MENU',
-    'Loading...':'Loading...','Loading':'Loading','Mengerti':'Understood','Batal':'Cancel',
-    'Ya':'Yes','Tidak':'No','OK':'OK','Cancel':'Cancel','Kembali':'Back',
-    'CARA MASUK ENGINE':'HOW TO ENTER ENGINE','CARA PAKE MODUL':'HOW TO USE MODULES',
-    'CARA LAUNCH MLBB':'HOW TO LAUNCH MLBB','TIPS PRO':'PRO TIPS',
-    'Session started':'Session started','Session ended':'Session ended',
-    'Loading modules...':'Loading modules...','Module':'Module',
-    'ONLINE':'ONLINE','SECURE':'SECURE','VERIFIED':'VERIFIED',
-    'Premium':'Premium','Free':'Free','PRO':'PRO',
-    'Contoh: Budi Santoso':'Example: John Smith',
-    'About':'About','Version':'Version','Build':'Build'
-  }
-};
-
-function lsGet(k,d){try{var v=localStorage.getItem('mlhack_x_'+k);return v===null?d:JSON.parse(v);}catch(e){return d;}}
-
-/* ====== APPLY FUNCTION YANG LEBIH PINTAR (EMOJI + EXACT) ====== */
-function smartTranslate(){
-  if(LANG==='id')return;
-  var dict=DICT_EXTRA[LANG]||{};
-  var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null,false);
-  var nodes=[],n;
-  while(n=walker.nextNode())nodes.push(n);
-  nodes.forEach(function(node){
-    var txt=node.textContent;
-    var trimmed=txt.trim();
-    if(!trimmed)return;
-    
-    // Coba match exact dulu
-    if(dict[trimmed]){
-      node.textContent=txt.replace(trimmed,dict[trimmed]);
-      return;
-    }
-    
-    // Coba match tanpa emoji (strip emoji di depan)
-    var noEmoji=trimmed.replace(/^[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{1F000}-\u{1F02F}\s⚠️🔥⚡💎🎮👑📊🔋🌡️📸⏺️📤🎯🌐✅❌⏰🚀✕⭐☆]+\s*/u,'').trim();
-    if(noEmoji&&dict[noEmoji]){
-      node.textContent=txt.replace(noEmoji,dict[noEmoji]);
-      return;
-    }
-  });
-  
-  // Placeholder input
-  document.querySelectorAll('input[placeholder]').forEach(function(el){
-    var p=el.placeholder.trim();
-    if(dict[p])el.placeholder=dict[p];
-    else{
-      var noEmoji=p.replace(/^[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\s⚠️🔥⚡💎🎮👑📊🔋🌡️📸⏺️📤🎯🌐✅❌⏰🚀✕⭐☆🔍]+\s*/u,'').trim();
-      if(noEmoji&&dict[noEmoji])el.placeholder=dict[noEmoji];
-    }
-  });
-  
-  // Title attribute
-  document.querySelectorAll('[title]').forEach(function(el){
-    var tt=el.getAttribute('title');
-    if(dict[tt])el.setAttribute('title',dict[tt]);
-  });
-}
-
-/* ====== EXPOSE UNTUK DEBUG ====== */
-window.mlhackTranslateDebug = function(){
-  console.log('=== DEBUG TRANSLATION ===');
-  console.log('LANG:', LANG);
-  console.log('DICT size:', Object.keys(DICT_EXTRA[LANG]||{}).length);
-  console.log('Body text sample:');
-  var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null,false);
-  var count=0,n;
-  while((n=walker.nextNode())&&count<20){
-    var t=n.textContent.trim();
-    if(t&&t.length>2){console.log('  "'+t+'"');count++;}
-  }
-};
-
-/* ====== RE-APPLY SETIAP 3 DETIK (catch dynamic text) ====== */
-window.addEventListener('load',function(){
-  setTimeout(function(){
-    LANG=lsGet('lang','id');
-    if(LANG==='id')return;
-    smartTranslate();
-    setTimeout(smartTranslate,1000);
-    setTimeout(smartTranslate,3000);
-    setTimeout(smartTranslate,6000);
-    setInterval(smartTranslate,4000);
-    console.log('%c ML HACK VIP FIX FINAL — ' + LANG.toUpperCase() + ' LOADED','color:#FFCC00;font-size:13px;font-weight:900;');
-  },3500);
-});
-})();
-
-</script>
 <script>
 
 
@@ -2987,5 +1802,175 @@ console.log('%c🔔 UPDATER v2 — AUTO READ version.json','color:#FFCC00;font-s
 })();
 
 </script>
+
+
+
+
+
+
+
+<script>
+(function(){
+    var LANG = localStorage.getItem('mlhack_x_lang') || 'id';
+    if (LANG.startsWith('"')) LANG = JSON.parse(LANG);
+    
+    // KAMUS SUPER LENGKAP (Cover Terminal, Toast, Profile, Modul)
+    var DICT = {
+        id: {
+            'PAKEL VERIFIED': 'PAKEL TERVERIFIKASI', 'IDLE': 'MENUNGGU', 'LOGOUT': 'KELUAR', 'ONLINE • SECURE': 'ONLINE • AMAN',
+            'MODULES': 'MODUL', 'USER ONLINE': 'USER ONLINE', 'ANTI-BAN': 'ANTI-BAN', 'CORE MODULES': 'MODUL INTI',
+            'Total Inject Hari Ini': 'Total Inject Hari Ini', 'Modul Terpopuler': 'Modul Terpopuler', 'User Aktif': 'User Aktif',
+            'AGENT PROFILE': 'PROFIL AGEN', 'AGENT': 'AGEN', 'KEY': 'KEY', 'IP ADDRESS': 'ALAMAT IP', 'UPTIME': 'WAKTU AKTIF', 'TIER': 'TINGKAT', 'STATUS': 'STATUS', 'DEVICE': 'PERANGKAT',
+            'Key Expired Dalam': 'Key Expired Dalam', 'ACTIVATE ALL': 'AKTIFKAN SEMUA', 'RESET ALL': 'RESET SEMUA', 'EMERGENCY STOP': 'EMERGENCY STOP', 'READY TO LAUNCH': 'SIAP LAUNCH', 'LAUNCH MOBILE LEGENDS': 'LAUNCH MOBILE LEGENDS',
+            'Undetectable • Anti-Ban • Stable Connection': 'Tak Terdeteksi • Anti-Ban • Koneksi Stabil',
+            'DAMAGE BOOST 80%': 'DAMAGE BOOST 80%', 'Kernel-level memory manipulation for instant target neutralization': 'Manipulasi memori level kernel untuk netralisasi target instan',
+            'ANTI-BAN SHIELD': 'ANTI-BAN SHIELD', 'Bypass Moonton\'s anti-cheat via encrypted packet routing': 'Bypass anti-cheat Moonton via routing paket terenkripsi',
+            'ENEMY LAG INJECTOR': 'ENEMY LAG INJECTOR', 'TCP/UDP flood injection to disrupt enemy connection stability': 'Injeksi flood TCP/UDP untuk mengganggu stabilitas koneksi musuh',
+            'Patching memory...': 'Patching memori...', 'Activating shield...': 'Mengaktifkan shield...', 'Sending spike packets...': 'Mengirim paket spike...',
+            'Reading process memory...': 'Membaca memori proses...', 'Anti-cheat signature: DETECTED': 'Tanda tangan anti-cheat: TERDETEKSI', 'Bypass method: OVERRIDE v2.4': 'Metode bypass: OVERRIDE v2.4',
+            'Injecting 20 modules...': 'Menyuntikkan 20 modul...', 'Hook interface ready': 'Antarmuka hook siap', 'System integrity: 100%': 'Integritas sistem: 100%', 'Ready to inject. Toggle module.': 'Siap disuntik. Aktifkan modul.',
+            'Session started:': 'Sesi dimulai:', 'Key verified:': 'Key terverifikasi:', 'Loading modules...': 'Memuat modul...', 'Welcome': 'Selamat datang',
+            'ACTIVATED': 'DIAKTIFKAN', 'DISABLED': 'DINONAKTIFKAN', 'PREMIUM': 'PREMIUM', 'MULTI-DEVICE': 'MULTI-PERANGKAT', 'VERIFIED': 'TERVERIFIKASI',
+            'Semua Modul': 'Semua Modul', 'Hanya Favorit': 'Hanya Favorit'
+        },
+        en: {
+            'PAKEL VERIFIED': 'PAKEL VERIFIED', 'IDLE': 'IDLE', 'LOGOUT': 'LOGOUT', 'ONLINE • SECURE': 'ONLINE • SECURE',
+            'MODULES': 'MODULES', 'USER ONLINE': 'USER ONLINE', 'ANTI-BAN': 'ANTI-BAN', 'CORE MODULES': 'CORE MODULES',
+            'Total Inject Hari Ini': 'Total Inject Today', 'Modul Terpopuler': 'Top Module', 'User Aktif': 'Active Users',
+            'AGENT PROFILE': 'AGENT PROFILE', 'AGENT': 'AGENT', 'KEY': 'KEY', 'IP ADDRESS': 'IP ADDRESS', 'UPTIME': 'UPTIME', 'TIER': 'TIER', 'STATUS': 'STATUS', 'DEVICE': 'DEVICE',
+            'Key Expired Dalam': 'Key Expires In', 'ACTIVATE ALL': 'ACTIVATE ALL', 'RESET ALL': 'RESET ALL', 'EMERGENCY STOP': 'EMERGENCY STOP', 'READY TO LAUNCH': 'READY TO LAUNCH', 'LAUNCH MOBILE LEGENDS': 'LAUNCH MOBILE LEGENDS',
+            'Undetectable • Anti-Ban • Stable Connection': 'Undetectable • Anti-Ban • Stable Connection',
+            'DAMAGE BOOST 80%': 'DAMAGE BOOST 80%', 'Kernel-level memory manipulation for instant target neutralization': 'Kernel-level memory manipulation for instant target neutralization',
+            'ANTI-BAN SHIELD': 'ANTI-BAN SHIELD', 'Bypass Moonton\'s anti-cheat via encrypted packet routing': 'Bypass Moonton\'s anti-cheat via encrypted packet routing',
+            'ENEMY LAG INJECTOR': 'ENEMY LAG INJECTOR', 'TCP/UDP flood injection to disrupt enemy connection stability': 'TCP/UDP flood injection to disrupt enemy connection stability',
+            'Patching memory...': 'Patching memory...', 'Activating shield...': 'Activating shield...', 'Sending spike packets...': 'Sending spike packets...',
+            'Reading process memory...': 'Reading process memory...', 'Anti-cheat signature: DETECTED': 'Anti-cheat signature: DETECTED', 'Bypass method: OVERRIDE v2.4': 'Bypass method: OVERRIDE v2.4',
+            'Injecting 20 modules...': 'Injecting 20 modules...', 'Hook interface ready': 'Hook interface ready', 'System integrity: 100%': 'System integrity: 100%', 'Ready to inject. Toggle module.': 'Ready to inject. Toggle module.',
+            'Session started:': 'Session started:', 'Key verified:': 'Key verified:', 'Loading modules...': 'Loading modules...', 'Welcome': 'Welcome',
+            'ACTIVATED': 'ACTIVATED', 'DISABLED': 'DISABLED', 'PREMIUM': 'PREMIUM', 'MULTI-DEVICE': 'MULTI-DEVICE', 'VERIFIED': 'VERIFIED',
+            'Semua Modul': 'All Modules', 'Hanya Favorit': 'Favorites Only'
+        },
+        my: {
+            'PAKEL VERIFIED': 'PAKEL DISAHKAN', 'IDLE': 'MENUNGGU', 'LOGOUT': 'KELUAR', 'ONLINE • SECURE': 'ONLINE • SELAMAT',
+            'MODULES': 'MODUL', 'USER ONLINE': 'PENGGUNA ONLINE', 'ANTI-BAN': 'ANTI-BAN', 'CORE MODULES': 'MODUL TERAS',
+            'Total Inject Hari Ini': 'Jumlah Inject Hari Ini', 'Modul Terpopuler': 'Modul Teratas', 'User Aktif': 'Pengguna Aktif',
+            'AGENT PROFILE': 'PROFIL AGEN', 'AGENT': 'AGEN', 'KEY': 'KEY', 'IP ADDRESS': 'ALAMAT IP', 'UPTIME': 'MASA AKTIF', 'TIER': 'TAHAP', 'STATUS': 'STATUS', 'DEVICE': 'PERANTI',
+            'Key Expired Dalam': 'Kunci Tamat Dalam', 'ACTIVATE ALL': 'AKTIFKAN SEMUA', 'RESET ALL': 'RESET SEMUA', 'EMERGENCY STOP': 'HENTIKAN KECEMASAN', 'READY TO LAUNCH': 'SIAP MELANCARKAN', 'LAUNCH MOBILE LEGENDS': 'LANCAR MOBILE LEGENDS',
+            'Undetectable • Anti-Ban • Stable Connection': 'Tak Dikesan • Anti-Larang • Sambungan Stabil',
+            'DAMAGE BOOST 80%': 'PENINGKATAN KEROSAKAN 80%', 'Kernel-level memory manipulation for instant target neutralization': 'Manipulasi memori peringkat kernel untuk peneutralan sasaran segera',
+            'ANTI-BAN SHIELD': 'PERISAI ANTI-LARANG', 'Bypass Moonton\'s anti-cheat via encrypted packet routing': 'Pintas anti-cheat Moonton melalui penghalaan paket disulitkan',
+            'ENEMY LAG INJECTOR': 'INJECTOR LAG MUSUH', 'TCP/UDP flood injection to disrupt enemy connection stability': 'Suntikan banjir TCP/UDP untuk mengganggu kestabilan sambungan musuh',
+            'Patching memory...': 'Menampal memori...', 'Activating shield...': 'Mengaktifkan perisai...', 'Sending spike packets...': 'Menghantar paket spike...',
+            'Reading process memory...': 'Membaca memori proses...', 'Anti-cheat signature: DETECTED': 'Tandatangan anti-cheat: DIKESAN', 'Bypass method: OVERRIDE v2.4': 'Kaedah pintasan: OVERRIDE v2.4',
+            'Injecting 20 modules...': 'Menyuntik 20 modul...', 'Hook interface ready': 'Antara muka cangkuk sedia', 'System integrity: 100%': 'Integriti sistem: 100%', 'Ready to inject. Toggle module.': 'Sedia disuntik. Togol modul.',
+            'Session started:': 'Sesi dimulakan:', 'Key verified:': 'Key disahkan:', 'Loading modules...': 'Memuatkan modul...', 'Welcome': 'Selamat datang',
+            'ACTIVATED': 'DIAKTIFKAN', 'DISABLED': 'DINYAHKAN', 'PREMIUM': 'PREMIUM', 'MULTI-DEVICE': 'MULTI-PERANTI', 'VERIFIED': 'DISAHKAN',
+            'Semua Modul': 'Semua Modul', 'Hanya Favorit': 'Hanya Kegemaran'
+        }
+    };
+
+    // FUNGSI TRANSLATE (Agresif pake Regex)
+    function translate() {
+        var dict = DICT[LANG] || DICT['id'];
+        var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+        var node;
+        while (node = walker.nextNode()) {
+            var text = node.textContent;
+            var changed = false;
+            for (var key in dict) {
+                if (text.includes(key)) {
+                    text = text.split(key).join(dict[key]);
+                    changed = true;
+                }
+            }
+            if (changed) node.textContent = text;
+        }
+        document.querySelectorAll('input[placeholder]').forEach(function(el){
+            var p = el.placeholder;
+            if(dict[p]) el.placeholder = dict[p];
+        });
+    }
+
+    // UI TOMBOL BAHASA
+    function initLangButton() {
+        if (document.getElementById('extLangBtn')) return;
+        var headerRight = document.querySelector('.header-right');
+        if (!headerRight) return;
+
+        var btn = document.createElement('div');
+        btn.id = 'extLangBtn';
+        btn.className = 'header-change';
+        btn.style.cssText = 'width:36px;height:32px;border:1px solid rgba(0,255,65,0.4);background:rgba(0,255,65,0.08);color:#00FF41;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;font-weight:900;margin-right:6px;';
+        
+        var flags = { id: '🇮🇩', en: '🇺🇸', my: '🇲🇾' };
+        btn.textContent = flags[LANG] || '🇮🇩';
+        headerRight.insertBefore(btn, headerRight.firstChild);
+
+        // MODAL POPUP KEREN
+        btn.onclick = function() {
+            if (document.getElementById('extLangModal')) return;
+            var modal = document.createElement('div');
+            modal.id = 'extLangModal';
+            modal.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.95);display:flex;align-items:center;justify-content:center;padding:22px;animation:fadeIn 0.3s;';
+            
+            var html = '<div style="background:#000;border:2px solid #00FF41;padding:26px;max-width:340px;width:100%;text-align:center;box-shadow:0 0 40px rgba(0,255,65,0.5);">'
+                + '<div style="font-size:64px;margin-bottom:14px;animation:pulse 2s infinite;">🌐</div>'
+                + '<div style="font-size:16px;color:#00FF41;font-weight:900;letter-spacing:2px;margin-bottom:6px;">PILIH BAHASA</div>'
+                + '<div style="font-size:10px;color:#888;margin-bottom:20px;">Pilih bahasa yang Anda inginkan</div>'
+                
+                + '<button data-l="id" style="width:100%;padding:14px;margin-bottom:10px;background:' + (LANG === 'id' ? '#00FF41' : 'rgba(0,20,0,0.6)') + ';color:' + (LANG === 'id' ? '#000' : '#00FF41') + ';border:1px solid rgba(0,255,65,0.5);font-family:inherit;font-weight:900;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">🇮🇩 INDONESIA</button>'
+                + '<button data-l="en" style="width:100%;padding:14px;margin-bottom:10px;background:' + (LANG === 'en' ? '#00FF41' : 'rgba(0,20,0,0.6)') + ';color:' + (LANG === 'en' ? '#000' : '#00FF41') + ';border:1px solid rgba(0,255,65,0.5);font-family:inherit;font-weight:900;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">🇺🇸 AMERIKA</button>'
+                + '<button data-l="my" style="width:100%;padding:14px;margin-bottom:10px;background:' + (LANG === 'my' ? '#00FF41' : 'rgba(0,20,0,0.6)') + ';color:' + (LANG === 'my' ? '#000' : '#00FF41') + ';border:1px solid rgba(0,255,65,0.5);font-family:inherit;font-weight:900;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">🇲🇾 MALAYSIA</button>'
+                + '<button id="extLangCancel" style="width:100%;padding:12px;margin-top:8px;background:rgba(255,0,51,0.1);color:#FF0033;border:1px solid #FF0033;font-family:inherit;cursor:pointer;font-weight:900;font-size:12px;">✕ BATAL</button>'
+                + '</div>';
+            
+            modal.innerHTML = html;
+            document.body.appendChild(modal);
+
+            // Pilih Bahasa -> Munculin Konfirmasi
+            modal.querySelectorAll('button[data-l]').forEach(function(b){
+                b.onclick = function(){
+                    var newLang = b.dataset.l;
+                    if (newLang === LANG) { modal.remove(); return; }
+                    
+                    var langName = newLang === 'id' ? 'Indonesia' : (newLang === 'en' ? 'Amerika' : 'Malaysia');
+                    
+                    // Bikin Modal Konfirmasi
+                    var confirmModal = document.createElement('div');
+                    confirmModal.style.cssText = 'position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,0.95);display:flex;align-items:center;justify-content:center;padding:22px;';
+                    confirmModal.innerHTML = '<div style="background:#000;border:2px solid #FFCC00;padding:24px;max-width:320px;width:100%;text-align:center;box-shadow:0 0 40px rgba(255,204,0,0.5);">'
+                        + '<div style="font-size:54px;margin-bottom:12px;">⚠️</div>'
+                        + '<div style="font-size:15px;color:#FFCC00;font-weight:900;letter-spacing:1px;margin-bottom:12px;">GANTI BAHASA?</div>'
+                        + '<div style="font-size:12px;color:#FFF;margin-bottom:20px;">Ganti ke bahasa <b style="color:#00FF41;">' + langName + '</b>?</div>'
+                        + '<div style="display:flex;gap:10px;">'
+                        + '<button id="langYes" style="flex:1;padding:13px;background:linear-gradient(135deg,#00FF41,#008822);color:#000;border:none;font-weight:900;cursor:pointer;font-family:inherit;">✅ YA</button>'
+                        + '<button id="langNo" style="flex:1;padding:13px;background:rgba(255,0,51,0.1);color:#FF0033;border:1px solid #FF0033;font-weight:900;cursor:pointer;font-family:inherit;">❌ TIDAK</button>'
+                        + '</div></div>';
+                    document.body.appendChild(confirmModal);
+                    
+                    document.getElementById('langYes').onclick = function() {
+                        localStorage.setItem('mlhack_x_lang', JSON.stringify(newLang));
+                        location.reload();
+                    };
+                    document.getElementById('langNo').onclick = function() { confirmModal.remove(); };
+                };
+            });
+
+            document.getElementById('extLangCancel').onclick = function(){ modal.remove(); };
+            modal.onclick = function(e){ if (e.target === modal) modal.remove(); };
+        };
+    }
+
+    // Jalanin terus-terusan
+    setInterval(function(){
+        var mainApp = document.getElementById('mainApp');
+        if (mainApp && mainApp.classList.contains('show')) {
+            initLangButton();
+            translate();
+        }
+    }, 1000);
+})();
+</script>
+
 </body>
 </html>
